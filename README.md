@@ -1,1 +1,3 @@
-# canva-connect-api-starter-kit
+# Canva Connect API Starter Kit
+
+Coming soon... 👀

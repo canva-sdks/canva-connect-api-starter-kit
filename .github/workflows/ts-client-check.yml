@@ -1,0 +1,33 @@
+name: Check TS SDK is up-to-date with the public api yml updated
+run-name: ${{ github.actor }} pushed a commit 🚀
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - 'internal/**'
+
+jobs:
+  ts-client-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Node.js and NPM
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+    
+    - name: Npm CI
+      run: npm ci
+
+    - name: npm run generate
+      run: npm run generate
+
+    - name: Check for ./client changes
+      run: |
+        if git diff --name-only | grep --quiet '^client/'; then
+          echo "::error::TS Client is out of date. Please run 'npm run generate' to regenerate the typescript client SDK."
+          exit 1
+        fi

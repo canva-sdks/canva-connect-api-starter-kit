@@ -1,0 +1,19 @@
+{
+  "name": "canva-connect-api-starter-kit",
+  "description": "A starter kit repo for Canva's Connect API",
+  "author": "Canva Pty Ltd.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "private": true,
+  "workspaces": [
+    "demos",
+    "client"
+  ],
+  "engines": {
+    "node": ">=20.14.0"
+  },
+  "engineStrict": true,
+  "scripts": {
+    "generate": "cd client && npm run generate",
+    "demo:ecommerce": "cd demos/ecommerce_shop && npm start"
+  }
+}

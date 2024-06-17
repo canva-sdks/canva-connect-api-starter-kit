@@ -1,0 +1,21 @@
+html
+  head
+    title Authorization Failed
+  body
+    strong Authorization failed!
+    br
+    | #{errorMessage}.
+    br
+    br
+    | This window will close automatically in #{countdownSecs} seconds.
+    script.
+      const AUTHORIZATION_FAILURE_MESSAGE = "#{message}";
+      const postMessageAndClose = () => {
+        window.opener.postMessage(AUTHORIZATION_FAILURE_MESSAGE, "*");
+        window.close();
+      };
+
+      setTimeout(postMessageAndClose, #{countdownSecs * 1000});
+
+      // Listen for the window being closed manually by the user
+      window.addEventListener('beforeunload', postMessageAndClose);

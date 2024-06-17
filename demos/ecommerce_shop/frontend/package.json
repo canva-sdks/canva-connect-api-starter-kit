@@ -1,0 +1,46 @@
+{
+  "name": "ecommerce-shop-demo-frontend",
+  "description": "Web app for the Ecommerce Shop",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config ./webpack.config.js --mode production",
+    "lint:types": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier './**/*.{css,ts,tsx}' --no-config --write",
+    "format:check": "prettier './**/*.{css,ts,tsx}' --no-config --check --ignore-path",
+    "format:file": "prettier $1 --no-config --write"
+  },
+  "author": "Canva Pty Ltd.",
+  "license": "SEE LICENSE IN LICENSE.md in root directory",
+  "private": true,
+  "dependencies": {
+    "@canva/connect-api-ts": "file:../../../client/ts",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@fontsource/roboto": "^5.0.13",
+    "@mui/icons-material": "^5.15.15",
+    "@mui/material": "^5.15.15",
+    "@mui/x-charts": "^7.5.1",
+    "canvas-confetti": "^1.9.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
+    "@types/canvas-confetti": "^1.6.4",
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
+    "css-loader": "^7.1.1",
+    "cssnano": "^6.1.2",
+    "postcss-loader": "^8.1.1",
+    "prettier": "^3.2.5",
+    "style-loader": "^4.0.0",
+    "terser-webpack-plugin": "^5.3.10",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5",
+    "url-loader": "^4.1.1",
+    "webpack-dev-server": "^5.0.4"
+  }
+}

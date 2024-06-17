@@ -1,0 +1,4468 @@
+openapi: 3.0.0
+info:
+  contact:
+    name: Canva Developer Community
+    url: https://community.canva.dev/
+  description: API for building integrations with Canva via a REST api
+  license:
+    name: ©2023 All Rights Reserved
+  termsOfService: https://www.canva.com/trust/legal/
+  title: Canva Connect API
+  version: latest
+servers:
+- description: Canva Connect API
+  url: https://api.canva.com/rest
+tags:
+- name: app
+- name: asset
+- name: autofill
+- name: brand_template
+- name: comment
+- name: connect
+- name: design
+- name: design_import
+- name: export
+- name: folder
+- name: oauth
+- name: user
+paths:
+  /v1/apps/{appId}/jwks:
+    get:
+      description: |-
+        Returns the Json Web Key Set (public keys) of an app. These keys are used to
+        verify JWTs sent to app backends.
+      operationId: getAppJwks
+      parameters:
+      - description: The app id
+        explode: false
+        in: path
+        name: appId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]{1,30}"
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAppJwksResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      tags:
+      - app
+  /v1/assets/{assetId}:
+    delete:
+      description: |-
+        You can delete an asset by specifying its `assetId`. This operation mirrors the behavior
+        in the Canva UI. Deleting an item moves it to the trash.
+        Deleting an asset doesn't remove it from designs that already use it.
+      operationId: deleteAsset
+      parameters:
+      - description: The ID of the asset.
+        explode: false
+        in: path
+        name: assetId
+        required: true
+        schema:
+          pattern: "M[a-zA-Z0-9_-]{10}"
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - asset:write
+      tags:
+      - asset
+    get:
+      description: You can retrieve the metadata of an asset by specifying its `assetId`.
+      operationId: getAsset
+      parameters:
+      - description: The ID of the asset.
+        explode: false
+        in: path
+        name: assetId
+        required: true
+        schema:
+          pattern: "M[a-zA-Z0-9_-]{10}"
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAssetResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - asset:read
+      tags:
+      - asset
+    patch:
+      description: |-
+        You can update the name and tags of an asset by specifying its `assetId`. Updating the tags
+        replaces all existing tags of the asset.
+
+        NOTE: This `PATCH` method of updating an asset replaces the deprecated `POST` method. For the old deprecated method, see [Update asset (deprecated)](https://www.canva.dev/docs/connect/api-reference/assets/update-asset-deprecated/).
+      operationId: updateAsset
+      parameters:
+      - description: The ID of the asset.
+        explode: false
+        in: path
+        name: assetId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]+"
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAssetRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateAssetResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - asset:write
+      tags:
+      - asset
+    post:
+      description: |-
+        WARNING: This `POST` method of updating an asset is deprecated and will soon be removed. It's been replaced with an equivalent `PATCH` method: see [Update asset](https://www.canva.dev/docs/connect/api-reference/assets/update-asset/).
+
+        You can update the name and tags of an asset by specifying its `assetId`. Updating the tags
+        replaces all existing tags of the asset.
+      operationId: updateAssetDeprecated
+      parameters:
+      - description: The ID of the asset.
+        explode: false
+        in: path
+        name: assetId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]+"
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAssetDeprecatedRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateAssetResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - asset:write
+      tags:
+      - asset
+  /v1/assets/upload:
+    post:
+      deprecated: true
+      description: |-
+        WARNING: This endpoint for uploading an asset is deprecated. You should instead use the asynchronous [Create asset upload job API](https://www.canva.dev/docs/connect/api-reference/assets/create-asset-upload-job/) instead.
+
+        You can upload media assets to a user’s content library using the `assets/upload` endpoint.
+        When specifying an asset that already exists, it renames the asset.
+
+        The request format for this endpoint is an `application/octet-stream` body of bytes. Attach
+        information about the upload using an `Upload-Metadata` header.
+      operationId: uploadAsset
+      parameters:
+      - content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadMetadata'
+        in: header
+        name: Upload-Metadata
+        required: true
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              format: binary
+              type: string
+        description: Binary of the asset to upload.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadAssetResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - asset:write
+      tags:
+      - asset
+  /v1/asset-uploads:
+    post:
+      description: |-
+        Starts a new job to upload an asset to a user's content library.
+
+        The request format for this endpoint is an `application/octet-stream` body of bytes. Attach
+        information about the upload using an `Asset-Upload-Metadata` header.
+
+        You can check the status and get the results of asset upload jobs created with this API using the [Get asset upload job API](https://www.canva.dev/docs/connect/api-reference/assets/get-asset-upload-job/).
+      operationId: CreateAssetUploadJob
+      parameters:
+      - content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssetUploadMetadata'
+        in: header
+        name: Asset-Upload-Metadata
+        required: true
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              format: binary
+              type: string
+        description: Binary of the asset to upload.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAssetUploadJobResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - asset:write
+      tags:
+      - asset
+  /v1/asset-uploads/{jobId}:
+    get:
+      description: |-
+        Get the result of an asset upload job that was created using the [Create asset upload job API](https://www.canva.dev/docs/connect/api-reference/assets/create-asset-upload-job/).
+
+        You might need to make multiple requests to this endpoint until you get a `SUCCESS` or `FAILED` status.
+      operationId: GetAssetUploadJob
+      parameters:
+      - description: The asset upload job ID.
+        explode: false
+        in: path
+        name: jobId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]+"
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAssetUploadJobResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - asset:read
+      tags:
+      - asset
+  /v1/autofills:
+    post:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+        <Note>
+
+        To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+
+        </Note>
+
+        Starts a new job to autofill a Canva design using a brand template and input data.
+
+        To get a list of input data fields, use the [Get brand template dataset
+        API](https://www.canva.dev/docs/connect/api-reference/brand-templates/get-brand-template-dataset/).
+
+        Brand templates contain references to image media. You can reference image media by providing the value of `type` with `IMAGE` within the `data` object. The number of
+        references to image media within a brand template cannot currently exceed 300 references.
+      operationId: createDesignAutofillJob
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDesignAutofillJobRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDesignAutofillJobResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - design:content:write
+      tags:
+      - autofill
+  /v1/autofills/{jobId}:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+        <Note>
+
+        To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+
+        </Note>
+
+        Get the result of a design autofill job that was created using the [Create a design autofill job
+        API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
+
+        You might need to make multiple requests to this endpoint until you get a `SUCCESS` or
+        `ERROR` status.
+      operationId: getDesignAutofillJob
+      parameters:
+      - description: The design autofill job ID.
+        explode: false
+        in: path
+        name: jobId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]+"
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDesignAutofillJobResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - design:meta:read
+      tags:
+      - autofill
+  /v1/brand-templates:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+        <Note>
+
+        To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+
+        </Note>
+
+        Get a list of the [brand templates](https://www.canva.com/help/publish-team-template/) the user has access to.
+      operationId: listBrandTemplates
+      parameters:
+      - description: Lets you search the brand templates available to the user using
+          a search term or terms.
+        explode: true
+        in: query
+        name: query
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: |-
+          If the success response contains a continuation token, the user has access to more
+          brand templates you can list. You can use this token as a query parameter and retrieve
+          more templates from the list, for example
+          `/v1/brand-templates?continuation={continuation}`.
+          To retrieve all the brand templates available to the user, you might need to make
+          multiple requests.
+        explode: true
+        in: query
+        name: continuation
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: |-
+          Filter the brand templates to only show templates created by a particular user.
+          Provide a Canva user ID and it will filter the list to only show brand templates
+          created by that user. The 'owner' of a template is the user who created the design,
+          and the owner can't be changed.
+        explode: true
+        in: query
+        name: ownership
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: |-
+          Sort the list of brand templates. This can be one of the following:
+          - `RELEVANCE`: (Default) Sort results using a relevance algorithm.
+          - `MODIFIED_DESCENDING`: Sort results by the date last modified in descending order.
+          - `MODIFIED_ASCENDING`: Sort results by the date last modified in ascending order.
+          - `TITLE_DESCENDING`: Sort results by title in descending order.
+          - `TITLE_ASCENDING`: Sort results by title in ascending order.
+        explode: true
+        in: query
+        name: sort_by
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListBrandTemplatesResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - brandtemplate:meta:read
+      tags:
+      - brand_template
+  /v1/brand-templates/{brandTemplateId}:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+        <Note>
+
+        To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+
+        </Note>
+
+        Retrieves the metadata for a brand template.
+      operationId: getBrandTemplate
+      parameters:
+      - description: The brand template ID.
+        explode: false
+        in: path
+        name: brandTemplateId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]+"
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBrandTemplateResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - brandtemplate:meta:read
+      tags:
+      - brand_template
+  /v1/brand-templates/{brandTemplateId}/dataset:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+        <Note>
+
+        To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+
+        </Note>
+
+        Gets the dataset definition of a brand template. If the brand
+        template contains autofill data fields, this API returns an object with the data field
+        names and the type of data they accept.
+
+        You can autofill a brand template using the [Create a design autofill job
+        API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
+      operationId: getBrandTemplateDataset
+      parameters:
+      - description: The brand template ID.
+        explode: false
+        in: path
+        name: brandTemplateId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]+"
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBrandTemplateDatasetResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - brandtemplate:content:read
+      tags:
+      - brand_template
+  /v1/comments:
+    post:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Create a new top-level comment on a design.
+        For information on comments and how they're used in the Canva UI, see the
+        [Canva Help Center](https://www.canva.com/help/comments/). A design can have a maximum
+        of 1000 comments.
+      operationId: createComment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCommentResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - comment:write
+      tags:
+      - comment
+  /v1/comments/{commentId}/replies:
+    post:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Creates a reply to a comment in a design.
+        To reply to an existing thread of comments, you can use either the `id` of the parent
+        (original) comment, or the `thread_id` of a comment in the thread. Each comment can
+        have a maximum of 100 replies created for it.
+
+        For information on comments and how they're used in the Canva UI, see the
+        [Canva Help Center](https://www.canva.com/help/comments/).
+      operationId: createReply
+      parameters:
+      - description: The `id` of the comment.
+        example: KeAZEAjijEb
+        explode: false
+        in: path
+        name: commentId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]+"
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReplyRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateReplyResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - comment:write
+      tags:
+      - comment
+  /v1/designs/{designId}/comments/{commentId}:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Gets a comment.
+        For information on comments and how they're used in the Canva UI, see the
+        [Canva Help Center](https://www.canva.com/help/comments/).
+      operationId: getComment
+      parameters:
+      - description: The design ID.
+        explode: false
+        in: path
+        name: designId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]+"
+          type: string
+        style: simple
+      - description: The `id` of the comment.
+        example: KeAZEAjijEb
+        explode: false
+        in: path
+        name: commentId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]+"
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCommentResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - comment:read
+      tags:
+      - comment
+  /v1/connect/keys:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        The Keys API (`connect/keys`) is a security measure you can use to verify the authenticity
+        of webhooks you receive from Canva Connect. The Keys API returns a
+        [JSON Web Key (JWK)](https://www.rfc-editor.org/rfc/rfc7517#section-2), which you can use to
+        decrypt the webhook signature and verify it came from Canva and not a potentially malicious
+        actor. This helps to protect your systems from
+        [Replay attacks](https://owasp.org/Top10/A08_2021-Software_and_Data_Integrity_Failures/).
+
+        The keys returned by the Keys API can rotate. We recommend you cache the keys you receive
+        from this API where possible, and only access this API when you receive a webhook signed
+        with an unrecognized key. This allows you to verify webhooks quicker than accessing this API
+        every time you receive a webhook.
+      operationId: getSigningPublicKeys
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSigningPublicKeysResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      tags:
+      - connect
+  /v1/designs:
+    get:
+      description: |-
+        Lists metadata for all the designs in a Canva user's
+        [projects](https://www.canva.com/help/find-designs-and-folders/). You can also:
+
+        - Use search terms to filter the listed designs.
+        - Show designs either created by, or shared with the user.
+        - Sort the results.
+      operationId: listDesigns
+      parameters:
+      - description: "Lets you search the user's designs, and designs shared with\
+          \ the user, using a search term or terms."
+        example: party invites
+        explode: true
+        in: query
+        name: query
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: |-
+          If the success response contains a continuation token, the list contains more designs
+          you can list. You can use this token as a query parameter and retrieve more
+          designs from the list, for example
+          `/v1/designs?continuation={continuation}`.
+
+          To retrieve all of a user's designs, you might need to make multiple requests.
+        example: RkFGMgXlsVTDbMd:MR3L0QjiaUzycIAjx0yMyuNiV0OildoiOwL0x32G4NjNu4FwtAQNxowUQNMMYN
+        explode: true
+        in: query
+        name: continuation
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: |-
+          Filter the list of designs based on the user's ownership of the designs.
+          This can be one of the following:
+
+          - `owned`: Designs owned by the user.
+          - `shared`: Designs shared with the user.
+          - `any`: Designs owned by and shared with the user.
+        example: any
+        explode: true
+        in: query
+        name: ownership
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: |-
+          Sort the list of designs.
+          This can be one of the following:
+
+          - `relevance`: (Default) Sort results using a relevance algorithm.
+          - `modified_descending`: Sort results by the date last modified in descending order.
+          - `modified_ascending`: Sort results by the date last modified in ascending order.
+          - `title_descending`: Sort results by title in descending order.
+          - `title_ascending`: Sort results by title in ascending order.
+        example: relevance
+        explode: true
+        in: query
+        name: sort_by
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetListDesignResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - design:meta:read
+      tags:
+      - design
+    post:
+      description: |-
+        Creates a new Canva design. To create a new design, you can either:
+
+        - Use a preset design type.
+        - Set height and width dimensions for a custom design.
+
+        Additionally, you can also provide the `asset_id` of an asset in the user's [projects](https://www.canva.com/help/find-designs-and-folders/) to add to the new design. To list the assets in a folder in the user's projects, use the [List folder items API](https://www.canva.dev/docs/connect/api-reference/folders/list-folder-items/).
+      operationId: createDesign
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDesignRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDesignResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - design:content:write
+      tags:
+      - design
+  /v1/designs/{designId}:
+    get:
+      description: "Gets the metadata for a design. This includes owner information,\
+        \ URLs for editing and viewing, and thumbnail information."
+      operationId: getDesign
+      parameters:
+      - description: The design ID.
+        explode: false
+        in: path
+        name: designId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]+"
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDesignResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - design:meta:read
+      tags:
+      - design
+  /v1/imports:
+    post:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Starts a new job to import an external file as a new design in Canva.
+        The request format for this endpoint has an `application/octet-stream` body of bytes,
+        and the information about the import is attached using an `Import-Metadata` header.
+
+        Supported formats: PDFs(`.pdf`), Adobe Illustrator(`.ai`), Adobe Photoshop(`.psd`),
+        Microsoft Word(`.docx`), Microsoft Powerpoint(`.pptx`), Microsoft Excel(`.xls`, `.xlsx`),
+        OpenOffice Draw(`.odg`), OpenOffice Presentation(`.odp`), OpenOffice Sheets(`.ods`),
+        OpenOffice Text(`.odt`).
+
+        You can check the status and get the results of import jobs created with this API using the [Get design import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/get-design-import-job/).
+
+        For upload formats and requirements, see
+        [Canva Help — Upload formats and requirements](https://www.canva.com/help/upload-formats-requirements/).
+      operationId: createDesignImportJob
+      parameters:
+      - content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DesignImportMetadata'
+        in: header
+        name: Import-Metadata
+        required: true
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              format: binary
+              type: string
+        description: Binary of the file to import.
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDesignImportJobResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - design:content:write
+      tags:
+      - design_import
+  /v1/imports/{jobId}:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Gets the status and results of design import jobs created using the [Create design import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/create-design-import-job/).
+      operationId: getDesignImportJob
+      parameters:
+      - description: The design import job ID.
+        example: f81b26fd-a33d-4c2d-9e8c-4a7aca798b17
+        explode: false
+        in: path
+        name: jobId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]+"
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDesignImportJobResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - design:content:write
+      tags:
+      - design_import
+  /v1/exports:
+    post:
+      description: |-
+        Starts a new job to export a file from Canva. Once the exported file is generated, you can download
+        it using the link(s) provided.
+
+        The request requires the design ID and the exported file format.
+
+        Supported formats: PDF(`.pdf`), JPG(`.jpg`), PNG(`.png`), GIF(`.gif`),
+        PPTX(`.pptx`), and MP4(`.mp4`).
+
+        You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/connect/api-reference/exports/get-design-export-job/).
+
+        NOTE: If you set `export_quality` to `PRO`, the export might fail if the design contains [premium elements](https://www.canva.com/help/premium-elements/), and the calling user either hasn't purchased the elements or isn't on a Canva plan (such as Canva Pro) that has premium features.
+
+        NOTE: Currently, you can't use the export APIs to export video designs. This functionality is being added in the future. For more information on supported export formats for each Canva design type, see the [Overview page](https://www.canva.dev/docs/connect/api-reference/exports/).
+      operationId: createDesignExportJob
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDesignExportJobRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDesignExportJobResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - design:content:read
+      tags:
+      - export
+  /v1/exports/{exportId}:
+    get:
+      description: |-
+        Gets the result of a design export job that was created using the [Create design export job API](https://www.canva.dev/docs/connect/api-reference/exports/create-design-export-job/).
+
+        If the job is complete, the response includes an array
+        of download links for each page of the design.
+      operationId: getDesignExportJob
+      parameters:
+      - description: The export job ID.
+        explode: false
+        in: path
+        name: exportId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]+"
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDesignExportJobResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - design:content:read
+      tags:
+      - export
+  /v1/folders/{folderId}:
+    delete:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Deletes a folder with the specified `folderID`.
+        Deleting a folder moves the user's content in the folder to the
+        [Trash](https://www.canva.com/help/deleted-designs/) and content owned by
+        other users is moved to the top level of the owner's
+        [projects](https://www.canva.com/help/find-designs-and-folders/).
+      operationId: deleteFolder
+      parameters:
+      - description: The folder ID.
+        example: FAF2lZtloor
+        explode: false
+        in: path
+        name: folderId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]{1,50}+"
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - folder:write
+      tags:
+      - folder
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Gets the name and other details of a folder using a folder's `folderID`.
+      operationId: getFolder
+      parameters:
+      - description: The folder ID.
+        example: FAF2lZtloor
+        explode: false
+        in: path
+        name: folderId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]{1,50}+"
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFolderResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - folder:read
+      tags:
+      - folder
+    patch:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Updates a folder's details using its `folderID`.
+        Currently, you can only update a folder's name.
+      operationId: updateFolder
+      parameters:
+      - description: The folder ID.
+        example: FAF2lZtloor
+        explode: false
+        in: path
+        name: folderId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]{1,50}+"
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFolderRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateFolderResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - folder:write
+      tags:
+      - folder
+  /v1/folders/{folderId}/items:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Lists the items in a folder, including each item's `type`.
+
+        Folders can contain:
+
+        - Other folders.
+        - Assets, such as uploaded images and videos.
+        - Designs, such as Instagram posts, Presentations, and Documents ([Canva Docs](https://www.canva.com/create/documents/)).
+        - [Brand templates](https://www.canva.com/help/manage-team-template/).
+      operationId: listFolderItems
+      parameters:
+      - description: The folder ID.
+        example: FAF2lZtloor
+        explode: false
+        in: path
+        name: folderId
+        required: true
+        schema:
+          pattern: "[a-zA-Z0-9_-]{1,50}+"
+          type: string
+        style: simple
+      - description: |-
+          If the success response contains a continuation token, the folder contains more items
+          you can list. You can use this token as a query parameter and retrieve more
+          items from the list, for example
+          `/v1/folders/{folderId}/items?continuation={continuation}`.
+
+          To retrieve all the items in a folder, you might need to make multiple requests.
+        example: RkFGMgXlsVTDbMd:MR3L0QjiaUzycIAjx0yMyuNiV0OildoiOwL0x32G4NjNu4FwtAQNxowUQNMMYN
+        explode: true
+        in: query
+        name: continuation
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: |-
+          Filter the folder items to only return specified types. The available types are:
+          `asset`, `design`, `folder`, and `template`. To filter for more than one item type,
+          provide a comma-delimited list.
+        explode: true
+        in: query
+        name: item_types
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListFolderItemsResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - folder:read
+      tags:
+      - folder
+  /v1/folders/move:
+    post:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Moves items from one folder to another. You must specify the the folder IDs of both the source and destination folders, as well as the ID of the item you want to move.
+      operationId: moveFolderItem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveFolderItemRequest'
+      responses:
+        "204":
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - folder:write
+      tags:
+      - folder
+  /v1/folders:
+    post:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Creates a folder in either the top level of a Canva user's
+        [projects](https://www.canva.com/help/find-designs-and-folders/) (using the ID `root`), or
+        another folder (using the parent folder's ID). When a folder is successfully created, the
+        endpoint returns its folder ID, along with other information.
+      operationId: createFolder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFolderRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFolderResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - folder:write
+      tags:
+      - folder
+  /v1/oauth/token:
+    post:
+      description: |-
+        This endpoint implements the OAuth 2.0 `token` endpoint, as part of the Authorization Code flow with Proof Key for Code Exchange (PKCE). For more information, see [Authentication](https://www.canva.dev/docs/connect/authentication/).
+
+        To generate an access token, you must provide one of the following:
+
+        - An authorization code
+        - A refresh token
+
+        Generating a token using either an authorization code or a refresh token allows your integration to act on behalf of a user. You must first [obtain user authorization and get an authorization code](https://www.canva.dev/docs/connect/authentication/#obtain-user-authorization).
+
+        Access tokens may be up to 4 KB in size, and are only valid for a specified period of time. The expiry time (currently 4 hours) is shown in the endpoint response and is subject to change.
+
+        **Endpoint authentication**
+
+        Requests to this endpoint require authentication with your client ID and client secret, using _one_ of the following methods:
+
+        - **Basic access authentication** (Recommended): For [basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication), the `{credentials}` string must be a Base64 encoded value of `{client id}:{client secret}`.
+        - **Body parameters**: Provide your integration's credentials using the `client_id` and `client_secret` body parameters.
+
+        **Generate an access token using an authorization code**
+
+        To generate an access token with an authorization code, you must:
+
+        - Set `grant_type` to `authorization_code`.
+        - Provide the `code_verifier` value that you generated when creating the user authorization URL.
+        - Provide the authorization code you received after the user authorized the integration.
+
+        **Generate an access token using a refresh token**
+
+        Using the `refresh_token` value from a previous user token request, you can get a new access token with the same or smaller scope as the previous one, but with a refreshed expiry time. You will also receive a new refresh token that you can use to refresh the access token again.
+
+        To refresh an existing access token, you must:
+
+        - Set `grant_type` to `refresh_token`.
+        - Provide the `refresh_token` from a previous token request.
+      operationId: exchangeAccessToken
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExchangeAccessTokenRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExchangeAccessTokenResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OauthError'
+          description: Error Response
+      security:
+      - {}
+      - basicAuth: []
+      tags:
+      - oauth
+  /v1/oauth/introspect:
+    post:
+      description: |-
+        Introspect an access token to see whether it is valid and active. You can also verify some token properties, such as its claims, scopes, and validity times.
+
+        Requests to this endpoint require authentication with your client ID and client secret, using _one_ of the following methods:
+
+        - **Basic access authentication** (Recommended): For [basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication), the `{credentials}` string must be a Base64 encoded value of `{client id}:{client secret}`.
+        - **Body parameters**: Provide your integration's credentials using the `client_id` and `client_secret` body parameters.
+      operationId: introspectToken
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IntrospectTokenRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntrospectTokenResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OauthError'
+          description: Error Response
+      security:
+      - {}
+      - basicAuth: []
+      tags:
+      - oauth
+  /v1/oauth/revoke:
+    post:
+      description: |-
+        Revoke an access token or a refresh token.
+
+        If you revoke a _refresh token_, be aware that:
+
+        - The refresh token's lineage is also revoked. This means that access tokens created from that refresh token are also revoked.
+        - The user's consent for your integration is also revoked. This means that the user must go through the OAuth process again to use your integration.
+
+        Requests to this endpoint require authentication with your client ID and client secret, using _one_ of the following methods:
+
+        - **Basic access authentication** (Recommended): For [basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication), the `{credentials}` string must be a Base64 encoded value of `{client id}:{client secret}`.
+        - **Body parameters**: Provide your integration's credentials using the `client_id` and `client_secret` body parameters.
+      operationId: revokeTokens
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RevokeTokensRequest'
+        required: true
+      responses:
+        "204":
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OauthError'
+          description: Error Response
+      security:
+      - {}
+      - basicAuth: []
+      tags:
+      - oauth
+  /v1/users/me:
+    get:
+      description: |-
+        Returns the User ID, Team ID, and display name of the user
+        account associated with the provided access token.
+      operationId: usersMe
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersMeResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode: []
+      tags:
+      - user
+  /v1/users/me/profile:
+    get:
+      description: "Currently, this returns the display name of the user account associated\
+        \ with the provided access token. More user information is expected to be\
+        \ included in the future."
+      operationId: getUserProfile
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - profile:read
+      tags:
+      - user
+components:
+  examples:
+    UpdateFolderPermissionsUserInputExample:
+      description: "Example of an update folder permissions request, updating the\
+        \ permissions for a user."
+      summary: Update user permissions request
+      value:
+        role: EDITOR
+        type: user
+        user_id: auDAbliZ2rQNNOsUl5OLu
+        team_id: Oi2RJILTrKk0KRhRUZozX
+    UpdateFolderPermissionsGroupInputExample:
+      description: "Example of an update folder permissions request, updating the\
+        \ permissions for a group."
+      summary: Update group permissions request
+      value:
+        role: VIEW
+        type: group
+        group_id: dl9n9SoWoExMsw6Ri1iTg
+    UpdateFolderPermissionsTeamInputExample:
+      description: "Example of an update folder permissions request, updating the\
+        \ permissions for a team."
+      summary: Updating team permissions request
+      value:
+        role: NONE
+        type: team
+        team_id: Oi2RJILTrKk0KRhRUZozX
+    UpdateFolderPermissionsUserResponseExample:
+      description: Example of the response returned when updating folder permissions
+        for a user.
+      summary: Updated user permissions response
+      value:
+        folder_permission:
+          type: user
+          role: EDITOR
+          inherited: false
+          team_user:
+            user_id: auDAbliZ2rQNNOsUl5OLu
+            team_id: Oi2RJILTrKk0KRhRUZozX
+    UpdateFolderPermissionsGroupResponseExample:
+      description: Example of the response returned when updating folder permissions
+        for a group.
+      summary: Updated group permissions response
+      value:
+        role: VIEW
+        type: group
+        inherited: false
+        group:
+          id: dl9n9SoWoExMsw6Ri1iTg
+          external: false
+          display_name: Sales team
+    UpdateFolderPermissionsTeamResponseExample:
+      description: Example of the response returned when updating folder permissions
+        for a team.
+      summary: Updated team permissions response
+      value:
+        role: NONE
+        type: team
+        inherited: false
+        team:
+          id: Oi2RJILTrKk0KRhRUZozX
+          display_name: Acme Corporation
+          external: false
+  parameters:
+    brandTemplateId:
+      description: The brand template ID.
+      explode: false
+      in: path
+      name: brandTemplateId
+      required: true
+      schema:
+        pattern: "[a-zA-Z0-9_-]+"
+        type: string
+      style: simple
+    commentId:
+      description: The `id` of the comment.
+      example: KeAZEAjijEb
+      explode: false
+      in: path
+      name: commentId
+      required: true
+      schema:
+        pattern: "[a-zA-Z0-9_-]+"
+        type: string
+      style: simple
+    designId:
+      description: The design ID.
+      explode: false
+      in: path
+      name: designId
+      required: true
+      schema:
+        pattern: "[a-zA-Z0-9_-]+"
+        type: string
+      style: simple
+    exportId:
+      description: The export job ID.
+      explode: false
+      in: path
+      name: exportId
+      required: true
+      schema:
+        pattern: "[a-zA-Z0-9_-]+"
+        type: string
+      style: simple
+    folderIdParameter:
+      description: The folder ID.
+      example: FAF2lZtloor
+      explode: false
+      in: path
+      name: folderId
+      required: true
+      schema:
+        pattern: "[a-zA-Z0-9_-]{1,50}+"
+        type: string
+      style: simple
+  schemas:
+    GetAppJwksResponse:
+      properties:
+        keys:
+          description: |-
+            The value of the "keys" parameter is an array of JWK values. The order of keys has no
+            meaning.
+          items:
+            $ref: '#/components/schemas/JsonWebKey'
+          type: array
+      required:
+      - keys
+      type: object
+    JsonWebKey:
+      description: |-
+        Standard Json Web Key specification following https://www.rfc-editor.org/rfc/rfc7517 and
+        https://www.rfc-editor.org/rfc/rfc7518.html.
+      properties:
+        alg:
+          description: |-
+            The "alg" (algorithm) parameter identifies the algorithm intended for
+            use with the key.
+            See https://www.rfc-editor.org/rfc/rfc7517#section-4
+          type: string
+        kid:
+          description: |-
+            The "kid" (key ID) parameter is used to match a specific key.  This
+            is used, for instance, to choose among a set of keys within a JWK Set
+            during key rollover. When "kid" values are used within a JWK Set,
+            different keys within the JWK Set SHOULD use distinct "kid" values.
+            The "kid" value is a case-sensitive string.
+            See https://www.rfc-editor.org/rfc/rfc7517#section-4
+          type: string
+        kty:
+          description: |-
+            The "kty" (key type) parameter identifies the cryptographic algorithm
+            family used with the key, such as "RSA" or "EC". The "kty" value is a
+            case-sensitive string. At the moment, only "RSA" is supported.
+            See https://www.rfc-editor.org/rfc/rfc7517#section-4
+          type: string
+        "n":
+          description: |-
+            The "n" (modulus) parameter contains the modulus value for the RSA
+               public key.  It is represented as a Base64urlUInt-encoded value.
+            See https://www.rfc-editor.org/rfc/rfc7518.html#section-6.3
+          type: string
+        e:
+          description: |-
+            The "e" (exponent) parameter contains the exponent value for the RSA
+               public key.  It is represented as a Base64urlUInt-encoded value.
+            See https://www.rfc-editor.org/rfc/rfc7518.html#section-6.3
+          type: string
+        use:
+          description: |-
+            The "use" (public key use) parameter identifies the intended use of
+            the public key. The "use" parameter is employed to indicate whether
+            a public key is used for encrypting data or verifying the signature
+            on data. Values are commonly "sig" (signature) or "enc" (encryption).
+            See https://www.rfc-editor.org/rfc/rfc7517#section-4
+          type: string
+      required:
+      - e
+      - kid
+      - kty
+      - "n"
+      type: object
+    GetAssetResponse:
+      properties:
+        asset:
+          $ref: '#/components/schemas/Asset'
+      required:
+      - asset
+      type: object
+    UploadAssetResponse:
+      deprecated: true
+      properties:
+        asset:
+          $ref: '#/components/schemas/Asset'
+      required:
+      - asset
+      type: object
+    UpdateAssetRequest:
+      properties:
+        name:
+          description: |-
+            The name of the asset. This is shown in the Canva UI.
+            When this field is undefined, nothing is updated.
+            Maximum length 50 characters.
+          example: My Awesome Upload
+          maxLength: 50
+          type: string
+        tags:
+          description: |-
+            The replacement tags for the asset.
+            When this field is undefined, nothing is updated.
+            Maximum length 50 tags. Each tag
+            has a maximum length of 50 characters.
+          example:
+          - image
+          - holiday
+          - best day ever
+          items:
+            maxLength: 50
+            type: string
+          maxItems: 50
+          type: array
+      type: object
+    UpdateAssetResponse:
+      properties:
+        asset:
+          $ref: '#/components/schemas/Asset'
+      required:
+      - asset
+      type: object
+    UpdateAssetDeprecatedRequest:
+      properties:
+        name:
+          description: |-
+            The name of the asset. This is shown in the Canva UI.
+            When this field is undefined, nothing is updated.
+            Maximum length 50 characters.
+          example: My Awesome Upload
+          maxLength: 50
+          type: string
+        tags:
+          description: |-
+            The replacement tags for the asset.
+            When this field is undefined, nothing is updated.
+            Maximum length 50 tags. Each tag
+            has a maximum length of 50 characters.
+          example:
+          - image
+          - holiday
+          - best day ever
+          items:
+            maxLength: 50
+            type: string
+          maxItems: 50
+          type: array
+      type: object
+    Asset:
+      description: "The asset object, which contains metadata about the asset."
+      properties:
+        id:
+          description: The ID of the asset.
+          example: Msd59349ff
+          type: string
+        name:
+          description: The name of the asset.
+          example: My Awesome Upload
+          type: string
+        tags:
+          description: |-
+            The user-facing tags attached to the asset.
+            Users can add these tags to their uploaded assets, and they can search their uploaded
+            assets in the Canva UI by searching for these tags. For information on how users use
+            tags, see the
+            [Canva Help Center page on asset tags](https://www.canva.com/help/add-edit-tags/).
+          example:
+          - image
+          - holiday
+          - best day ever
+          items:
+            type: string
+          type: array
+        import_status:
+          $ref: '#/components/schemas/ImportStatus'
+        created_at:
+          description: |-
+            When the asset was added to Canva, as a Unix timestamp (in seconds since the Unix
+            Epoch).
+          example: 1377396000
+          format: int64
+          type: integer
+        updated_at:
+          description: |-
+            When the asset was last updated in Canva, as a Unix timestamp (in seconds since the
+            Unix Epoch).
+          example: 1692928800
+          format: int64
+          type: integer
+        thumbnail:
+          $ref: '#/components/schemas/Thumbnail'
+      required:
+      - created_at
+      - id
+      - name
+      - tags
+      - updated_at
+      type: object
+    ImportStatus:
+      deprecated: true
+      description: The import status of the asset.
+      properties:
+        state:
+          $ref: '#/components/schemas/ImportStatusState'
+        error:
+          $ref: '#/components/schemas/ImportError'
+      required:
+      - state
+      type: object
+    ImportStatusState:
+      deprecated: true
+      description: State of the import job for an uploaded asset.
+      enum:
+      - FAILED
+      - IN_PROGRESS
+      - SUCCESS
+      example: SUCCESS
+      type: string
+    ImportError:
+      deprecated: true
+      description: "If the import fails, this object provides details about the error."
+      properties:
+        code:
+          $ref: '#/components/schemas/ImportErrorCode'
+        message:
+          description: A human-readable description of what went wrong.
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    ImportErrorCode:
+      deprecated: true
+      description: |
+        A short string indicating why the upload failed. This field can be used to handle errors programmatically.
+      enum:
+      - FILE_TOO_BIG
+      - IMPORT_FAILED
+      type: string
+    UploadMetadata:
+      deprecated: true
+      description: Metadata about the asset that you include as a header parameter
+        when uploading an asset.
+      properties:
+        name:
+          description: The name of the asset. The maximum length of this property
+            is 50 characters.
+          example: My Awesome Upload
+          maxLength: 50
+          minLength: 1
+          type: string
+        parent_folder_id:
+          description: The ID of the parent folder where the asset will be uploaded.
+          example: FG5IFBpY3M
+          maxLength: 50
+          minLength: 1
+          type: string
+        tags:
+          description: "The user-facing tags attached to the asset. Users can also\
+            \ add these tags to their uploaded assets, and they can search their uploaded\
+            \ assets in the Canva UI by searching for these tags. For information\
+            \ on how users use tags, see the [Canva Help Center page on asset tags](https://www.canva.com/help/add-edit-tags/).\
+            \ Maximum length 50 tags. Each tag has a maximum length of 50 characters."
+          example:
+          - go to market
+          - holiday
+          - adventure
+          items:
+            type: string
+          maxItems: 50
+          type: array
+      required:
+      - name
+      - parent_folder_id
+      type: object
+    CreateAssetUploadJobResponse:
+      properties:
+        job:
+          $ref: '#/components/schemas/AssetUploadJob'
+      required:
+      - job
+      type: object
+    GetAssetUploadJobResponse:
+      properties:
+        job:
+          $ref: '#/components/schemas/AssetUploadJob'
+      required:
+      - job
+      type: object
+    AssetUploadJob:
+      description: The status of the asset upload job.
+      example:
+        id: Msd59349ff
+        status: SUCCESS
+        asset:
+          id: Msd59349ff
+          name: My Awesome Upload
+          tags:
+          - image
+          - holiday
+          - best day ever
+          created_at: 1377396000
+          updated_at: 1692928800
+          thumbnail:
+            width: 595
+            height: 335
+            url: https://document-export.canva.com/Vczz9/zF9vzVtdADc/2/thumbnail/0001.png?<query-string>
+      properties:
+        id:
+          description: The ID of the asset upload job.
+          example: Msd59349ff
+          type: string
+        status:
+          $ref: '#/components/schemas/AssetUploadStatus'
+        error:
+          $ref: '#/components/schemas/AssetUploadError'
+        asset:
+          $ref: '#/components/schemas/Asset'
+      required:
+      - id
+      - status
+      type: object
+    AssetUploadStatus:
+      description: Status of the asset upload job.
+      enum:
+      - FAILED
+      - IN_PROGRESS
+      - SUCCESS
+      example: SUCCESS
+      type: string
+    AssetUploadError:
+      description: "If the upload fails, this object provides details about the error."
+      properties:
+        code:
+          $ref: '#/components/schemas/AssetUploadErrorCode'
+        message:
+          description: A human-readable description of what went wrong.
+          example: Failed to import because the file is too big.
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    AssetUploadErrorCode:
+      description: |-
+        A short string indicating why the upload failed. This field can be used to handle errors
+        programmatically.
+      enum:
+      - FILE_TOO_BIG
+      - IMPORT_FAILED
+      example: FILE_TOO_BIG
+      type: string
+    AssetUploadMetadata:
+      description: Metadata for the asset being uploaded.
+      properties:
+        name_base64:
+          description: |-
+            The asset's name, encoded in Base64.
+
+            The maximum length of an asset name in Canva (unencoded) is 50 characters.
+
+            Base64 encoding allows names containing emojis and other special
+            characters to be sent using HTTP headers.
+            For example, "My Awesome Upload 🚀" Base64 encoded
+            is `TXkgQXdlc29tZSBVcGxvYWQg8J+agA==`.
+          example: TXkgQXdlc29tZSBVcGxvYWQg8J+agA==
+          minLength: 1
+          type: string
+      required:
+      - name_base64
+      type: object
+    CreateDesignAutofillJobRequest:
+      properties:
+        brand_template_id:
+          description: ID of the input brand template.
+          example: DAFVztcvd9z
+          type: string
+        title:
+          description: |-
+            Title to use for the autofilled design. Must be less than 256 characters.
+
+            If no design title is provided, the autofilled design will have the same title as the brand template.
+          maxLength: 255
+          minLength: 1
+          type: string
+        preview:
+          deprecated: true
+          description: |-
+            This property is no longer used and will soon be removed.
+
+            This property is `false` by default.
+          example: false
+          type: boolean
+        data:
+          additionalProperties:
+            $ref: '#/components/schemas/DatasetValue'
+          description: Data object containing the data fields and values to autofill.
+          example:
+            cute_pet_image_of_the_day:
+              type: IMAGE
+              asset_id: Msd59349ff
+            cute_pet_witty_pet_says:
+              type: TEXT
+              text: It was like this when I got here!
+          type: object
+      required:
+      - brand_template_id
+      - data
+      type: object
+    CreateDesignAutofillJobResponse:
+      properties:
+        job:
+          $ref: '#/components/schemas/DesignAutofillJob'
+      required:
+      - job
+      type: object
+    DatasetValue:
+      description: The data field to autofill.
+      discriminator:
+        mapping:
+          IMAGE: '#/components/schemas/DatasetImageValue'
+          TEXT: '#/components/schemas/DatasetTextValue'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/DatasetImageValue'
+      - $ref: '#/components/schemas/DatasetTextValue'
+      type: object
+    Dataset:
+      additionalProperties:
+        $ref: '#/components/schemas/DatasetValue'
+      description: Data object containing the data fields and values to autofill.
+      example:
+        cute_pet_image_of_the_day:
+          type: IMAGE
+          asset_id: Msd59349ff
+        cute_pet_witty_pet_says:
+          type: TEXT
+          text: It was like this when I got here!
+      type: object
+    DatasetImageValue:
+      description: If the data field is an image field.
+      properties:
+        type:
+          enum:
+          - IMAGE
+          type: string
+        asset_id:
+          description: '`asset_id` of the image to insert into the template element.'
+          example: Msd59349ff
+          type: string
+      required:
+      - asset_id
+      - type
+      type: object
+    DatasetTextValue:
+      description: If the data field is a text field.
+      properties:
+        type:
+          enum:
+          - TEXT
+          type: string
+        text:
+          description: Text to insert into the template element.
+          example: It was like this when I got here!
+          type: string
+      required:
+      - text
+      - type
+      type: object
+    GetDesignAutofillJobResponse:
+      properties:
+        job:
+          $ref: '#/components/schemas/DesignAutofillJob'
+      required:
+      - job
+      type: object
+    DesignAutofillJob:
+      description: Details about the autofill job.
+      properties:
+        id:
+          description: ID of the asynchronous job that is creating the design using
+            the provided data.
+          example: 450a76e7-f96f-43ae-9c37-0e1ce492ac72
+          type: string
+        status:
+          $ref: '#/components/schemas/DesignAutofillStatus'
+        result:
+          $ref: '#/components/schemas/DesignAutofillJobResult'
+        error:
+          $ref: '#/components/schemas/AutofillError'
+      required:
+      - id
+      - status
+      type: object
+    DesignAutofillJobResult:
+      description: Result of the design autofill job. Only present if job status is
+        `SUCCESS`.
+      discriminator:
+        mapping:
+          CREATE_DESIGN: '#/components/schemas/CreateDesignAutofillJobResult'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/CreateDesignAutofillJobResult'
+      type: object
+    CreateDesignAutofillJobResult:
+      description: Design has been created and saved to user's root folder.
+      properties:
+        type:
+          enum:
+          - CREATE_DESIGN
+          type: string
+        design:
+          $ref: '#/components/schemas/DesignSummary'
+      required:
+      - design
+      - type
+      type: object
+    DesignAutofillStatus:
+      description: Status of the design autofill job.
+      enum:
+      - IN_PROGRESS
+      - SUCCESS
+      - FAILED
+      example: SUCCESS
+      type: string
+    AutofillErrorCode:
+      enum:
+      - AUTOFILL_ERROR
+      - THUMBNAIL_GENERATION_ERROR
+      - CREATE_DESIGN_ERROR
+      type: string
+    AutofillError:
+      description: "If the autofill job fails, this object provides details about\
+        \ the error."
+      properties:
+        code:
+          $ref: '#/components/schemas/AutofillErrorCode'
+        message:
+          description: A human-readable description of what went wrong.
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    ListBrandTemplatesResponse:
+      properties:
+        continuation:
+          description: |-
+            If the success response contains a continuation token, the user has access to more
+            brand templates you can list. You can use this token as a query parameter and retrieve
+            more templates from the list, for example
+            `/v1/brand-templates?continuation={continuation}`.
+            To retrieve all the brand templates available to the user, you might need to make
+            multiple requests.
+          example: RkFGMgXlsVTDbMd:MR3L0QjiaUzycIAjx0yMyuNiV0OildoiOwL0x32G4NjNu4FwtAQNxowUQNMMYN
+          type: string
+        items:
+          description: The list of brand templates.
+          items:
+            $ref: '#/components/schemas/BrandTemplate'
+          type: array
+      required:
+      - items
+      type: object
+    GetBrandTemplateResponse:
+      description: Successful response from a `getBrandTemplate` request.
+      properties:
+        brand_template:
+          $ref: '#/components/schemas/BrandTemplate'
+      required:
+      - brand_template
+      type: object
+    BrandTemplate:
+      description: An object representing a brand template with associated metadata.
+      properties:
+        id:
+          description: The brand template ID.
+          example: DEMzWSwy3BI
+          type: string
+        title:
+          description: "The brand template title, as shown in the Canva UI."
+          example: Advertisement Template
+          type: string
+        view_url:
+          description: A URL Canva users can visit to view the brand template.
+          example: https://www.canva.com/design/DAE35hE8FA4/view
+          type: string
+        create_url:
+          description: A URL Canva users can visit to create a new design from the
+            template.
+          example: https://www.canva.com/templates/DADao7wZnAA/remix
+          type: string
+        thumbnail:
+          $ref: '#/components/schemas/Thumbnail'
+      required:
+      - create_url
+      - id
+      - title
+      - view_url
+      type: object
+    GetBrandTemplateDatasetResponse:
+      description: Successful response from a `getBrandTemplateDataset` request.
+      properties:
+        dataset:
+          additionalProperties:
+            $ref: '#/components/schemas/DataField'
+          description: |-
+            The dataset definition for the brand template. The dataset definition contains the data inputs available for use with the
+            [Create design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
+          example:
+            cute_pet_image_of_the_day:
+              type: IMAGE
+            cute_pet_witty_pet_says:
+              type: TEXT
+          type: object
+      type: object
+    DatasetDefinition:
+      additionalProperties:
+        $ref: '#/components/schemas/DataField'
+      description: |-
+        The dataset definition for the brand template. The dataset definition contains the data inputs available for use with the
+        [Create design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
+      example:
+        cute_pet_image_of_the_day:
+          type: IMAGE
+        cute_pet_witty_pet_says:
+          type: TEXT
+      type: object
+    DataField:
+      description: A named data field that can be autofilled in the brand template.
+      discriminator:
+        mapping:
+          IMAGE: '#/components/schemas/ImageDataField'
+          TEXT: '#/components/schemas/TextDataField'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/ImageDataField'
+      - $ref: '#/components/schemas/TextDataField'
+      type: object
+    ImageDataField:
+      description: An image for a brand template. You can autofill the brand template
+        with an image by providing its `asset_id`.
+      properties:
+        type:
+          enum:
+          - IMAGE
+          type: string
+      required:
+      - type
+      type: object
+    TextDataField:
+      description: Some text for a brand template. You can autofill the brand template
+        with this value.
+      properties:
+        type:
+          enum:
+          - TEXT
+          type: string
+      required:
+      - type
+      type: object
+    CreateCommentRequest:
+      properties:
+        attached_to:
+          $ref: '#/components/schemas/CommentObjectInput'
+        message:
+          description: |-
+            The comment message. This is the comment body shown in the Canva UI.
+
+            You can also mention users in your message by specifying their User ID and Team ID
+            using the format `[user_id:team_id]`. If the `assignee_id` parameter is specified, you
+            must mention the assignee in the message.
+          example: "Great work [UAFZjbdfojE:BABdhiebEoe]!"
+          type: string
+        assignee_id:
+          description: |-
+            Lets you assign the comment to a Canva user using their User ID. You _must_ mention the
+            assigned user in the `message`.
+          example: UAFZjbdfojE
+          type: string
+      required:
+      - attached_to
+      - message
+      type: object
+    CreateReplyRequest:
+      properties:
+        attached_to:
+          $ref: '#/components/schemas/CommentObjectInput'
+        message:
+          description: |-
+            The reply comment message. This is the reply comment body shown in the Canva UI.
+
+            You can also mention users in your message by specifying their User ID and Team ID
+            using the format `[user_id:team_id]`.
+          example: Thanks!
+          type: string
+      required:
+      - attached_to
+      - message
+      type: object
+    CreateCommentResponse:
+      properties:
+        comment:
+          $ref: '#/components/schemas/ParentComment'
+      required:
+      - comment
+      type: object
+    CreateReplyResponse:
+      properties:
+        comment:
+          $ref: '#/components/schemas/ReplyComment'
+      required:
+      - comment
+      type: object
+    GetCommentResponse:
+      description: Successful response from a `getComment` request.
+      properties:
+        comment:
+          $ref: '#/components/schemas/Comment'
+      required:
+      - comment
+      type: object
+    Comment:
+      description: "The comment object, which contains metadata about the comment."
+      discriminator:
+        mapping:
+          PARENT: '#/components/schemas/ParentComment'
+          REPLY: '#/components/schemas/ReplyComment'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/ParentComment'
+      - $ref: '#/components/schemas/ReplyComment'
+      type: object
+    ParentComment:
+      description: |-
+        Data about the comment, including the message, author, and
+        the object (such as a design) the comment is attached to.
+      properties:
+        type:
+          enum:
+          - PARENT
+          type: string
+        id:
+          description: |-
+            The ID of the comment.
+
+            You can use this ID to create replies to the comment using the [Create reply API](https://www.canva.dev/docs/connect/api-reference/comments/create-reply/).
+          example: KeAbiEAjZEj
+          type: string
+        attached_to:
+          $ref: '#/components/schemas/CommentObject'
+        message:
+          description: |-
+            The comment message. This is the comment body shown in the Canva UI.
+            User mentions are shown here in the format `[user_id:team_id]`.
+          example: "Great work [UAFZjbdfojE:BABdhiebEoe]!"
+          type: string
+        author:
+          $ref: '#/components/schemas/User'
+        created_at:
+          description: |-
+            When the comment or reply was created, as a Unix timestamp
+            (in seconds since the Unix Epoch).
+          example: 1692928800
+          format: int64
+          type: integer
+        updated_at:
+          description: |-
+            When the comment or reply was last updated, as a Unix timestamp
+            (in seconds since the Unix Epoch).
+          example: 1692928900
+          format: int64
+          type: integer
+        mentions:
+          additionalProperties:
+            $ref: '#/components/schemas/TeamUser'
+          description: The Canva users mentioned in the comment.
+          example:
+            oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP:
+              user_id: oUnPjZ2k2yuhftbWF7873o
+              team_id: oBpVhLW22VrqtwKgaayRbP
+              display_name: John Doe
+          type: object
+        assignee:
+          $ref: '#/components/schemas/User'
+        resolver:
+          $ref: '#/components/schemas/User'
+      required:
+      - author
+      - id
+      - mentions
+      - message
+      - type
+      type: object
+    ReplyComment:
+      description: |-
+        Data about the reply comment, including the message, author, and
+        the object (such as a design) the comment is attached to.
+      properties:
+        type:
+          enum:
+          - REPLY
+          type: string
+        id:
+          description: The ID of the comment.
+          example: KeAZEAjijEb
+          type: string
+        attached_to:
+          $ref: '#/components/schemas/CommentObject'
+        message:
+          description: |-
+            The comment message. This is the comment body shown in the Canva UI.
+            User mentions are shown here in the format `[user_id:team_id]`.
+          example: Thanks!
+          type: string
+        author:
+          $ref: '#/components/schemas/User'
+        created_at:
+          description: |-
+            When the comment or reply was created, as a Unix timestamp
+            (in seconds since the Unix Epoch).
+          example: 1692929800
+          format: int64
+          type: integer
+        updated_at:
+          description: |-
+            When the comment or reply was last updated, as a Unix timestamp
+            (in seconds since the Unix Epoch).
+          example: 1692929900
+          format: int64
+          type: integer
+        mentions:
+          additionalProperties:
+            $ref: '#/components/schemas/TeamUser'
+          description: The Canva users mentioned in the comment.
+          example:
+            oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP:
+              user_id: oUnPjZ2k2yuhftbWF7873o
+              team_id: oBpVhLW22VrqtwKgaayRbP
+              display_name: John Doe
+          type: object
+        thread_id:
+          description: |-
+            The ID of the comment thread this reply is in. This ID is the same as the `id` of the
+            parent comment.
+          example: KeAbiEAjZEj
+          type: string
+      required:
+      - author
+      - id
+      - mentions
+      - message
+      - thread_id
+      - type
+      type: object
+    CommentObject:
+      description: Identifying information about the object (such as a design) that
+        the comment is attached to.
+      discriminator:
+        mapping:
+          DESIGN: '#/components/schemas/DesignCommentObject'
+        propertyName: type
+      example:
+        design_id: DAFVztcvd9z
+        type: DESIGN
+      oneOf:
+      - $ref: '#/components/schemas/DesignCommentObject'
+      type: object
+    DesignCommentObject:
+      description: If the comment is attached to a Canva Design.
+      properties:
+        type:
+          enum:
+          - DESIGN
+          type: string
+        design_id:
+          description: The ID of the design this comment is attached to.
+          example: DAFVztcvd9z
+          type: string
+      required:
+      - design_id
+      - type
+      type: object
+    CommentObjectInput:
+      description: |-
+        An object containing identifying information for the design or other object you want to
+        attach the comment to.
+      discriminator:
+        mapping:
+          DESIGN: '#/components/schemas/DesignCommentObjectInput'
+        propertyName: type
+      example:
+        design_id: DAFVztcvd9z
+        type: DESIGN
+      oneOf:
+      - $ref: '#/components/schemas/DesignCommentObjectInput'
+      type: object
+    DesignCommentObjectInput:
+      description: If the comment is attached to a Canva Design.
+      properties:
+        type:
+          enum:
+          - DESIGN
+          type: string
+        design_id:
+          description: The ID of the design you want to attach this comment to.
+          example: DAFVztcvd9z
+          type: string
+      required:
+      - design_id
+      - type
+      type: object
+    CommentEvent:
+      description: Basic details about the comment.
+      properties:
+        type:
+          $ref: '#/components/schemas/CommentEventType'
+        data:
+          $ref: '#/components/schemas/Comment'
+      required:
+      - data
+      - type
+      type: object
+    Mentions:
+      additionalProperties:
+        $ref: '#/components/schemas/TeamUser'
+      description: The Canva users mentioned in the comment.
+      example:
+        oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP:
+          user_id: oUnPjZ2k2yuhftbWF7873o
+          team_id: oBpVhLW22VrqtwKgaayRbP
+          display_name: John Doe
+      type: object
+    CommentEventType:
+      description: The type of comment event.
+      enum:
+      - COMMENT
+      - REPLY
+      - MENTION
+      - ASSIGN
+      - RESOLVE
+      type: string
+    GetSigningPublicKeysResponse:
+      properties:
+        keys:
+          description: |-
+            A Json Web Key Set (JWKS) with public keys used for signing webhooks. You can use this JWKS
+            to verify that a webhook was sent from Canva.
+          example:
+          - kid: a418dc7d-ecc5-5c4b-85ce-e1104a8addbe
+            kty: OKP
+            crv: Ed25519
+            x: aIQtqd0nDfB-ug0DrzZbwTum-1ITdXvKxGFak_1VB2j
+          - kid: c8de5bec1-1b88-4ddaae04acc-ce415-5d7
+            kty: OKP
+            crv: Ed25519
+            x: m2d1FT-gfBXxIzKwdQVTra0D-aBq_ubZ1jI0GuvkDtn
+          items:
+            $ref: '#/components/schemas/EdDsaJwk'
+          type: array
+      required:
+      - keys
+      type: object
+    EdDsaJwk:
+      description: |-
+        A JSON Web Key Set (JWKS) using the Edwards-curve Digital Signature Algorithm (EdDSA), as
+        described in [RFC-8037](https://www.rfc-editor.org/rfc/rfc8037.html#appendix-A).
+      properties:
+        kid:
+          description: |-
+            The `kid` (key ID) is a unique identifier for a public key. When the keys used
+            to sign webhooks are rotated, you can use this ID to select the correct key
+            within a JWK Set during the key rollover. The `kid` value is case-sensitive.
+          type: string
+        kty:
+          description: |-
+            The `kty` (key type) identifies the cryptographic algorithm family used with
+            the key, such as "RSA" or "EC". Only Octet Key Pairs
+            (`OKPs`) are supported.
+            The `kty` value is case-sensitive. For more information on the `kty` property
+            and OKPs, see [RFC-8037 — "kty" (Key Type)
+            Parameter](https://www.rfc-editor.org/rfc/rfc8037.html#section-2).
+          type: string
+        crv:
+          description: |-
+            The `crv` (curve) property identifies the curve used for elliptical curve
+            encryptions. Only "Ed25519" is supported. For more information on the `crv`
+            property, see [RFC-8037 — Key Type
+            "OKP"](https://www.rfc-editor.org/rfc/rfc8037.html#section-2).
+          type: string
+        x:
+          description: |-
+            The `x` property is the public key of an elliptical curve encryption. The key
+            is Base64urlUInt-encoded. For more information on the `x` property, see
+            [RFC-8037 — "x" (X Coordinate)
+            Parameter](https://www.rfc-editor.org/rfc/rfc8037#section-2).
+          type: string
+      required:
+      - crv
+      - kid
+      - kty
+      - x
+      type: object
+    GetListDesignResponse:
+      properties:
+        continuation:
+          description: |-
+            A continuation token.
+            If the success response contains a continuation token, the list contains more designs
+            you can list. You can use this token as a query parameter and retrieve more
+            designs from the list, for example
+            `/v1/designs?continuation={continuation}`.
+
+            To retrieve all of a user's designs, you might need to make multiple requests.
+          example: RkFGMgXlsVTDbMd:MR3L0QjiaUzycIAjx0yMyuNiV0OildoiOwL0x32G4NjNu4FwtAQNxowUQNMMYN
+          type: string
+        items:
+          description: The list of designs.
+          items:
+            $ref: '#/components/schemas/Design'
+          type: array
+      required:
+      - items
+      type: object
+    CreateDesignRequest:
+      description: |-
+        Body parameters for creating a new design.
+        At least one of `design_type` or `asset_id` must be defined
+        to create a new design.
+      properties:
+        design_type:
+          $ref: '#/components/schemas/DesignTypeInput'
+        asset_id:
+          description: The ID of an asset to insert into the created design.
+          example: Msd59349ff
+          type: string
+        title:
+          description: The name of the design. Must be less than 256 characters.
+          example: My Holiday Presentation
+          maxLength: 255
+          minLength: 1
+          type: string
+      type: object
+    CreateDesignResponse:
+      description: Details about the new design.
+      properties:
+        design:
+          $ref: '#/components/schemas/Design'
+      required:
+      - design
+      type: object
+    GetDesignResponse:
+      description: Successful response from a `getDesign` request.
+      properties:
+        design:
+          $ref: '#/components/schemas/Design'
+      required:
+      - design
+      type: object
+    Design:
+      description: "The design object, which contains metadata about the design."
+      properties:
+        id:
+          description: The design ID.
+          example: DAFVztcvd9z
+          type: string
+        title:
+          description: The design title.
+          example: My summer holiday
+          type: string
+        owner:
+          $ref: '#/components/schemas/TeamUserSummary'
+        thumbnail:
+          $ref: '#/components/schemas/Thumbnail'
+        urls:
+          $ref: '#/components/schemas/DesignLinks'
+      required:
+      - id
+      - owner
+      - urls
+      type: object
+    DesignLinks:
+      description: A temporary set of URLs for viewing or editing the design.
+      properties:
+        edit_url:
+          description: |-
+            A temporary editing URL for the design.
+
+            NOTE: This is not a permanent URL, it is only valid for 30 days.
+          example: "https://www.canva.com/api/design/{token}/edit"
+          type: string
+        view_url:
+          description: |
+            A temporary viewing URL for the design.
+
+            NOTE: This is not a permanent URL, it is only valid for 30 days.
+          example: "https://www.canva.com/api/design/{token}/view"
+          type: string
+      required:
+      - edit_url
+      - view_url
+      type: object
+    DesignSummary:
+      description: "Basic details about the design, such as the design's ID, title,\
+        \ and URL."
+      properties:
+        id:
+          description: The design ID.
+          example: DAFVztcvd9z
+          type: string
+        title:
+          description: The design title.
+          example: My summer holiday
+          type: string
+        url:
+          description: URL of the design.
+          example: https://www.canva.com/design/DAFVztcvd9z/edit
+          type: string
+        thumbnail:
+          $ref: '#/components/schemas/Thumbnail'
+      type: object
+    DesignImportMetadata:
+      description: Metadata about the design that you include as a header parameter
+        when importing a design.
+      properties:
+        title_base64:
+          description: |-
+            The design's title, encoded in Base64.
+
+            The maximum length of a design title in Canva (unencoded) is 50 characters.
+
+            Base64 encoding allows titles containing emojis and other special
+            characters to be sent using HTTP headers.
+            For example, "My Awesome Design 😍" Base64 encoded
+            is `TXkgQXdlc29tZSBEZXNpZ24g8J+YjQ==`.
+          example: TXkgQXdlc29tZSBEZXNpZ24g8J+YjQ==
+          minLength: 1
+          type: string
+      required:
+      - title_base64
+      type: object
+    CreateDesignImportJobResponse:
+      properties:
+        job_id:
+          description: The design import job ID.
+          example: f81b26fd-a33d-4c2d-9e8c-4a7aca798b17
+          type: string
+      required:
+      - job_id
+      type: object
+    DesignImportStatus:
+      description: The status of the design import.
+      properties:
+        state:
+          $ref: '#/components/schemas/DesignImportStatusState'
+        error:
+          $ref: '#/components/schemas/DesignImportError'
+      required:
+      - state
+      type: object
+    DesignImportStatusState:
+      description: State of the design import job.
+      enum:
+      - FAILED
+      - IMPORTING
+      - SUCCESS
+      example: SUCCESS
+      type: string
+    DesignImportError:
+      description: Information about why the import failed.
+      properties:
+        code:
+          $ref: '#/components/schemas/DesignImportErrorCode'
+        message:
+          description: A human-readable description of why the import failed.
+          example: "We're sorry, but the file upload quota has been exceeded. Please\
+            \ try again later."
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    DesignImportErrorCode:
+      description: |-
+        A short string about why the import failed. You can programmatically
+        handle errors using this field.
+      enum:
+      - DESIGN_CREATION_THROTTLED
+      - DESIGN_IMPORT_THROTTLED
+      - DUPLICATE_IMPORT
+      - INTERNAL_SERVER_ERROR
+      - INVALID_FILE
+      example: DESIGN_CREATION_THROTTLED
+      type: string
+    GetDesignImportJobResponse:
+      properties:
+        job_id:
+          description: The design import job ID.
+          example: f81b26fd-a33d-4c2d-9e8c-4a7aca798b17
+          type: string
+        status:
+          $ref: '#/components/schemas/DesignImportStatus'
+        designs:
+          description: |-
+            A list of designs imported from the external file. It usually contains one item.
+            Imports with a large number of pages or assets are split into multiple designs.
+          items:
+            $ref: '#/components/schemas/Design'
+          type: array
+      required:
+      - job_id
+      - status
+      type: object
+    DesignTypeInput:
+      description: The desired design type.
+      discriminator:
+        mapping:
+          PRESET: '#/components/schemas/PresetDesignTypeInput'
+          CUSTOM: '#/components/schemas/CustomDesignTypeInput'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/PresetDesignTypeInput'
+      - $ref: '#/components/schemas/CustomDesignTypeInput'
+      type: object
+    PresetDesignTypeInput:
+      description: Provide the common design type.
+      properties:
+        type:
+          enum:
+          - PRESET
+          type: string
+        name:
+          $ref: '#/components/schemas/PresetDesignTypeName'
+      required:
+      - name
+      - type
+      type: object
+    PresetDesignTypeName:
+      description: |-
+        The name of the design type. This can be one of the following:
+
+        - `DOC`: A [Canva doc](https://www.canva.com/docs/); a document for Canva's online text editor.
+        - `WHITEBOARD`: A [whiteboard](https://www.canva.com/online-whiteboard/); a design which gives you infinite space to collaborate.
+        - `PRESENTATION`: A [presentation](https://www.canva.com/presentations/); lets you create and collaborate for presenting to an audience.
+      enum:
+      - DOC
+      - WHITEBOARD
+      - PRESENTATION
+      type: string
+    CustomDesignTypeInput:
+      description: Provide the width and height to define a custom design type.
+      properties:
+        type:
+          enum:
+          - CUSTOM
+          type: string
+        width:
+          description: "The width of the design (in pixels). Minimum 40px, maximum\
+            \ 8000px."
+          example: 320
+          type: integer
+        height:
+          description: "The height of the design (in pixels). Minimum 40px, maximum\
+            \ 8000px."
+          example: 200
+          type: integer
+      required:
+      - height
+      - type
+      - width
+    Error:
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        message:
+          description: A human-readable description of what went wrong.
+          type: string
+      required:
+      - code
+      - message
+    OauthError:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorCode'
+        error_description:
+          description: A human-readable description of what went wrong.
+          type: string
+      required:
+      - error
+      - error_description
+    ErrorCode:
+      description: |
+        A short string indicating what failed. This field can be used to handle errors programmatically.
+      enum:
+      - INTERNAL_ERROR
+      - INVALID_FIELD
+      - INVALID_HEADER_VALUE
+      - PERMISSION_DENIED
+      - TOO_MANY_REQUESTS
+      - NOT_FOUND
+      - BAD_REQUEST_BODY
+      - BAD_HTTP_METHOD
+      - BAD_REQUEST_PARAMS
+      - BAD_QUERY_PARAMS
+      - ENDPOINT_NOT_FOUND
+      - UNSUPPORTED_VERSION
+      - INVALID_ACCESS_TOKEN
+      - REVOKED_ACCESS_TOKEN
+      - MISSING_FIELD
+      - MISSING_SCOPE
+      - invalid_grant
+      - invalid_request
+      - invalid_client
+      - unauthorized_client
+      - unsupported_grant_type
+      - invalid_scope
+      - INVALID_BASIC_HEADER
+      - INVALID_FILE_FORMAT
+      - QUOTA_EXCEEDED
+      - UNSUPPORTED_CONTENT_TYPE
+      - REQUEST_TOO_LARGE
+      - FOLDER_NOT_FOUND
+      - ASSET_NOT_FOUND
+      - MAX_LIMIT_REACHED
+      - PERMISSION_NOT_FOUND
+      - PERMISSION_EXISTS
+      - UNAUTHORIZED_USER
+      - USER_NOT_FOUND
+      - GROUP_NOT_FOUND
+      - APP_NOT_FOUND
+      - CONTENT_NOT_FOUND
+      - DOCTYPE_NOT_FOUND
+      - DESIGN_NOT_FOUND
+      - DESIGN_TYPE_NOT_FOUND
+      - TEAM_NOT_FOUND
+      - COMMENT_NOT_FOUND
+      - TOO_MANY_COMMENTS
+      - TOO_MANY_REPLIES
+      - MESSAGE_TOO_LONG
+      - DESIGN_NOT_FILLABLE
+      - AUTOFILL_DATA_INVALID
+      - FEATURE_NOT_AVAILABLE
+      - LICENSE_REQUIRED
+      type: string
+    CreateDesignExportJobRequest:
+      description: |-
+        Body parameters for starting an export job for a design.
+        It must include a design ID, and one of the supported export formats.
+      example:
+        design_id: DAVZr1z5464
+        format:
+          type: PDF
+          size: A4
+          pages:
+          - 2
+          - 3
+          - 4
+      properties:
+        design_id:
+          description: The design ID.
+          type: string
+        format:
+          $ref: '#/components/schemas/ExportFormat'
+      required:
+      - design_id
+      - format
+      type: object
+    ExportFormat:
+      description: Details about the desired export format.
+      discriminator:
+        mapping:
+          PDF: '#/components/schemas/PdfExportFormat'
+          JPG: '#/components/schemas/JpgExportFormat'
+          PNG: '#/components/schemas/PngExportFormat'
+          PPTX: '#/components/schemas/PptxExportFormat'
+          GIF: '#/components/schemas/GifExportFormat'
+          MP4: '#/components/schemas/Mp4ExportFormat'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/PdfExportFormat'
+      - $ref: '#/components/schemas/JpgExportFormat'
+      - $ref: '#/components/schemas/PngExportFormat'
+      - $ref: '#/components/schemas/PptxExportFormat'
+      - $ref: '#/components/schemas/GifExportFormat'
+      - $ref: '#/components/schemas/Mp4ExportFormat'
+      type: object
+    PdfExportFormat:
+      description: Export the design as a PDF. Providing a paper size is optional.
+        The default paper size is A4.
+      properties:
+        type:
+          enum:
+          - PDF
+          type: string
+        export_quality:
+          $ref: '#/components/schemas/ExportQuality'
+        size:
+          $ref: '#/components/schemas/ExportPageSize'
+        pages:
+          description: |-
+            To specify which pages to export in a multi-page design, provide the page numbers as
+            an array. The first page in a design is page `1`.
+            If `pages` isn't specified, all the pages are exported.
+          example:
+          - 2
+          - 3
+          - 4
+          items:
+            minimum: 1
+            type: integer
+          type: array
+      required:
+      - type
+      type: object
+    GifExportFormat:
+      description: |-
+        Export the design as a GIF. Height or width (or both) may be specified, otherwise the file
+        will be exported at it's default size. Large designs will be scaled down, and aspect ratio
+        will always be maintained.
+      properties:
+        type:
+          enum:
+          - GIF
+          type: string
+        export_quality:
+          $ref: '#/components/schemas/ExportQuality'
+        height:
+          description: |-
+            Specify the height in pixels of the exported image. If only one of height or width is
+            specified, then the image will be scaled to match that dimension, respecting the design's
+            aspect ratio. If no width or height is specified, the image will be exported using the
+            dimensions of the design.
+          example: 400
+          format: int32
+          maximum: 25000
+          minimum: 40
+          type: integer
+        width:
+          description: |-
+            Specify the width in pixels of the exported image. If only one of height or width is
+            specified, then the image will be scaled to match that dimension, respecting the design's
+            aspect ratio. If no width or height is specified, the image will be exported using the
+            dimensions of the design.
+          example: 400
+          format: int32
+          maximum: 25000
+          minimum: 40
+          type: integer
+        pages:
+          description: |-
+            To specify which pages to export in a multi-page design, provide the page numbers as
+            an array. The first page in a design is page `1`.
+            If `pages` isn't specified, all the pages are exported.
+          example:
+          - 2
+          - 3
+          - 4
+          items:
+            minimum: 1
+            type: integer
+          type: array
+      required:
+      - type
+      type: object
+    JpgExportFormat:
+      description: |-
+        Export the design as a JPG. Compression quality must be provided. Height or width (or both)
+        may be specified, otherwise the file will be exported at it's default size.
+      properties:
+        type:
+          enum:
+          - JPG
+          type: string
+        export_quality:
+          $ref: '#/components/schemas/ExportQuality'
+        quality:
+          description: "For the `JPG` type, the `quality` of the exported JPEG determines\
+            \ how compressed the exported file should be. A _low_ `quality` value\
+            \ (minimum `1`) will create a file with a smaller file size, but the resulting\
+            \ file will have pixelated artifacts when compared to a file created with\
+            \ a _high_ `quality` value (maximum `100`)."
+          example: 80
+          maximum: 100
+          minimum: 1
+          type: integer
+        height:
+          description: |-
+            Specify the height in pixels of the exported image. If only one of height or width is
+            specified, then the image will be scaled to match that dimension, respecting the design's
+            aspect ratio. If no width or height is specified, the image will be exported using the
+            dimensions of the design.
+          example: 400
+          format: int32
+          maximum: 25000
+          minimum: 40
+          type: integer
+        width:
+          description: |-
+            Specify the width in pixels of the exported image. If only one of height or width is
+            specified, then the image will be scaled to match that dimension, respecting the design's
+            aspect ratio. If no width or height is specified, the image will be exported using the
+            dimensions of the design.
+          example: 400
+          format: int32
+          maximum: 25000
+          minimum: 40
+          type: integer
+        pages:
+          description: |-
+            To specify which pages to export in a multi-page design, provide the page numbers as
+            an array. The first page in a design is page `1`.
+            If `pages` isn't specified, all the pages are exported.
+          example:
+          - 2
+          - 3
+          - 4
+          items:
+            minimum: 1
+            type: integer
+          type: array
+      required:
+      - quality
+      - type
+      type: object
+    PngExportFormat:
+      description: |-
+        Export the design as a PNG. Height or width (or both) may be specified, otherwise
+        the file will be exported at it's default size. You may also specify whether to export the
+        file losslessly, and whether to export a multi-page design as a single image.
+      properties:
+        type:
+          enum:
+          - PNG
+          type: string
+        export_quality:
+          $ref: '#/components/schemas/ExportQuality'
+        height:
+          description: |-
+            Specify the height in pixels of the exported image. If only one of height or width is
+            specified, then the image will be scaled to match that dimension, respecting the design's
+            aspect ratio. If no width or height is specified, the image will be exported using the
+            dimensions of the design.
+          example: 400
+          format: int32
+          maximum: 25000
+          minimum: 40
+          type: integer
+        width:
+          description: |-
+            Specify the width in pixels of the exported image. If only one of height or width is
+            specified, then the image will be scaled to match that dimension, respecting the design's
+            aspect ratio. If no width or height is specified, the image will be exported using the
+            dimensions of the design.
+          example: 400
+          format: int32
+          maximum: 25000
+          minimum: 40
+          type: integer
+        lossless:
+          default: false
+          description: |-
+            When `true`, the PNG is compressed with a lossless compression algorithm (`false` by
+            default).
+          type: boolean
+        as_single_image:
+          default: false
+          description: |-
+            When `true`, multi-page designs are merged into a single image.
+            When `false` (default), each page is exported as a separate image.
+          type: boolean
+        pages:
+          description: |-
+            To specify which pages to export in a multi-page design, provide the page numbers as
+            an array. The first page in a design is page `1`.
+            If `pages` isn't specified, all the pages are exported.
+          example:
+          - 2
+          - 3
+          - 4
+          items:
+            minimum: 1
+            type: integer
+          type: array
+      required:
+      - type
+      type: object
+    PptxExportFormat:
+      description: Export the design as a PPTX.
+      properties:
+        type:
+          enum:
+          - PPTX
+          type: string
+        pages:
+          description: |-
+            To specify which pages to export in a multi-page design, provide the page numbers as
+            an array. The first page in a design is page `1`.
+            If `pages` isn't specified, all the pages are exported.
+          example:
+          - 2
+          - 3
+          - 4
+          items:
+            minimum: 1
+            type: integer
+          type: array
+      required:
+      - type
+      type: object
+    Mp4ExportFormat:
+      description: Export the design as an MP4. You must specify the quality of the
+        exported video.
+      properties:
+        type:
+          enum:
+          - MP4
+          type: string
+        export_quality:
+          $ref: '#/components/schemas/ExportQuality'
+        quality:
+          $ref: '#/components/schemas/Mp4ExportQuality'
+        pages:
+          description: |-
+            To specify which pages to export in a multi-page design, provide the page numbers as
+            an array. The first page in a design is page `1`.
+            If `pages` isn't specified, all the pages are exported.
+          example:
+          - 2
+          - 3
+          - 4
+          items:
+            minimum: 1
+            type: integer
+          type: array
+      required:
+      - quality
+      - type
+      type: object
+    CreateDesignExportJobResponse:
+      example:
+        job:
+          id: 1332472403399775200
+          status: IN_PROGRESS
+      properties:
+        job:
+          $ref: '#/components/schemas/ExportJob'
+      required:
+      - job
+      type: object
+    GetDesignExportJobResponse:
+      example:
+        job:
+          id: 1332472403399775200
+          status: SUCCESS
+          urls:
+          - https://export-download.canva-dev.com/...
+      properties:
+        job:
+          $ref: '#/components/schemas/ExportJob'
+      required:
+      - job
+      type: object
+    ExportJob:
+      description: The status of the export job.
+      properties:
+        id:
+          description: The export job ID.
+          example: "1332472403399775200"
+          type: string
+        status:
+          $ref: '#/components/schemas/DesignExportStatus'
+        urls:
+          description: |-
+            When the export job is completed, also returns a list of urls for the exported
+            resources. The list is sorted by page order.
+          example:
+          - https://export-download.canva-dev.com/...
+          items:
+            type: string
+          type: array
+        error:
+          $ref: '#/components/schemas/ExportError'
+      required:
+      - id
+      - status
+      type: object
+    ExportPageSize:
+      description: The paper size of the export PDF file. The `size` attribute is
+        only supported for Documents (Canva Docs).
+      enum:
+      - A4
+      - A3
+      - LETTER
+      - LEGAL
+      example: A4
+      type: string
+    DesignExportStatus:
+      description: |-
+        The export status of the job. A newly created job will be `IN_PROGRESS` and will eventually
+        become `SUCCESS` or `FAILED`.
+      enum:
+      - FAILED
+      - IN_PROGRESS
+      - SUCCESS
+      type: string
+    ExportHeight:
+      description: |-
+        Specify the height in pixels of the exported image. If only one of height or width is
+        specified, then the image will be scaled to match that dimension, respecting the design's
+        aspect ratio. If no width or height is specified, the image will be exported using the
+        dimensions of the design.
+      example: 400
+      format: int32
+      maximum: 25000
+      minimum: 40
+      type: integer
+    ExportWidth:
+      description: |-
+        Specify the width in pixels of the exported image. If only one of height or width is
+        specified, then the image will be scaled to match that dimension, respecting the design's
+        aspect ratio. If no width or height is specified, the image will be exported using the
+        dimensions of the design.
+      example: 400
+      format: int32
+      maximum: 25000
+      minimum: 40
+      type: integer
+    Mp4ExportQuality:
+      description: |-
+        The orientation and resolution of the exported video. Orientation is either `HORIZONTAL` or
+        `VERTICAL`, and resolution is one of `480P`, `720P`, `1080P` or `4K`.
+      enum:
+      - HORIZONTAL_480P
+      - HORIZONTAL_720P
+      - HORIZONTAL_1080P
+      - HORIZONTAL_4K
+      - VERTICAL_480P
+      - VERTICAL_720P
+      - VERTICAL_1080P
+      - VERTICAL_4K
+      type: string
+    ExportError:
+      description: "If the export fails, this object provides details about the error."
+      properties:
+        code:
+          $ref: '#/components/schemas/ExportErrorCode'
+        message:
+          description: A human-readable description of what went wrong.
+          type: string
+      type: object
+    ExportErrorCode:
+      description: |-
+        If the export failed, this specifies the reason why it failed. This can be one of the following:
+
+        - `LICENSE_REQUIRED`: The design contains [premium elements](https://www.canva.com/help/premium-elements/) that haven't been purchased. You can either buy the elements or upgrade to a Canva plan (such as Canva Pro) that has premium features, then try again. Alternatively, you can set `export_quality` to `regular` to export your document in regular quality.
+        - `INTERNAL_FAILURE`: The service encountered an error when exporting your design.
+      enum:
+      - LICENSE_REQUIRED
+      - INTERNAL_FAILURE
+      type: string
+    ExportQuality:
+      default: REGULAR
+      description: |-
+        Specifies the export quality of the design. This can be one of the following:
+        - `REGULAR`: Regular quality export. This is the default.
+        - `PRO`: Premium quality export.
+
+          NOTE: A `PRO` export might fail if the design contains [premium elements](https://www.canva.com/help/premium-elements/) and the calling user either hasn't purchased the elements or isn't on a Canva plan (such as Canva Pro) that has premium features.
+      enum:
+      - PRO
+      - REGULAR
+      type: string
+    GetFolderResponse:
+      description: The folder ID.
+      properties:
+        folder:
+          $ref: '#/components/schemas/Folder'
+      required:
+      - folder
+      type: object
+    CreateFolderRequest:
+      description: Body parameters for creating a new folder.
+      properties:
+        name:
+          description: The name of the folder. Must be less than 256 characters.
+          example: My awesome holiday
+          maxLength: 255
+          minLength: 1
+          type: string
+        parent_folder_id:
+          description: |-
+            The folder ID of the parent folder. To create a new folder at the top level of a user's
+            [projects](https://www.canva.com/help/find-designs-and-folders/), use the ID `root`.
+          example: FAF2lZtloor
+          maxLength: 50
+          minLength: 1
+          type: string
+      required:
+      - name
+      - parent_folder_id
+      type: object
+    CreateFolderResponse:
+      description: Details about the new folder.
+      properties:
+        folder:
+          $ref: '#/components/schemas/Folder'
+      type: object
+    UpdateFolderRequest:
+      description: Body parameters for updating the folder's details.
+      properties:
+        name:
+          description: "The folder name, as shown in the Canva UI."
+          example: My awesome holiday
+          maxLength: 255
+          minLength: 1
+          type: string
+      required:
+      - name
+      type: object
+    UpdateFolderResponse:
+      description: Details about the updated folder.
+      properties:
+        folder:
+          $ref: '#/components/schemas/Folder'
+      type: object
+    ListFolderItemsResponse:
+      description: |-
+        A list of the items in a folder.
+        If the success response contains a continuation token, the folder contains more items
+        you can list. You can use this token as a query parameter and retrieve more
+        items from the list, for example
+        `/v1/folders/{folderId}/items?continuation={continuation}`.
+
+        To retrieve all the items in a folder, you might need to make multiple requests.
+      properties:
+        items:
+          description: An array of items in the folder.
+          items:
+            $ref: '#/components/schemas/FolderItemSummary'
+          type: array
+        continuation:
+          description: |-
+            If the success response contains a continuation token, the folder contains more items
+            you can list. You can use this token as a query parameter and retrieve more
+            items from the list, for example
+            `/v1/folders/{folderId}/items?continuation={continuation}`.
+
+            To retrieve all the items in a folder, you might need to make multiple requests.
+          example: RkFGMgXlsVTDbMd:MR3L0QjiaUzycIAjx0yMyuNiV0OildoiOwL0x32G4NjNu4FwtAQNxowUQNMMYN
+          type: string
+      required:
+      - items
+      type: object
+    FolderItemSummary:
+      description: Details about the folder item.
+      discriminator:
+        mapping:
+          ASSET: '#/components/schemas/AssetItem'
+          FOLDER: '#/components/schemas/FolderItem'
+          DESIGN: '#/components/schemas/DesignItem'
+          TEMPLATE: '#/components/schemas/TemplateItem'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/AssetItem'
+      - $ref: '#/components/schemas/FolderItem'
+      - $ref: '#/components/schemas/DesignItem'
+      - $ref: '#/components/schemas/TemplateItem'
+      type: object
+    AssetItem:
+      description: Details about the asset.
+      properties:
+        type:
+          enum:
+          - ASSET
+          type: string
+        asset:
+          $ref: '#/components/schemas/Asset'
+      required:
+      - asset
+      - type
+      type: object
+    FolderItem:
+      description: Details about the folder.
+      properties:
+        type:
+          enum:
+          - FOLDER
+          type: string
+        folder:
+          $ref: '#/components/schemas/Folder'
+      required:
+      - folder
+      - type
+      type: object
+    DesignItem:
+      description: Details about the design.
+      properties:
+        type:
+          enum:
+          - DESIGN
+          type: string
+        design:
+          $ref: '#/components/schemas/Design'
+      required:
+      - design
+      - type
+      type: object
+    TemplateItem:
+      description: Details about the template.
+      properties:
+        type:
+          enum:
+          - TEMPLATE
+          type: string
+        template:
+          $ref: '#/components/schemas/Template'
+      required:
+      - template
+      - type
+      type: object
+    MoveFolderItemRequest:
+      description: Body parameters for moving the folder.
+      properties:
+        from_folder_id:
+          description: |-
+            The ID of the folder that contains the item you want to move (the source folder).
+            If the item is in the top level of a Canva user's
+            [projects](https://www.canva.com/help/find-designs-and-folders/), use the ID `root`.
+          example: root
+          maxLength: 50
+          minLength: 1
+          type: string
+        to_folder_id:
+          description: |-
+            The ID of the folder you want to move the item to (the destination folder).
+            If you want to move the item to the top level of a Canva user's
+            [projects](https://www.canva.com/help/find-designs-and-folders/), use the ID `root`.
+          example: FAF2lZtloor
+          maxLength: 50
+          minLength: 1
+          type: string
+        item_id:
+          description: The ID of the item you want to move.
+          example: Msd59349ff
+          maxLength: 50
+          minLength: 1
+          type: string
+      required:
+      - from_folder_id
+      - item_id
+      - to_folder_id
+      type: object
+    Folder:
+      description: "The folder object, which contains metadata about the folder."
+      properties:
+        id:
+          description: The folder ID.
+          example: FAF2lZtloor
+          type: string
+        name:
+          description: The folder name.
+          example: My awesome holiday
+          type: string
+        created_at:
+          description: |-
+            When the folder was created, as a Unix timestamp (in seconds since the
+            Unix Epoch).
+          example: 1377396000
+          format: int64
+          type: integer
+        updated_at:
+          description: |-
+            When the folder was last updated, as a Unix timestamp (in seconds since the
+            Unix Epoch).
+          example: 1692928800
+          format: int64
+          type: integer
+        thumbnail:
+          $ref: '#/components/schemas/Thumbnail'
+      required:
+      - created_at
+      - id
+      - name
+      - updated_at
+      type: object
+    FolderSummary:
+      description: |-
+        This object contains some folder metadata. You can retrieve additional metadata
+        using the folder ID and the `/v1/folders/{folderId}` endpoint.
+      properties:
+        id:
+          description: The folder ID.
+          example: FAF2lZtloor
+          type: string
+        title:
+          description: "The folder name, as shown in the Canva UI."
+          example: My awesome holiday
+          type: string
+        url:
+          description: The folder URL.
+          example: https://www.canva.com/folder/FAF2lZtloor
+          type: string
+      type: object
+    Group:
+      description: |-
+        Metadata for the Canva Group, consisting of the Group ID,
+        display name, and whether it's an external Canva Group.
+      properties:
+        id:
+          description: The ID of the group with permissions to access the design.
+          example: dl9n9SoWoExMsw6Ri1iTg
+          type: string
+        display_name:
+          description: The display name of the group.
+          example: Sales team
+          type: string
+        external:
+          description: |-
+            Is the user making the API call (the authenticated user) and the Canva Group
+            from different Canva Teams?
+
+            - When `true`, the user and the group aren't in the same Canva Team.
+            - When `false`, the user and the group are in the same Canva Team.
+          type: boolean
+      required:
+      - external
+      - id
+      type: object
+    ExchangeAccessTokenRequest:
+      discriminator:
+        mapping:
+          authorization_code: '#/components/schemas/ExchangeAuthCodeRequest'
+          refresh_token: '#/components/schemas/ExchangeRefreshTokenRequest'
+        propertyName: grant_type
+      oneOf:
+      - $ref: '#/components/schemas/ExchangeAuthCodeRequest'
+      - $ref: '#/components/schemas/ExchangeRefreshTokenRequest'
+      type: object
+    ExchangeAuthCodeRequest:
+      properties:
+        grant_type:
+          description: For exchanging an authorization code for an access token.
+          enum:
+          - authorization_code
+          example: authorization_code
+          type: string
+        code_verifier:
+          description: The `code_verifier` value that you generated when creating
+            the user authorization URL.
+          example: i541qdcfkb4htnork0w92lnu43en99ls5a48ittv6udqgiflqon8vusojojakbq4
+          type: string
+        code:
+          description: The authorization code you received after the user authorized
+            the integration.
+          example: kp8nnroja7qnx00.opyc1p76rcbyflsxbycjqfp3ub8vzsvltpzwafy9q5l45dn5fxzhe7i7a6mg1i2t8jpsa6sebdeumkzzhicskabgevrxsssec4dvjwfvhq4gs3ugghguar0voiqpfb7axsapiojoter8v3w2s5s3st84jpv2l06h667iw241xngy9c8=vu1tnjp7sz
+          type: string
+        client_id:
+          description: |
+            Your integration's unique ID, for authenticating the request.
+
+            NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+          example: OC-FAB12-AbCdEf
+          type: string
+        client_secret:
+          description: |
+            Your integration's client secret, for authenticating the request. Begins with `cnvca`.
+
+            NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+          example: cnvcaAbcdefg12345_hijklm6789
+          type: string
+        redirect_uri:
+          description: |
+            Only required if a redirect URL was supplied when you [created the user authorization URL](https://www.canva.dev/docs/connect/authentication/#create-the-authorization-url).
+
+            Must be one of those already specified by the client. If not supplied, the first redirect_uri defined for the client will be used by default.
+          example: https://example.com/process-auth
+          type: string
+      required:
+      - code
+      - code_verifier
+      - grant_type
+      type: object
+    ExchangeRefreshTokenRequest:
+      properties:
+        grant_type:
+          description: For generating an access token using a refresh token.
+          enum:
+          - refresh_token
+          example: refresh_token
+          type: string
+        client_id:
+          description: |
+            Your integration's unique ID, for authenticating the request.
+
+            NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+          example: OC-FAB12-AbCdEf
+          type: string
+        client_secret:
+          description: |
+            Your integration's client secret, for authenticating the request. Begins with `cnvca`.
+
+            NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+          example: cnvcaAbcdefg12345_hijklm6789
+          type: string
+        refresh_token:
+          description: The refresh token to be exchanged. You can copy this value
+            from the successful response received when generating an access token.
+          example: JABix5nolsk9k8n2r0f8nq1gw4zjo40ht6sb4i573wgdzmkwdmiy6muh897hp0bxyab276wtgqkvtob2mg9aidt5d6rcltcbcgs101
+          type: string
+        scope:
+          description: |
+            Optional scope value when refreshing an access token. Separate multiple [scopes](https://www.canva.dev/docs/connect/appendix/scopes/) with a single space between each scope.
+
+            The requested scope cannot include any permissions not already granted, so this parameter allows you to limit the scope when refreshing a token. If omitted, the scope for the token remains unchanged.
+          example: design:meta:read
+          type: string
+      required:
+      - grant_type
+      - refresh_token
+      type: object
+    ExchangeAccessTokenResponse:
+      description: Exchange auth token to access token.
+      properties:
+        access_token:
+          description: "The bearer access token to use to authenticate to Canva Connect\
+            \ API endpoints. If requested using a `authorization_code` or `refresh_token`,\
+            \ this allows you to act on behalf of a user."
+          example: JagALLazU0i2ld9WW4zTO4kaG0lkvP8Y5sSO206ZwxNF4E1y3xKJKF7TzN17BXTfaNOeY0P88AeRCE6cRF7SJzvf3Sx97rA80sGHtFplFo
+          type: string
+        refresh_token:
+          description: The token that you can use to refresh the access token.
+          example: JABix5nolsk9k8n2r0f8nq1gw4zjo40ht6sb4i573wgdzmkwdmiy6muh897hp0bxyab276wtgqkvtob2mg9aidt5d6rcltcbcgs101
+          type: string
+        token_type:
+          description: The token type returned. This is always `Bearer`.
+          example: Bearer
+          type: string
+        expires_in:
+          description: The expiry time (in seconds) for the token.
+          example: 14400
+          format: int64
+          type: integer
+        scope:
+          description: "The [scopes](https://www.canva.dev/docs/connect/appendix/scopes/)\
+            \ that the token has been granted."
+          example: asset:read design:meta:read design:permission:read folder:read
+          type: string
+      required:
+      - access_token
+      - expires_in
+      - refresh_token
+      - token_type
+      type: object
+    IntrospectTokenRequest:
+      properties:
+        token:
+          description: The token to introspect.
+          example: JagALLazU0i2ld9WW4zTO4kaG0lkvP8Y5sSO206ZwxNF4E1y3xKJKF7TzN17BXTfaNOeY0P88AeRCE6cRF7SJzvf3Sx97rA80sGHtFplFo
+          type: string
+        client_id:
+          description: |
+            Your integration's unique ID, for authenticating the request.
+
+            NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+          example: OC-FAB12-AbCdEf
+          type: string
+        client_secret:
+          description: |
+            Your integration's client secret, for authenticating the request. Begins with `cnvca`.
+
+            NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+          example: cnvcaAbcdefg12345_hijklm6789
+          type: string
+      required:
+      - token
+      type: object
+    IntrospectTokenResponse:
+      description: Introspection result of access or refresh tokens
+      properties:
+        active:
+          description: |
+            Whether the access token is active.
+
+            If `true`, the access token is valid and active. If `false`, the access token is invalid.
+          example: true
+          type: boolean
+        scope:
+          description: "The [scopes](https://www.canva.dev/docs/connect/appendix/scopes/)\
+            \ that the token has been granted."
+          example: asset:read design:meta:read design:permission:read folder:read
+          type: string
+        client:
+          description: The ID of the client that requested the token.
+          example: OC-FAB12-AbCdEf
+          type: string
+        exp:
+          description: "The expiration time of the token, as a [Unix timestamp](https://en.wikipedia.org/wiki/Unix_time)\
+            \ in seconds."
+          example: 1712216144
+          format: int64
+          type: integer
+        iat:
+          description: "When the token was issued, as a [Unix timestamp](https://en.wikipedia.org/wiki/Unix_time)\
+            \ in seconds."
+          example: 1712201744
+          format: int64
+          type: integer
+        nbf:
+          description: "The \"not before\" time of the token, which specifies the\
+            \ time before which the access token most not be accepted, as a [Unix\
+            \ timestamp](https://en.wikipedia.org/wiki/Unix_time) in seconds."
+          example: 1712201744
+          format: int64
+          type: integer
+        jti:
+          description: A unique ID for the access token.
+          example: AbC1d-efgHIJKLMN2oPqrS
+          type: string
+        sub:
+          description: |
+            The subject of the claim. This is the ID of the Canva user that the access token acts on behalf of.
+
+            This is an obfuscated value, so a single user has a unique ID for each integration. If the same user authorizes another integration, their ID in that other integration is different.
+          example: oBCdEF1Gh2i3jkLmno-pq
+          type: string
+      required:
+      - active
+      type: object
+    RevokeTokensRequest:
+      description: Supply an access token or refresh token to have its lineage revoked.
+      properties:
+        token:
+          description: The token to revoke.
+          example: agALLazU0i2ld9WW4zTO4kaG0lkvP8Y5sSO206ZwxNF4E1y3xKJKF7TzN17BXTfaNOeY0P88AeRCE6cRF7SJzvf3Sx97rA80sGHtFplFo
+          type: string
+        client_id:
+          description: |
+            Your integration's unique ID, for authenticating the request.
+
+            NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+          example: OC-FAB12-AbCdEf
+          type: string
+        client_secret:
+          description: |
+            Your integration's client secret, for authenticating the request. Begins with `cnvca`.
+
+            NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+          example: cnvcaAbcdefg12345_hijklm6789
+          type: string
+      required:
+      - token
+      type: object
+    scope_response:
+      description: "The [scopes](https://www.canva.dev/docs/connect/appendix/scopes/)\
+        \ that the token has been granted."
+      example: asset:read design:meta:read design:permission:read folder:read
+      type: string
+    client_id:
+      description: |
+        Your integration's unique ID, for authenticating the request.
+
+        NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+      example: OC-FAB12-AbCdEf
+      type: string
+    client_secret:
+      description: |
+        Your integration's client secret, for authenticating the request. Begins with `cnvca`.
+
+        NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+      example: cnvcaAbcdefg12345_hijklm6789
+      type: string
+    Team:
+      description: |-
+        Metadata for the Canva Team, consisting of the Team ID,
+        display name, and whether it's an external Canva Team.
+      properties:
+        id:
+          description: The ID of the Canva Team.
+          example: Oi2RJILTrKk0KRhRUZozX
+          type: string
+        display_name:
+          description: The name of the Canva Team as shown in the Canva UI.
+          example: Acme Corporation
+          type: string
+        external:
+          description: |-
+            Is the user making the API call (the authenticated user) from the Canva Team shown?
+
+            - When `true`, the user isn't in the Canva Team shown.
+            - When `false`, the user is in the Canva Team shown.
+          type: boolean
+      required:
+      - display_name
+      - external
+      - id
+      type: object
+    Template:
+      description: "The template object, which contains metadata about the template."
+      properties:
+        id:
+          description: The template ID.
+          example: TEMzWSwy3BI
+          type: string
+        title:
+          description: "The template title, as shown in the Canva UI."
+          example: My posts template
+          type: string
+        url:
+          description: A URL Canva users can visit to create a new design from this
+            template.
+          example: https://www.canva.com/templates/EADao7wZnAA-black-white-simple-quote-instagram-post/
+          type: string
+        thumbnails:
+          description: A list of thumbnail images representing the template. This
+            list contains one thumbnail for each page of the template.
+          items:
+            $ref: '#/components/schemas/Thumbnail'
+          type: array
+      required:
+      - id
+      - thumbnails
+      - title
+      - url
+      type: object
+    Thumbnail:
+      description: A thumbnail image representing the object.
+      properties:
+        width:
+          description: The width of the thumbnail image in pixels.
+          example: 595
+          type: integer
+        height:
+          description: The height of the thumbnail image in pixels.
+          example: 335
+          type: integer
+        url:
+          description: |-
+            A URL for retrieving the thumbnail image.
+            This URL expires after 15 minutes. This URL includes a query string
+            that's required for retrieving the thumbnail.
+          example: https://document-export.canva.com/Vczz9/zF9vzVtdADc/2/thumbnail/0001.png?<query-string>
+          type: string
+      required:
+      - height
+      - url
+      - width
+      type: object
+    User:
+      description: "Metadata for the user, consisting of the User ID and display name."
+      properties:
+        id:
+          description: The ID of the user.
+          example: uKakKUfI03Fg8k2gZ6OkT
+          type: string
+        display_name:
+          description: The name of the user as shown in the Canva UI.
+          example: John Doe
+          type: string
+      required:
+      - id
+      type: object
+    TeamUserSummary:
+      description: "Metadata for the user, consisting of the User ID and Team ID."
+      properties:
+        user_id:
+          description: The ID of the user.
+          example: auDAbliZ2rQNNOsUl5OLu
+          type: string
+        team_id:
+          description: The ID of the user's Canva Team.
+          example: Oi2RJILTrKk0KRhRUZozX
+          type: string
+      required:
+      - team_id
+      - user_id
+      type: object
+    TeamUser:
+      description: "Metadata for the user, consisting of the User ID, Team ID, and\
+        \ display name."
+      properties:
+        user_id:
+          description: The ID of the user.
+          example: auDAbliZ2rQNNOsUl5OLu
+          type: string
+        team_id:
+          description: The ID of the user's Canva Team.
+          example: Oi2RJILTrKk0KRhRUZozX
+          type: string
+        display_name:
+          description: The name of the user as shown in the Canva UI.
+          example: Jane Doe
+          type: string
+      type: object
+    UserProfile:
+      description: "Profile for the user, consisting of the display name and other\
+        \ attributes."
+      properties:
+        display_name:
+          description: The name of the user as shown in the Canva UI.
+          example: Jane Doe
+          type: string
+      type: object
+    UsersMeResponse:
+      properties:
+        team_user:
+          $ref: '#/components/schemas/TeamUserSummary'
+      required:
+      - team_user
+      type: object
+    UserProfileResponse:
+      properties:
+        profile:
+          $ref: '#/components/schemas/UserProfile'
+      required:
+      - profile
+      type: object
+    Notification:
+      properties:
+        id:
+          description: The unique identifier for the notification.
+          example: eb595730
+          type: string
+        created_at:
+          description: |-
+            When the notification was created, as a UNIX timestamp (in seconds
+            since the UNIX epoch).
+          example: 1377396000
+          format: int64
+          type: integer
+        content:
+          $ref: '#/components/schemas/NotificationContent'
+      required:
+      - content
+      - created_at
+      - id
+      type: object
+    NotificationContent:
+      description: "The notification content object, which contains metadata about\
+        \ the event."
+      discriminator:
+        mapping:
+          share_design: '#/components/schemas/ShareDesignNotificationContent'
+          share_folder: '#/components/schemas/ShareFolderNotificationContent'
+          comment: '#/components/schemas/CommentNotificationContent'
+          design_access_requested: '#/components/schemas/DesignAccessRequestedNotificationContent'
+          design_approval_requested: '#/components/schemas/DesignApprovalRequestedNotificationContent'
+          design_approval_response: '#/components/schemas/DesignApprovalResponseNotificationContent'
+          design_mention: '#/components/schemas/DesignMentionNotificationContent'
+          team_invite: '#/components/schemas/TeamInviteNotificationContent'
+          folder_access_requested: '#/components/schemas/FolderAccessRequestedNotificationContent'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/ShareDesignNotificationContent'
+      - $ref: '#/components/schemas/ShareFolderNotificationContent'
+      - $ref: '#/components/schemas/CommentNotificationContent'
+      - $ref: '#/components/schemas/DesignAccessRequestedNotificationContent'
+      - $ref: '#/components/schemas/DesignApprovalRequestedNotificationContent'
+      - $ref: '#/components/schemas/DesignApprovalResponseNotificationContent'
+      - $ref: '#/components/schemas/DesignMentionNotificationContent'
+      - $ref: '#/components/schemas/TeamInviteNotificationContent'
+      - $ref: '#/components/schemas/FolderAccessRequestedNotificationContent'
+      type: object
+    ShareDesignNotificationContent:
+      description: The notification content for when someone shares a design.
+      properties:
+        type:
+          enum:
+          - share_design
+          example: share_design
+          type: string
+        triggering_user:
+          $ref: '#/components/schemas/User'
+        receiving_team_user:
+          $ref: '#/components/schemas/TeamUser'
+        design:
+          $ref: '#/components/schemas/DesignSummary'
+        share:
+          $ref: '#/components/schemas/ShareAction'
+      required:
+      - design
+      - receiving_team_user
+      - triggering_user
+      - type
+      type: object
+    ShareFolderNotificationContent:
+      description: The notification content for when someone shares a folder.
+      properties:
+        type:
+          enum:
+          - share_folder
+          example: share_folder
+          type: string
+        triggering_user:
+          $ref: '#/components/schemas/User'
+        receiving_team_user:
+          $ref: '#/components/schemas/TeamUser'
+        folder:
+          $ref: '#/components/schemas/FolderSummary'
+        share:
+          $ref: '#/components/schemas/ShareAction'
+      required:
+      - folder
+      - receiving_team_user
+      - triggering_user
+      - type
+      type: object
+    CommentNotificationContent:
+      description: The notification content for when someone comments on a design.
+      properties:
+        type:
+          enum:
+          - comment
+          example: comment
+          type: string
+        triggering_user:
+          $ref: '#/components/schemas/User'
+        receiving_team_user:
+          $ref: '#/components/schemas/TeamUser'
+        design:
+          $ref: '#/components/schemas/DesignSummary'
+        comment:
+          $ref: '#/components/schemas/CommentEvent'
+      required:
+      - comment
+      - design
+      - receiving_team_user
+      - triggering_user
+      - type
+      type: object
+    DesignAccessRequestedNotificationContent:
+      description: The notification content for when someone requests access to a
+        design.
+      properties:
+        type:
+          enum:
+          - design_access_requested
+          example: design_access_requested
+          type: string
+        triggering_user:
+          $ref: '#/components/schemas/TeamUser'
+        receiving_team_user:
+          $ref: '#/components/schemas/TeamUser'
+        design:
+          $ref: '#/components/schemas/DesignSummary'
+      required:
+      - design
+      - receiving_team_user
+      - triggering_user
+      - type
+      type: object
+    DesignApprovalRequestedNotificationContent:
+      description: |-
+        The notification content for when someone requests a user to
+        [approve a design](https://www.canva.com/help/get-approval/).
+      properties:
+        type:
+          enum:
+          - design_approval_requested
+          example: design_approval_requested
+          type: string
+        triggering_user:
+          $ref: '#/components/schemas/User'
+        receiving_team_user:
+          $ref: '#/components/schemas/TeamUser'
+        requested_groups:
+          items:
+            $ref: '#/components/schemas/Group'
+          type: array
+        design:
+          $ref: '#/components/schemas/DesignSummary'
+        approval_request:
+          $ref: '#/components/schemas/ApprovalRequestAction'
+      required:
+      - approval_request
+      - design
+      - receiving_team_user
+      - requested_groups
+      - triggering_user
+      - type
+      type: object
+    DesignApprovalResponseNotificationContent:
+      description: The notification content for when someone approves a design or
+        gives feeback.
+      properties:
+        type:
+          enum:
+          - design_approval_response
+          example: design_approval_response
+          type: string
+        triggering_user:
+          $ref: '#/components/schemas/User'
+        receiving_team_user:
+          $ref: '#/components/schemas/TeamUser'
+        requesting_user:
+          $ref: '#/components/schemas/User'
+        responding_groups:
+          items:
+            $ref: '#/components/schemas/Group'
+          type: array
+        design:
+          $ref: '#/components/schemas/DesignSummary'
+        approval_response:
+          $ref: '#/components/schemas/ApprovalResponseAction'
+      required:
+      - approval_response
+      - design
+      - receiving_team_user
+      - responding_groups
+      - triggering_user
+      - type
+      type: object
+    DesignMentionNotificationContent:
+      description: The notification content for when someone mentions a user in a
+        design.
+      properties:
+        type:
+          enum:
+          - design_mention
+          example: design_mention
+          type: string
+        triggering_user:
+          $ref: '#/components/schemas/User'
+        receiving_team_user:
+          $ref: '#/components/schemas/TeamUser'
+        design:
+          $ref: '#/components/schemas/DesignSummary'
+      required:
+      - design
+      - receiving_team_user
+      - triggering_user
+      - type
+      type: object
+    TeamInviteNotificationContent:
+      description: |-
+        The notification content for when someone is invited to a
+        [Canva team](https://www.canva.com/help/about-canva-for-teams/).
+      properties:
+        type:
+          enum:
+          - team_invite
+          example: team_invite
+          type: string
+        triggering_user:
+          $ref: '#/components/schemas/User'
+        receiving_user:
+          $ref: '#/components/schemas/User'
+        inviting_team:
+          $ref: '#/components/schemas/Team'
+      required:
+      - inviting_team
+      - receiving_user
+      - triggering_user
+      - type
+      type: object
+    FolderAccessRequestedNotificationContent:
+      description: The notification content for when someone requests access to a
+        folder.
+      properties:
+        type:
+          enum:
+          - folder_access_requested
+          example: folder_access_requested
+          type: string
+        triggering_user:
+          $ref: '#/components/schemas/TeamUser'
+        receiving_team_user:
+          $ref: '#/components/schemas/TeamUser'
+        folder:
+          $ref: '#/components/schemas/Folder'
+      required:
+      - folder
+      - receiving_team_user
+      - triggering_user
+      - type
+      type: object
+    ShareAction:
+      description: Metadata about the share event.
+      properties:
+        message:
+          description: |-
+            The optional message users can include when sharing something with another
+            user using the Canva UI.
+          example: Check this out!
+          type: string
+      required:
+      - message
+      type: object
+    ApprovalRequestAction:
+      description: Metadata about the design approval request.
+      properties:
+        message:
+          description: The message included by the user when requesting a design approval.
+          example: LGTM!
+          type: string
+      required:
+      - message
+      type: object
+    ApprovalResponseAction:
+      description: Metadata about the design approval response.
+      properties:
+        approved:
+          description: |-
+            Whether the design was approved. When `true`, the reviewer has approved
+            the design.
+          type: boolean
+        message:
+          description: The message included by a user responding to a design approval
+            request.
+          type: string
+      required:
+      - approved
+      type: object
+  securitySchemes:
+    basicAuth:
+      scheme: basic
+      type: http
+    oauthAuthCode:
+      flows:
+        authorizationCode:
+          authorizationUrl: https://www.canva.com/oauth/api/authorize
+          scopes:
+            design:content:read: View the contents of the user's designs.
+            design:meta:read: View the metadata of the user's designs.
+            design:content:write: Create designs on the user's behalf.
+            design:permission:read: View the permissions assigned to a user's designs.
+            design:permission:write: "Set, update, or remove the permissions assigned\
+              \ to the user's designs."
+            folder:read: |-
+              View the metadata and contents of the user's folders, including their **Projects**
+              folder.
+            folder:write: |-
+              Add, move, or remove the user's folders. It also lets you edit folder metadata,
+              such as the folder's name.
+            folder:permission:read: View permissions assigned to a user's folders.
+            folder:permission:write: "Set, update, or remove permissions assigned\
+              \ to the user's folders."
+            asset:read: "View the metadata for the user's assets, such as uploaded\
+              \ images."
+            asset:write: "Upload, update, or delete assets on the user's behalf."
+            comment:read: "View the comments on the user's designs, and the associated\
+              \ metadata."
+            comment:write: Create comments and replies on the user's designs.
+            collaboration:event: Receive webhook notifications about events relevant
+              to the user.
+            brandtemplate:meta:read: View the metadata of the brand templates associated
+              with the user's brand.
+            brandtemplate:content:read: Read the content of the brand templates associated
+              with the user's brand.
+            profile:read: Read a user's profile and account information.
+          tokenUrl: https://api.canva.com/rest/v1/oauth/token
+      type: oauth2

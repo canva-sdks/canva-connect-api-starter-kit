@@ -1,0 +1,10 @@
+.idea
+.vscode
+.ssl
+.DS_Store
+.env
+node_modules
+yarn-error.log
+dist
+openapi-ts-error-*.log
+**/*/db.json

@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es2018",
+      "es2019.array",
+      "es2019.object",
+      "es2019.string",
+      "es2020.promise",
+      "es2020.string"
+    ],
+    "types": [
+      "node"
+    ],
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "noImplicitOverride": true,
+    "moduleResolution": "node",
+    "rootDir": ".",
+    "outDir": "dist",
+    "noEmit": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "target": "ES2019",
+    "sourceMap": true,
+    "inlineSources": true,
+    "module": "ESNext",
+    "noImplicitAny": false,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+  },
+  "include": [
+    "./**/*",
+    "../node_modules/@types/**/*",
+  ],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  }
+}

@@ -1,12 +1,9 @@
 import type { BrandTemplate } from "@canva/connect-api-ts/types.gen";
 import { createContext, useContext, useState } from "react";
-import type { Product } from "src/models";
 
 export interface CampaignContextType {
   campaignName: string;
   setCampaignName: (campaignName: string) => void;
-  selectedProduct: Product | undefined;
-  setSelectedProduct: (product: Product | undefined) => void;
   selectedDiscount: string;
   setSelectedDiscount: (discount: string) => void;
   selectedBrandTemplates: BrandTemplate[];
@@ -16,8 +13,6 @@ export interface CampaignContextType {
 export const CampaignContext = createContext<CampaignContextType>({
   campaignName: "",
   setCampaignName: () => {},
-  selectedProduct: undefined,
-  setSelectedProduct: () => {},
   selectedDiscount: "10%",
   setSelectedDiscount: () => {},
   selectedBrandTemplates: [],
@@ -37,9 +32,6 @@ export const CampaignContextProvider = ({
   const [campaignName, setCampaignName] = useState<string>(
     getDefaultCampaignName(),
   );
-  const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
-    undefined,
-  );
   const [selectedDiscount, setSelectedDiscount] = useState<string>("10%");
   const [selectedBrandTemplates, setSelectedBrandTemplates] = useState<
     BrandTemplate[]
@@ -48,8 +40,6 @@ export const CampaignContextProvider = ({
   const value: CampaignContextType = {
     campaignName,
     setCampaignName,
-    selectedProduct,
-    setSelectedProduct,
     selectedDiscount,
     setSelectedDiscount,
     selectedBrandTemplates,

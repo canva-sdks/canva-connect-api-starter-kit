@@ -1,0 +1,30 @@
+name: Continuous integration checks on public components
+run-name: ${{ github.actor }} pushed a commit 🚀
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths-ignore:
+      - 'internal/**'
+
+jobs:
+  common:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory:
+          ./demos/common
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Set up node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      - name: NPM ci repository root
+        run: cd ../.. && npm ci
+      - name: Run prettier
+        run: npm run format:check
+      - name: Lint types
+        run: npm run lint:types
+      - name: Run unit tests
+        run: npm run test

@@ -12,7 +12,8 @@
       "es2020.string"
     ],
     "types": [
-      "node"
+      "node",
+      "jest"
     ],
     "composite": true,
     "declaration": true,
@@ -20,7 +21,7 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "noImplicitOverride": true,
-    "rootDir": ".",
+    "rootDir": "..",
     "outDir": "dist",
     "noEmit": true,
     "strict": true,
@@ -38,6 +39,7 @@
   "include": [
     "./node_modules/@types/**/*",
     "./scripts/*",
+    "../common"
   ],
   "ts-node": {
     "compilerOptions": {

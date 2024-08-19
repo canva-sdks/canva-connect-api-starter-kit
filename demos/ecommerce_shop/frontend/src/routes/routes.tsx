@@ -6,12 +6,14 @@ import {
   MarketingPage,
   MultipleDesignsGeneratorPage,
   ProductsPage,
+  ReturnNavPage,
   SingleDesignGeneratorPage,
 } from "src/pages";
 import { App } from "../app";
 
 export enum Paths {
   HOME = "/",
+  RETURN_NAV = "/return-nav",
   MARKETING = "/marketing",
   MULTIPLE_DESIGNS_GENERATOR = "/marketing/multiple-designs",
   PRODUCTS = "/products",
@@ -53,5 +55,10 @@ export const routes: RouteObject[] = [
         ),
       },
     ],
+  },
+  {
+    path: Paths.RETURN_NAV,
+    errorElement: <ErrorBoundaryPage />,
+    element: <ReturnNavPage />,
   },
 ];

@@ -6,11 +6,19 @@ import {
   OAUTH_CODE_VERIFIER_COOKIE_NAME,
   OAUTH_STATE_COOKIE_NAME,
   getAuthorizationUrl,
-} from "../services/auth";
+} from "../../../common/backend/services/auth";
 import * as jose from "jose";
-import { deleteToken, getToken, setToken } from "../database/queries";
-import { getAccessTokenForUser, getBasicAuthClient } from "../services/client";
+import {
+  deleteToken,
+  getToken,
+  setToken,
+} from "../../../common/backend/database/queries";
+import {
+  getAccessTokenForUser,
+  getBasicAuthClient,
+} from "../../../common/backend/services/client";
 import { OauthService } from "@canva/connect-api-ts";
+import { db } from "../database/database";
 
 const globals: {
   redirectUri: string;
@@ -101,7 +109,7 @@ router.get(endpoints.REDIRECT, async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       signed: true,
     });
-    await setToken(token, claimsSub);
+    await setToken(token, claimsSub, db);
 
     return res.redirect(endpoints.SUCCESS);
   } catch (error) {
@@ -167,7 +175,7 @@ router.get(endpoints.AUTHORIZE, async (req, res) => {
 
 router.get(endpoints.REVOKE, async (req, res) => {
   const user = req.signedCookies[AUTH_COOKIE_NAME];
-  const token = await getToken(user);
+  const token = await getToken(user, db);
 
   res.clearCookie(AUTH_COOKIE_NAME);
   if (!token) {
@@ -206,7 +214,7 @@ router.get(endpoints.REVOKE, async (req, res) => {
     console.log(e);
     return res.sendStatus(401);
   } finally {
-    await deleteToken(user);
+    await deleteToken(user, db);
   }
   return res.sendStatus(200);
 });
@@ -221,7 +229,7 @@ router.get(endpoints.REVOKE, async (req, res) => {
 router.get(endpoints.IS_AUTHORIZED, async (req, res) => {
   const auth = req.signedCookies[AUTH_COOKIE_NAME];
   try {
-    await getAccessTokenForUser(auth);
+    await getAccessTokenForUser(auth, db);
     return res.json({ status: true });
   } catch (error) {
     return res.sendStatus(404);

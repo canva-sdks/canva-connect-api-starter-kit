@@ -8,13 +8,12 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier . --no-config --write",
     "format:check": "prettier . --no-config --check --ignore-path ./.prettierignore",
-    "format:file": "prettier $1 --no-config --write",
-    "test": "jest --config=../jest.config.js"
+    "format:file": "prettier $1 --no-config --write"
   },
   "author": "Canva Pty Ltd.",
   "license": "SEE LICENSE IN LICENSE.md in root directory",
   "dependencies": {
-    "@canva/connect-api-ts": "file:../../../client",
+    "@canva/connect-api-ts": "file:../../../client/ts",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",

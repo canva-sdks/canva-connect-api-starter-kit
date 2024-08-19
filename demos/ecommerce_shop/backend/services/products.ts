@@ -1,4 +1,4 @@
-import type { Product } from "../models/product";
+import type { Product } from "../models";
 
 const BACKEND_URL = process.env.BACKEND_URL;
 

@@ -10,7 +10,7 @@ import {
   getBrandTemplateDataset,
   postAutofill,
 } from "src/services";
-import { poll } from "../utils/poll";
+import { poll } from "../../../../common/utils/poll";
 import { uploadAsset } from "./asset";
 
 /**

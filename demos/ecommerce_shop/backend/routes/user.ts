@@ -1,10 +1,11 @@
 import express from "express";
-import { UserService } from "@canva/connect-api-ts/ts/index";
-import { injectClient } from "../middleware/client";
+import { UserService } from "@canva/connect-api-ts";
+import { injectClient } from "../../../common/backend/middleware/client";
+import { db } from "../database/database";
 
 const router = express.Router();
 
-router.use(injectClient);
+router.use((req, res, next) => injectClient(req, res, next, db));
 
 router.get("/user", async (req, res) => {
   const result = await UserService.getUserProfile({

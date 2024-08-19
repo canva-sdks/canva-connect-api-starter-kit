@@ -11,7 +11,7 @@ import {
   FormPaper,
   SingleProductSelector,
 } from "src/components";
-import { useCampaignContext } from "src/context";
+import { useAppContext, useCampaignContext } from "src/context";
 
 export const MultipleDesignsCampaignForm = ({
   isLoading,
@@ -22,8 +22,8 @@ export const MultipleDesignsCampaignForm = ({
   brandTemplates: BrandTemplate[];
   onCreate: () => void;
 }) => {
-  const { campaignName, selectedProduct, selectedBrandTemplates } =
-    useCampaignContext();
+  const { selectedCampaignProduct } = useAppContext();
+  const { campaignName, selectedBrandTemplates } = useCampaignContext();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -51,7 +51,7 @@ export const MultipleDesignsCampaignForm = ({
               demoVariant="secondary"
               startIcon={<CanvaIcon />}
               onClick={() => setIsOpen(true)}
-              disabled={!selectedProduct || isLoading}
+              disabled={!selectedCampaignProduct || isLoading}
               fullWidth={true}
             >
               EDIT SELECTION
@@ -59,7 +59,7 @@ export const MultipleDesignsCampaignForm = ({
             <DemoButton
               demoVariant="primary"
               onClick={onCreate}
-              disabled={!selectedProduct || !campaignName}
+              disabled={!selectedCampaignProduct || !campaignName}
               loading={isLoading}
               startIcon={<CanvaIcon />}
               fullWidth={true}
@@ -72,7 +72,7 @@ export const MultipleDesignsCampaignForm = ({
             demoVariant="secondary"
             startIcon={<CanvaIcon />}
             onClick={() => setIsOpen(true)}
-            disabled={!selectedProduct}
+            disabled={!selectedCampaignProduct}
             loading={!brandTemplates.length}
             fullWidth={true}
           >

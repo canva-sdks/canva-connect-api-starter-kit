@@ -1,6 +1,6 @@
 import type { Asset } from "@canva/connect-api-ts/types.gen";
 import { createAssetUpload, getAssetUploadJob } from "./api";
-import { poll } from "../utils/poll";
+import { poll } from "../../../../common/utils/poll";
 
 /**
  * Fetches image blob from the provided image source.

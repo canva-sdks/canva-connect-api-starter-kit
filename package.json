@@ -5,7 +5,13 @@
   "license": "SEE LICENSE IN LICENSE.md",
   "private": true,
   "workspaces": [
-    "demos",
+    "demos/common",
+    "demos/ecommerce_shop",
+    "demos/ecommerce_shop/frontend",
+    "demos/ecommerce_shop/backend",
+    "demos/playground",
+    "demos/playground/frontend",
+    "demos/playground/backend",
     "client"
   ],
   "engines": {
@@ -14,6 +20,7 @@
   "engineStrict": true,
   "scripts": {
     "generate": "cd client && npm run generate",
-    "demo:ecommerce": "cd demos/ecommerce_shop && npm start"
+    "demo:ecommerce": "cd demos/ecommerce_shop && npm start",
+    "demo:playground": "cd demos/playground && npm start"
   }
 }

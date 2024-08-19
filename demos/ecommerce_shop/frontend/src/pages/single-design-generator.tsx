@@ -1,14 +1,7 @@
 import confetti from "canvas-confetti";
 import { useEffect, useState } from "react";
 import type { Design } from "@canva/connect-api-ts/types.gen";
-import {
-  Box,
-  CardContent,
-  CardMedia,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Grid, Stack, Typography } from "@mui/material";
 import {
   CampaignNameInput,
   CanvaIcon,
@@ -21,31 +14,43 @@ import {
 } from "src/components";
 import { useAppContext, useCampaignContext } from "src/context";
 import { uploadAssetAndCreateDesignFromProduct } from "src/services";
+import { DesignResult } from "src/components/marketing/design-result";
+import { EditInCanvaPageOrigins } from "src/models";
 
 export const SingleDesignGeneratorPage = () => {
-  const { campaignName, selectedProduct } = useCampaignContext();
+  const { campaignName } = useCampaignContext();
   const [isLoading, setIsLoading] = useState(false);
-  const [createdDesign, setCreatedDesign] = useState<Design | undefined>(
-    undefined,
-  );
-  const { setErrors } = useAppContext();
+  const [isFirstGenerated, setIsFirstGenerated] = useState(false);
+
+  const {
+    addAlert,
+    createdSingleDesign,
+    setCreatedSingleDesign,
+    selectedCampaignProduct,
+  } = useAppContext();
 
   const onCreate = async () => {
-    if (!selectedProduct) {
+    if (!selectedCampaignProduct) {
       return;
     }
     setIsLoading(true);
     try {
       const design = await uploadAssetAndCreateDesignFromProduct({
         campaignName,
-        product: selectedProduct,
+        product: selectedCampaignProduct,
       });
-      setCreatedDesign(design);
+      setCreatedSingleDesign(design.design);
+      setIsFirstGenerated(true);
+      addAlert({
+        title: `Canva design was successfully generated for '${selectedCampaignProduct.name}'.`,
+        variant: "success",
+        hideAfterMs: -1,
+      });
     } catch (error) {
-      console.log(error);
-      setErrors((prevState: string[]) =>
-        prevState.concat("Something went wrong. Please try again later."),
-      );
+      addAlert({
+        title: "Something went wrong. Please try again later.",
+        variant: "error",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -58,10 +63,11 @@ export const SingleDesignGeneratorPage = () => {
         description="Create a single design in your chosen size from an existing product"
       />
       <Grid item={true} xs={8}>
-        {createdDesign && selectedProduct ? (
+        {createdSingleDesign && selectedCampaignProduct ? (
           <SingleDesignResult
-            createdDesign={createdDesign}
-            setCreatedDesign={setCreatedDesign}
+            createdDesign={createdSingleDesign}
+            setCreatedDesign={setCreatedSingleDesign}
+            firstGenerated={isFirstGenerated}
           />
         ) : (
           <SingleCampaignForm isLoading={isLoading} onCreate={onCreate} />
@@ -78,7 +84,8 @@ const SingleCampaignForm = ({
   isLoading: boolean;
   onCreate: () => void;
 }) => {
-  const { campaignName, selectedProduct } = useCampaignContext();
+  const { campaignName } = useCampaignContext();
+  const { setSelectedCampaignProduct } = useAppContext();
 
   return (
     <Stack spacing={4}>
@@ -95,7 +102,7 @@ const SingleCampaignForm = ({
           demoVariant="primary"
           loading={isLoading}
           onClick={onCreate}
-          disabled={!selectedProduct || !campaignName}
+          disabled={!setSelectedCampaignProduct || !campaignName}
           fullWidth={true}
           startIcon={<CanvaIcon />}
         >
@@ -109,20 +116,27 @@ const SingleCampaignForm = ({
 const SingleDesignResult = ({
   createdDesign,
   setCreatedDesign,
+  firstGenerated = false,
 }: {
   createdDesign: Design;
   setCreatedDesign: (design: Design | undefined) => void;
+  firstGenerated?: boolean;
 }) => {
-  const { campaignName, selectedProduct } = useCampaignContext();
+  const { selectedCampaignProduct } = useAppContext();
+  const { campaignName } = useCampaignContext();
   const [publishDialogIsOpen, setPublishDialogIsOpen] = useState(false);
-
   useEffect(() => {
+    // Only trigger confetti animation when the designs are first generated
+    // otherwise not when returning from 'Edit in Canva'.
+    if (!firstGenerated) {
+      return;
+    }
     confetti({
       particleCount: 200,
       spread: 70,
       origin: { x: 0.55, y: 0.5 },
     });
-  }, []);
+  }, [firstGenerated]);
 
   return (
     <Stack spacing={4}>
@@ -131,52 +145,13 @@ const SingleDesignResult = ({
           {createdDesign.title}
         </Typography>
         <Stack spacing={2}>
-          <Box
-            sx={{
-              display: "flex",
-              padding: 2,
-              borderRadius: 2,
+          <DesignResult
+            design={createdDesign}
+            correlationStateOnNavigateToCanva={{
+              originPage: EditInCanvaPageOrigins.MARKETING_SINGLE,
+              originProductId: selectedCampaignProduct?.id,
             }}
-          >
-            <CardMedia
-              component="img"
-              sx={{
-                width: 200,
-                height: 200,
-                borderRadius: 2,
-                objectFit: "contain",
-                bgcolor: "#302e35",
-              }}
-              image={createdDesign.thumbnail?.url || selectedProduct?.imageUrl}
-              alt="design-thumbnail"
-            />
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <CardContent
-                sx={{ display: "flex", flexDirection: "column", gap: 1 }}
-              >
-                <Typography variant="h6">{campaignName}</Typography>
-
-                <DemoButton
-                  demoVariant="secondary"
-                  startIcon={<CanvaIcon />}
-                  onClick={() =>
-                    window.open(
-                      createdDesign.urls.edit_url,
-                      "_blank",
-                      "noopener,noreferrer",
-                    )
-                  }
-                >
-                  EDIT IN CANVA
-                </DemoButton>
-              </CardContent>
-            </Box>
-          </Box>
+          />
         </Stack>
       </FormPaper>
       <PublishCampaignButtons

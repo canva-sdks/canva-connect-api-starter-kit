@@ -1,0 +1,33 @@
+{
+  "name": "connect-api-playground-backend",
+  "version": "1.0.0",
+  "description": "Backend server for the playground integration",
+  "scripts": {
+    "lint:types": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --no-config --write",
+    "format:check": "prettier . --no-config --check --ignore-path ./.prettierignore",
+    "format:file": "prettier $1 --no-config --write"
+  },
+  "author": "Canva Pty Ltd.",
+  "license": "SEE LICENSE IN LICENSE.md in root directory",
+  "dependencies": {
+    "@canva/connect-api-ts": "file:../../../client/ts",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "open": "^10.1.0",
+    "pug": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/multer": "^1.4.11",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.3"
+  }
+}

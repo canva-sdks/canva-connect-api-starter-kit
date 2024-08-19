@@ -22,7 +22,7 @@ export const PageHeader = ({ title }: { title: string }) => {
       display="flex"
       flexDirection="row"
       justifyContent="space-between"
-      marginBottom={2}
+      paddingBottom={2}
     >
       <Typography variant="h4">{title}</Typography>
       <Box alignItems="center" display="flex">

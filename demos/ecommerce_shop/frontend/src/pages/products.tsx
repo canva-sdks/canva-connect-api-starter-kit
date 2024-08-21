@@ -1,24 +1,27 @@
-import { useState, useEffect } from "react";
-import type { Design } from "@canva/connect-api-ts/types.gen";
 import { Box, Grid } from "@mui/material";
-import { SuccessfulDesignModal, PageHeader, ProductCard } from "src/components";
+import { useEffect, useState } from "react";
+import {
+  DeveloperNote,
+  OpeningDesignModal,
+  PageHeader,
+  ProductCard,
+} from "src/components";
 import { useAppContext } from "src/context";
 import type { Product } from "src/models";
+import { EditInCanvaPageOrigins } from "src/models";
 import {
   getProducts,
   uploadAssetAndCreateDesignFromProduct,
 } from "src/services";
+import { createNavigateToCanvaUrl } from "src/services/canva-return";
 
 export const ProductsPage = () => {
-  const { setErrors } = useAppContext();
+  const { addAlert } = useAppContext();
 
   const [isModelOpen, setIsModelOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>();
   const [isFetching, setIsFetching] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [createdDesign, setCreatedDesign] = useState<Design | undefined>(
-    undefined,
-  );
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -27,15 +30,16 @@ export const ProductsPage = () => {
         const getProductsResult = await getProducts();
 
         if (!getProductsResult.products.length) {
-          setErrors((prevState) => prevState.concat("No products found."));
+          addAlert({ title: "No products found.", variant: "error" });
         } else {
           setProducts(getProductsResult.products);
         }
       } catch (error) {
         console.error(error);
-        setErrors((prevState) =>
-          prevState.concat("Something went wrong fetching products."),
-        );
+        addAlert({
+          title: "Something went wrong fetching products.",
+          variant: "error",
+        });
       } finally {
         setIsFetching(false);
       }
@@ -43,53 +47,69 @@ export const ProductsPage = () => {
     fetchProducts();
   }, []);
 
-  const handleCreateDesignClick = async (product: Product) => {
-    setIsLoading(true);
+  const handleEditInCanvaClick = async (product: Product) => {
+    let canvaEditUrl: string;
     setIsModelOpen(true);
 
     try {
-      const design = await uploadAssetAndCreateDesignFromProduct({
-        product,
+      if (!product.canvaDesign) {
+        const createDesignFromProductResult =
+          await uploadAssetAndCreateDesignFromProduct({ product });
+        setProducts(createDesignFromProductResult.refreshedProducts);
+        canvaEditUrl = createDesignFromProductResult.design.urls.edit_url;
+      } else {
+        canvaEditUrl = product.canvaDesign.designEditUrl;
+      }
+
+      setIsRedirecting(true);
+      const navigateToCanvaUrl = createNavigateToCanvaUrl({
+        editUrl: canvaEditUrl,
+        correlationState: {
+          originPage: EditInCanvaPageOrigins.PRODUCT,
+          originProductId: product.id,
+        },
       });
-      setCreatedDesign(design);
+      window.open(navigateToCanvaUrl, "_self");
     } catch (error) {
       console.error(error);
-      setErrors((prevState) =>
-        prevState.concat("Something went wrong creating the design."),
-      );
-    } finally {
-      setIsLoading(false);
+      addAlert({
+        title: "Something went wrong creating the design.",
+        variant: "error",
+      });
     }
   };
 
   const handleCloseModal = () => {
     setIsModelOpen(false);
-    setCreatedDesign(undefined);
   };
 
   return (
     <Box paddingY={2}>
       <PageHeader title="Products" />
-      {!isFetching && (
-        <>
-          <Grid container={true} spacing={8} marginBottom={4}>
-            {products?.map((product) => (
-              <Grid item={true} key={product.id} xs={12} sm={6} md={4} lg={4}>
-                <ProductCard
-                  product={product}
-                  onClick={() => handleCreateDesignClick(product)}
-                />
-              </Grid>
-            ))}
-          </Grid>
-          <SuccessfulDesignModal
-            isOpen={isModelOpen}
-            isLoading={isLoading}
-            createdDesign={createdDesign}
-            onClose={handleCloseModal}
-          />
-        </>
-      )}
+      <Box position="relative" alignItems="center" display="flex" width={350}>
+        <DeveloperNote info="The 'Edit in Canva' button navigates users to Canva with a 'correlation_state' of where they came from. On return to Nourish, the updated design is fetched and exported." />
+      </Box>
+      <Box>
+        {!isFetching && (
+          <>
+            <Grid container={true} spacing={8} paddingTop={2} paddingBottom={4}>
+              {products?.map((product) => (
+                <Grid item={true} key={product.id} xs={12} sm={6} md={4} lg={4}>
+                  <ProductCard
+                    product={product}
+                    onClick={() => handleEditInCanvaClick(product)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+            <OpeningDesignModal
+              isOpen={isModelOpen}
+              onClose={handleCloseModal}
+              isRedirecting={isRedirecting}
+            />
+          </>
+        )}
+      </Box>
     </Box>
   );
 };

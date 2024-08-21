@@ -1,15 +1,16 @@
 import express from "express";
-import { injectClient } from "../middleware/client";
+import { injectClient } from "../../../common/backend/middleware/client";
 import { AutofillService } from "@canva/connect-api-ts";
+import { db } from "../database/database";
 
 const router = express.Router();
+
+router.use((req, res, next) => injectClient(req, res, next, db));
 
 const endpoints = {
   CREATE_AUTOFILL_JOB: "/autofill/create",
   GET_AUTOFILL_JOB_BY_ID: "/autofill/get/:id",
 };
-
-router.use(injectClient);
 
 router.post(endpoints.CREATE_AUTOFILL_JOB, async (req, res) => {
   const result = await AutofillService.createDesignAutofillJob({

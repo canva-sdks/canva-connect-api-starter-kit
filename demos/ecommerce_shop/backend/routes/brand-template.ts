@@ -1,6 +1,7 @@
 import express from "express";
 import { BrandTemplateService } from "@canva/connect-api-ts";
-import { injectClient } from "../middleware/client";
+import { injectClient } from "../../../common/backend/middleware/client";
+import { db } from "../database/database";
 
 const endpoints = {
   BRAND_TEMPLATES: "/brand-templates",
@@ -9,7 +10,7 @@ const endpoints = {
 
 const router = express.Router();
 
-router.use(injectClient);
+router.use((req, res, next) => injectClient(req, res, next, db));
 
 router.get(endpoints.BRAND_TEMPLATES, async (req, res) => {
   const result = await BrandTemplateService.listBrandTemplates({

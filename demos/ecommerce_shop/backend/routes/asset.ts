@@ -1,10 +1,13 @@
 import express from "express";
 import multer from "multer";
-import { AssetService } from "@canva/connect-api-ts/ts/services.gen";
-import { injectClient } from "../middleware/client";
+import { AssetService } from "@canva/connect-api-ts";
+import { injectClient } from "../../../common/backend/middleware/client";
 import { createClient } from "@hey-api/client-fetch";
+import { db } from "../database/database";
 
 const router = express.Router();
+
+router.use((req, res, next) => injectClient(req, res, next, db));
 
 const endpoints = {
   CREATE_ASSET_UPLOAD_JOB: "/asset-uploads",
@@ -15,8 +18,6 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fieldSize: 25 * 1024 * 1024 },
 });
-
-router.use(injectClient);
 
 router.post(
   endpoints.CREATE_ASSET_UPLOAD_JOB,

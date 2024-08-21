@@ -20,19 +20,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-      - name: NPM ci
-        run: npm ci
-      - name: Run prettier
-        run: npm run format:check
       - name: NPM ci repository root
         run: cd ../.. && npm ci
+      - name: Run prettier
+        run: npm run format:check
       - name: Lint types
         run: npm run lint:types
       - name: ESLint
         run: npm run lint
       - name: Frontend - Run build
         run: cd frontend && npm run build
-      - name: Backend - Unit tests
-        run: cd backend && npm run test
 
 

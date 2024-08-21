@@ -3,12 +3,7 @@ import { BarChart } from "@mui/icons-material";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import {
-  ConnectButton,
-  ConnectionAlert,
-  DemoSalesChart,
-  DeveloperNote,
-} from "src/components";
+import { ConnectButton, DemoSalesChart, DeveloperNote } from "src/components";
 import { useAppContext } from "src/context";
 
 export const HomePage = () => {
@@ -16,7 +11,6 @@ export const HomePage = () => {
 
   return (
     <>
-      <ConnectionAlert />
       <Typography variant="h4" gutterBottom={true}>
         {displayName ? `Good day, ${displayName}!` : `Good day!`}
       </Typography>

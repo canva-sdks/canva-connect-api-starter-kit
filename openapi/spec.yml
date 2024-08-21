@@ -39,7 +39,7 @@ paths:
         name: appId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]{1,30}"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       responses:
@@ -71,7 +71,7 @@ paths:
         name: assetId
         required: true
         schema:
-          pattern: "M[a-zA-Z0-9_-]{10}"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       responses:
@@ -88,6 +88,7 @@ paths:
         - asset:write
       tags:
       - asset
+      x-rate-limit-per-client-user: 30
     get:
       description: You can retrieve the metadata of an asset by specifying its `assetId`.
       operationId: getAsset
@@ -98,7 +99,7 @@ paths:
         name: assetId
         required: true
         schema:
-          pattern: "M[a-zA-Z0-9_-]{10}"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       responses:
@@ -123,8 +124,6 @@ paths:
       description: |-
         You can update the name and tags of an asset by specifying its `assetId`. Updating the tags
         replaces all existing tags of the asset.
-
-        NOTE: This `PATCH` method of updating an asset replaces the deprecated `POST` method. For the old deprecated method, see [Update asset (deprecated)](https://www.canva.dev/docs/connect/api-reference/assets/update-asset-deprecated/).
       operationId: updateAsset
       parameters:
       - description: The ID of the asset.
@@ -133,7 +132,7 @@ paths:
         name: assetId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       requestBody:
@@ -159,92 +158,7 @@ paths:
         - asset:write
       tags:
       - asset
-    post:
-      description: |-
-        WARNING: This `POST` method of updating an asset is deprecated and will soon be removed. It's been replaced with an equivalent `PATCH` method: see [Update asset](https://www.canva.dev/docs/connect/api-reference/assets/update-asset/).
-
-        You can update the name and tags of an asset by specifying its `assetId`. Updating the tags
-        replaces all existing tags of the asset.
-      operationId: updateAssetDeprecated
-      parameters:
-      - description: The ID of the asset.
-        explode: false
-        in: path
-        name: assetId
-        required: true
-        schema:
-          pattern: "[a-zA-Z0-9_-]+"
-          type: string
-        style: simple
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateAssetDeprecatedRequest'
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UpdateAssetResponse'
-          description: OK
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Error Response
-      security:
-      - oauthAuthCode:
-        - asset:write
-      tags:
-      - asset
-  /v1/assets/upload:
-    post:
-      deprecated: true
-      description: |-
-        WARNING: This endpoint for uploading an asset is deprecated. You should instead use the asynchronous [Create asset upload job API](https://www.canva.dev/docs/connect/api-reference/assets/create-asset-upload-job/) instead.
-
-        You can upload media assets to a user’s content library using the `assets/upload` endpoint.
-        When specifying an asset that already exists, it renames the asset.
-
-        The request format for this endpoint is an `application/octet-stream` body of bytes. Attach
-        information about the upload using an `Upload-Metadata` header.
-      operationId: uploadAsset
-      parameters:
-      - content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UploadMetadata'
-        in: header
-        name: Upload-Metadata
-        required: true
-      requestBody:
-        content:
-          application/octet-stream:
-            schema:
-              format: binary
-              type: string
-        description: Binary of the asset to upload.
-        required: true
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UploadAssetResponse'
-          description: OK
-        default:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Error Response
-      security:
-      - oauthAuthCode:
-        - asset:write
-      tags:
-      - asset
+      x-rate-limit-per-client-user: 30
   /v1/asset-uploads:
     post:
       description: |-
@@ -275,6 +189,13 @@ paths:
         "200":
           content:
             application/json:
+              examples:
+                in_progress:
+                  $ref: '#/components/examples/InProgressAssetUploadJobExample'
+                success:
+                  $ref: '#/components/examples/SuccessAssetUploadJobExample'
+                failed:
+                  $ref: '#/components/examples/FailedAssetUploadJobExample'
               schema:
                 $ref: '#/components/schemas/CreateAssetUploadJobResponse'
           description: OK
@@ -289,6 +210,7 @@ paths:
         - asset:write
       tags:
       - asset
+      x-rate-limit-per-client-user: 30
   /v1/asset-uploads/{jobId}:
     get:
       description: |-
@@ -303,13 +225,20 @@ paths:
         name: jobId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       responses:
         "200":
           content:
             application/json:
+              examples:
+                in_progress:
+                  $ref: '#/components/examples/InProgressAssetUploadJobExample'
+                success:
+                  $ref: '#/components/examples/SuccessAssetUploadJobExample'
+                failed:
+                  $ref: '#/components/examples/FailedAssetUploadJobExample'
               schema:
                 $ref: '#/components/schemas/GetAssetUploadJobResponse'
           description: OK
@@ -324,18 +253,16 @@ paths:
         - asset:read
       tags:
       - asset
+      x-rate-limit-per-client-user: 180
   /v1/autofills:
     post:
       description: |-
         <Warning>
 
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+        Later this year, we'll be updating all brand template IDs. If your integration stores brand template IDs, you'll need to migrate to the new IDs. Once we implement this change, you'll have 6 months to update the IDs.
 
         </Warning>
+
         <Note>
 
         To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
@@ -359,6 +286,13 @@ paths:
         "200":
           content:
             application/json:
+              examples:
+                in_progress:
+                  $ref: '#/components/examples/InProgressAutofillJobExample'
+                success:
+                  $ref: '#/components/examples/SuccessAutofillJobExample'
+                failed:
+                  $ref: '#/components/examples/FailedAutofillJobExample'
               schema:
                 $ref: '#/components/schemas/CreateDesignAutofillJobResponse'
           description: OK
@@ -373,18 +307,10 @@ paths:
         - design:content:write
       tags:
       - autofill
+      x-rate-limit-per-client-user: 10
   /v1/autofills/{jobId}:
     get:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
         <Note>
 
         To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
@@ -404,13 +330,20 @@ paths:
         name: jobId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       responses:
         "200":
           content:
             application/json:
+              examples:
+                in_progress:
+                  $ref: '#/components/examples/InProgressAutofillJobExample'
+                success:
+                  $ref: '#/components/examples/SuccessAutofillJobExample'
+                failed:
+                  $ref: '#/components/examples/FailedAutofillJobExample'
               schema:
                 $ref: '#/components/schemas/GetDesignAutofillJobResponse'
           description: OK
@@ -425,18 +358,16 @@ paths:
         - design:meta:read
       tags:
       - autofill
+      x-rate-limit-per-client-user: 60
   /v1/brand-templates:
     get:
       description: |-
         <Warning>
 
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+        Later this year, we'll be updating all brand template IDs. If your integration stores brand template IDs, you'll need to migrate to the new IDs. Once we implement this change, you'll have 6 months to update the IDs.
 
         </Warning>
+
         <Note>
 
         To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
@@ -470,30 +401,33 @@ paths:
           type: string
         style: form
       - description: |-
-          Filter the brand templates to only show templates created by a particular user.
-          Provide a Canva user ID and it will filter the list to only show brand templates
-          created by that user. The 'owner' of a template is the user who created the design,
-          and the owner can't be changed.
+          Filter the list of brand templates based on the user's ownership of the brand templates.
+          This can be one of the following:
+
+          - `any`: (Default) Brand templates owned by and shared with the user.
+          - `owned`: Brand templates owned by the user.
+          - `shared`: Brand templates shared with the user.
         explode: true
         in: query
         name: ownership
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/OwnershipType'
         style: form
       - description: |-
           Sort the list of brand templates. This can be one of the following:
-          - `RELEVANCE`: (Default) Sort results using a relevance algorithm.
-          - `MODIFIED_DESCENDING`: Sort results by the date last modified in descending order.
-          - `MODIFIED_ASCENDING`: Sort results by the date last modified in ascending order.
-          - `TITLE_DESCENDING`: Sort results by title in descending order.
-          - `TITLE_ASCENDING`: Sort results by title in ascending order.
+
+          - `relevance`: (Default) Sort results using a relevance algorithm.
+          - `modified_descending`: Sort results by the date last modified in descending order.
+          - `modified_ascending`: Sort results by the date last modified in ascending order.
+          - `title_descending`: Sort results by title in descending order.
+          - `title_ascending`: Sort results by title in ascending order.
         explode: true
         in: query
         name: sort_by
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/SortByType'
         style: form
       responses:
         "200":
@@ -518,13 +452,10 @@ paths:
       description: |-
         <Warning>
 
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+        Later this year, we'll be updating all brand template IDs. If your integration stores brand template IDs, you'll need to migrate to the new IDs. Once we implement this change, you'll have 6 months to update the IDs.
 
         </Warning>
+
         <Note>
 
         To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
@@ -540,7 +471,7 @@ paths:
         name: brandTemplateId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       responses:
@@ -566,13 +497,10 @@ paths:
       description: |-
         <Warning>
 
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+        Later this year, we'll be updating all brand template IDs. If your integration stores brand template IDs, you'll need to migrate to the new IDs. Once we implement this change, you'll have 6 months to update the IDs.
 
         </Warning>
+
         <Note>
 
         To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
@@ -593,7 +521,7 @@ paths:
         name: brandTemplateId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       responses:
@@ -656,6 +584,7 @@ paths:
         - comment:write
       tags:
       - comment
+      x-rate-limit-per-client-user: 20
   /v1/comments/{commentId}/replies:
     post:
       description: |-
@@ -685,7 +614,7 @@ paths:
         name: commentId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       requestBody:
@@ -712,6 +641,7 @@ paths:
         - comment:write
       tags:
       - comment
+      x-rate-limit-per-client-user: 20
   /v1/designs/{designId}/comments/{commentId}:
     get:
       description: |-
@@ -736,7 +666,7 @@ paths:
         name: designId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       - description: The `id` of the comment.
@@ -746,7 +676,7 @@ paths:
         name: commentId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       responses:
@@ -856,7 +786,7 @@ paths:
         name: ownership
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/OwnershipType'
         style: form
       - description: |-
           Sort the list of designs.
@@ -873,7 +803,7 @@ paths:
         name: sort_by
         required: false
         schema:
-          type: string
+          $ref: '#/components/schemas/SortByType'
         style: form
       responses:
         "200":
@@ -925,6 +855,7 @@ paths:
         - design:content:write
       tags:
       - design
+      x-rate-limit-per-client-user: 20
   /v1/designs/{designId}:
     get:
       description: "Gets the metadata for a design. This includes owner information,\
@@ -937,7 +868,7 @@ paths:
         name: designId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       responses:
@@ -1019,6 +950,7 @@ paths:
         - design:content:write
       tags:
       - design_import
+      x-rate-limit-per-client-user: 20
   /v1/imports/{jobId}:
     get:
       description: |-
@@ -1042,7 +974,7 @@ paths:
         name: jobId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       responses:
@@ -1063,6 +995,7 @@ paths:
         - design:content:write
       tags:
       - design_import
+      x-rate-limit-per-client-user: 120
   /v1/exports:
     post:
       description: |-
@@ -1077,8 +1010,6 @@ paths:
         You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/connect/api-reference/exports/get-design-export-job/).
 
         NOTE: If you set `export_quality` to `pro`, the export might fail if the design contains [premium elements](https://www.canva.com/help/premium-elements/), and the calling user either hasn't purchased the elements or isn't on a Canva plan (such as Canva Pro) that has premium features.
-
-        NOTE: Currently, you can't use the export APIs to export video designs. This functionality is being added in the future. For more information on supported export formats for each Canva design type, see the [Overview page](https://www.canva.dev/docs/connect/api-reference/exports/).
       operationId: createDesignExportJob
       requestBody:
         content:
@@ -1089,6 +1020,13 @@ paths:
         "200":
           content:
             application/json:
+              examples:
+                in_progress:
+                  $ref: '#/components/examples/InProgressExportJobExample'
+                success:
+                  $ref: '#/components/examples/SuccessExportJobExample'
+                failed:
+                  $ref: '#/components/examples/FailedExportJobExample'
               schema:
                 $ref: '#/components/schemas/CreateDesignExportJobResponse'
           description: OK
@@ -1103,6 +1041,7 @@ paths:
         - design:content:read
       tags:
       - export
+      x-rate-limit-per-client-user: 20
   /v1/exports/{exportId}:
     get:
       description: |-
@@ -1118,13 +1057,20 @@ paths:
         name: exportId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       responses:
         "200":
           content:
             application/json:
+              examples:
+                in_progress:
+                  $ref: '#/components/examples/InProgressExportJobExample'
+                success:
+                  $ref: '#/components/examples/SuccessExportJobExample'
+                failed:
+                  $ref: '#/components/examples/FailedExportJobExample'
               schema:
                 $ref: '#/components/schemas/GetDesignExportJobResponse'
           description: OK
@@ -1139,6 +1085,7 @@ paths:
         - design:content:read
       tags:
       - export
+      x-rate-limit-per-client-user: 120
   /v1/folders/{folderId}:
     delete:
       description: |-
@@ -1166,7 +1113,7 @@ paths:
         name: folderId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]{1,50}+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       responses:
@@ -1183,6 +1130,7 @@ paths:
         - folder:write
       tags:
       - folder
+      x-rate-limit-per-client-user: 20
     get:
       description: |-
         <Warning>
@@ -1205,7 +1153,7 @@ paths:
         name: folderId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]{1,50}+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       responses:
@@ -1249,7 +1197,7 @@ paths:
         name: folderId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]{1,50}+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       requestBody:
@@ -1276,6 +1224,7 @@ paths:
         - folder:write
       tags:
       - folder
+      x-rate-limit-per-client-user: 20
   /v1/folders/{folderId}/items:
     get:
       description: |-
@@ -1306,7 +1255,7 @@ paths:
         name: folderId
         required: true
         schema:
-          pattern: "[a-zA-Z0-9_-]{1,50}+"
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         style: simple
       - description: |-
@@ -1328,12 +1277,35 @@ paths:
           Filter the folder items to only return specified types. The available types are:
           `asset`, `design`, `folder`, and `template`. To filter for more than one item type,
           provide a comma-delimited list.
-        explode: true
+        explode: false
         in: query
         name: item_types
         required: false
         schema:
-          type: string
+          items:
+            $ref: '#/components/schemas/FolderItemType'
+          type: array
+        style: form
+      - description: |-
+          Sort the list of folder items.
+          This can be one of the following:
+
+          - `created_ascending`: Sort results by creation date, in ascending order.
+          - `created_descending`: Sort results by creation date, in descending order.
+          - `modified_ascending`: Sort results by the last modified date, in ascending order.
+          - `modified_descending`: (Default) Sort results by the last modified date, in descending
+          order.
+          - `title_ascending`: Sort results by title, in ascending order. The title is either the
+          `name` field for a folder or asset, or the `title` field for a design.
+          - `title_descending`: Sort results by title, in descending order. The title is either
+          the `name` field for a folder or asset, or the `title` field for a design.
+        example: title_ascending
+        explode: true
+        in: query
+        name: sort_by
+        required: false
+        schema:
+          $ref: '#/components/schemas/FolderItemSortBy'
         style: form
       responses:
         "200":
@@ -1429,6 +1401,7 @@ paths:
         - folder:write
       tags:
       - folder
+      x-rate-limit-per-client-user: 20
   /v1/oauth/token:
     post:
       description: |-
@@ -1547,7 +1520,11 @@ paths:
               $ref: '#/components/schemas/RevokeTokensRequest'
         required: true
       responses:
-        "204":
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevokeTokensResponse'
           description: OK
         default:
           content:
@@ -1583,6 +1560,7 @@ paths:
       - oauthAuthCode: []
       tags:
       - user
+      x-rate-limit-per-client-user: 10
   /v1/users/me/profile:
     get:
       description: "Currently, this returns the display name of the user account associated\
@@ -1607,8 +1585,97 @@ paths:
         - profile:read
       tags:
       - user
+      x-rate-limit-per-client-user: 10
 components:
   examples:
+    InProgressAssetUploadJobExample:
+      summary: In progress job
+      value:
+        job:
+          id: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
+          status: in_progress
+    SuccessAssetUploadJobExample:
+      summary: Successfully completed job
+      value:
+        job:
+          id: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
+          status: success
+          asset:
+            id: Msd59349ff
+            name: My Awesome Upload
+            tags:
+            - image
+            - holiday
+            - best day ever
+            created_at: 1377396000
+            updated_at: 1692928800
+            thumbnail:
+              width: 595
+              height: 335
+              url: https://document-export.canva.com/Vczz9/zF9vzVtdADc/2/thumbnail/0001.png?<query-string>
+    FailedAssetUploadJobExample:
+      summary: Failed job
+      value:
+        job:
+          id: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
+          status: failed
+          error:
+            code: file_too_big
+            message: Failed to import because the file is too big
+    InProgressAutofillJobExample:
+      summary: In progress job
+      value:
+        job:
+          id: 450a76e7-f96f-43ae-9c37-0e1ce492ac72
+          status: in_progress
+    SuccessAutofillJobExample:
+      summary: Successfully completed job
+      value:
+        job:
+          id: 450a76e7-f96f-43ae-9c37-0e1ce492ac72
+          status: success
+          result:
+            type: create_design
+            design:
+              id: DAFVztcvd9z
+              title: My summer holiday
+              url: https://www.canva.com/design/DAFVztcvd9z/edit
+              thumbnail:
+                width: 595
+                height: 335
+                url: https://document-export.canva.com/Vczz9/zF9vzVtdADc/2/thumbnail/0001.png?<query-string>
+    FailedAutofillJobExample:
+      summary: Failed job
+      value:
+        job:
+          id: 450a76e7-f96f-43ae-9c37-0e1ce492ac72
+          status: failed
+          error:
+            code: autofill_error
+            message: Error autofilling design from brand template
+    InProgressExportJobExample:
+      summary: In progress job
+      value:
+        job:
+          id: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
+          status: in_progress
+    SuccessExportJobExample:
+      summary: Successfully completed job
+      value:
+        job:
+          id: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
+          status: success
+          urls:
+          - https://export-download.canva.com/...
+    FailedExportJobExample:
+      summary: Failed job
+      value:
+        job:
+          id: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
+          status: failed
+          error:
+            code: license_required
+            message: User doesn't have the required license to export in PRO quality.
     UpdateFolderPermissionsUserInputExample:
       description: "Example of an update folder permissions request, updating the\
         \ permissions for a user."
@@ -1678,7 +1745,7 @@ components:
       name: brandTemplateId
       required: true
       schema:
-        pattern: "[a-zA-Z0-9_-]+"
+        pattern: "^[a-zA-Z0-9_-]{1,50}$"
         type: string
       style: simple
     commentId:
@@ -1689,7 +1756,7 @@ components:
       name: commentId
       required: true
       schema:
-        pattern: "[a-zA-Z0-9_-]+"
+        pattern: "^[a-zA-Z0-9_-]{1,50}$"
         type: string
       style: simple
     designId:
@@ -1699,7 +1766,7 @@ components:
       name: designId
       required: true
       schema:
-        pattern: "[a-zA-Z0-9_-]+"
+        pattern: "^[a-zA-Z0-9_-]{1,50}$"
         type: string
       style: simple
     exportId:
@@ -1709,7 +1776,7 @@ components:
       name: exportId
       required: true
       schema:
-        pattern: "[a-zA-Z0-9_-]+"
+        pattern: "^[a-zA-Z0-9_-]{1,50}$"
         type: string
       style: simple
     folderIdParameter:
@@ -1720,7 +1787,7 @@ components:
       name: folderId
       required: true
       schema:
-        pattern: "[a-zA-Z0-9_-]{1,50}+"
+        pattern: "^[a-zA-Z0-9_-]{1,50}$"
         type: string
       style: simple
   schemas:
@@ -1796,14 +1863,6 @@ components:
       required:
       - asset
       type: object
-    UploadAssetResponse:
-      deprecated: true
-      properties:
-        asset:
-          $ref: '#/components/schemas/Asset'
-      required:
-      - asset
-      type: object
     UpdateAssetRequest:
       properties:
         name:
@@ -1836,32 +1895,6 @@ components:
           $ref: '#/components/schemas/Asset'
       required:
       - asset
-      type: object
-    UpdateAssetDeprecatedRequest:
-      properties:
-        name:
-          description: |-
-            The name of the asset. This is shown in the Canva UI.
-            When this field is undefined, nothing is updated.
-            Maximum length 50 characters.
-          example: My Awesome Upload
-          maxLength: 50
-          type: string
-        tags:
-          description: |-
-            The replacement tags for the asset.
-            When this field is undefined, nothing is updated.
-            Maximum length 50 tags. Each tag
-            has a maximum length of 50 characters.
-          example:
-          - image
-          - holiday
-          - best day ever
-          items:
-            maxLength: 50
-            type: string
-          maxItems: 50
-          type: array
       type: object
     Asset:
       description: "The asset object, which contains metadata about the asset."
@@ -1954,42 +1987,6 @@ components:
       - file_too_big
       - import_failed
       type: string
-    UploadMetadata:
-      deprecated: true
-      description: Metadata about the asset that you include as a header parameter
-        when uploading an asset.
-      properties:
-        name:
-          description: The name of the asset. The maximum length of this property
-            is 50 characters.
-          example: My Awesome Upload
-          maxLength: 50
-          minLength: 1
-          type: string
-        parent_folder_id:
-          description: The ID of the parent folder where the asset will be uploaded.
-          example: FG5IFBpY3M
-          maxLength: 50
-          minLength: 1
-          type: string
-        tags:
-          description: "The user-facing tags attached to the asset. Users can also\
-            \ add these tags to their uploaded assets, and they can search their uploaded\
-            \ assets in the Canva UI by searching for these tags. For information\
-            \ on how users use tags, see the [Canva Help Center page on asset tags](https://www.canva.com/help/add-edit-tags/).\
-            \ Maximum length 50 tags. Each tag has a maximum length of 50 characters."
-          example:
-          - go to market
-          - holiday
-          - adventure
-          items:
-            type: string
-          maxItems: 50
-          type: array
-      required:
-      - name
-      - parent_folder_id
-      type: object
     CreateAssetUploadJobResponse:
       properties:
         job:
@@ -2007,7 +2004,7 @@ components:
     AssetUploadJob:
       description: The status of the asset upload job.
       example:
-        id: Msd59349ff
+        id: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
         status: success
         asset:
           id: Msd59349ff
@@ -2025,7 +2022,7 @@ components:
       properties:
         id:
           description: The ID of the asset upload job.
-          example: Msd59349ff
+          example: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
           type: string
         status:
           $ref: '#/components/schemas/AssetUploadStatus'
@@ -2100,14 +2097,6 @@ components:
           maxLength: 255
           minLength: 1
           type: string
-        preview:
-          deprecated: true
-          description: |-
-            This property is no longer used and will soon be removed.
-
-            This property is `false` by default.
-          example: false
-          type: boolean
         data:
           additionalProperties:
             $ref: '#/components/schemas/DatasetValue'
@@ -2387,13 +2376,13 @@ components:
             You can also mention users in your message by specifying their User ID and Team ID
             using the format `[user_id:team_id]`. If the `assignee_id` parameter is specified, you
             must mention the assignee in the message.
-          example: "Great work [UAFZjbdfojE:BABdhiebEoe]!"
+          example: "Great work [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!"
           type: string
         assignee_id:
           description: |-
             Lets you assign the comment to a Canva user using their User ID. You _must_ mention the
             assigned user in the `message`.
-          example: UAFZjbdfojE
+          example: oUnPjZ2k2yuhftbWF7873o
           type: string
       required:
       - attached_to
@@ -2470,7 +2459,7 @@ components:
           description: |-
             The comment message. This is the comment body shown in the Canva UI.
             User mentions are shown here in the format `[user_id:team_id]`.
-          example: "Great work [UAFZjbdfojE:BABdhiebEoe]!"
+          example: "Great work [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!"
           type: string
         author:
           $ref: '#/components/schemas/User'
@@ -2718,6 +2707,20 @@ components:
       - kty
       - x
       type: object
+    SortByType:
+      enum:
+      - relevance
+      - modified_descending
+      - modified_ascending
+      - title_descending
+      - title_ascending
+      type: string
+    OwnershipType:
+      enum:
+      - any
+      - owned
+      - shared
+      type: string
     GetListDesignResponse:
       properties:
         continuation:
@@ -3070,7 +3073,7 @@ components:
         design_id: DAVZr1z5464
         format:
           type: pdf
-          size: A4
+          size: a4
           pages:
           - 2
           - 3
@@ -3184,8 +3187,10 @@ components:
       type: object
     JpgExportFormat:
       description: |-
-        Export the design as a JPG. Compression quality must be provided. Height or width (or both)
+        Export the design as a JPEG. Compression quality must be provided. Height or width (or both)
         may be specified, otherwise the file will be exported at it's default size.
+
+        If the user is on the Canva Free plan, the export height and width for a fixed-dimension design can't be upscaled by more than a factor of `1.125`.
       properties:
         type:
           enum:
@@ -3194,7 +3199,7 @@ components:
         export_quality:
           $ref: '#/components/schemas/ExportQuality'
         quality:
-          description: "For the `JPG` type, the `quality` of the exported JPEG determines\
+          description: "For the `jpg` type, the `quality` of the exported JPEG determines\
             \ how compressed the exported file should be. A _low_ `quality` value\
             \ (minimum `1`) will create a file with a smaller file size, but the resulting\
             \ file will have pixelated artifacts when compared to a file created with\
@@ -3247,6 +3252,8 @@ components:
         Export the design as a PNG. Height or width (or both) may be specified, otherwise
         the file will be exported at it's default size. You may also specify whether to export the
         file losslessly, and whether to export a multi-page design as a single image.
+
+        If the user is on the Canva Free plan, the export height and width for a fixed-dimension design can't be upscaled by more than a factor of `1.125`.
       properties:
         type:
           enum:
@@ -3357,10 +3364,6 @@ components:
       - type
       type: object
     CreateDesignExportJobResponse:
-      example:
-        job:
-          id: 1332472403399775200
-          status: in_progress
       properties:
         job:
           $ref: '#/components/schemas/ExportJob'
@@ -3368,12 +3371,6 @@ components:
       - job
       type: object
     GetDesignExportJobResponse:
-      example:
-        job:
-          id: 1332472403399775200
-          status: success
-          urls:
-          - https://export-download.canva-dev.com/...
       properties:
         job:
           $ref: '#/components/schemas/ExportJob'
@@ -3385,7 +3382,7 @@ components:
       properties:
         id:
           description: The export job ID.
-          example: "1332472403399775200"
+          example: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
           type: string
         status:
           $ref: '#/components/schemas/DesignExportStatus'
@@ -3489,6 +3486,23 @@ components:
       enum:
       - pro
       - regular
+      type: string
+    FolderItemSortBy:
+      default: modified_descending
+      enum:
+      - created_ascending
+      - created_descending
+      - modified_ascending
+      - modified_descending
+      - title_ascending
+      - title_descending
+      type: string
+    FolderItemType:
+      enum:
+      - asset
+      - design
+      - folder
+      - template
       type: string
     GetFolderResponse:
       description: The folder ID.
@@ -3863,7 +3877,7 @@ components:
         scope:
           description: "The [scopes](https://www.canva.dev/docs/connect/appendix/scopes/)\
             \ that the token has been granted."
-          example: asset:read design:meta:read design:permission:read folder:read
+          example: asset:read design:meta:read folder:read
           type: string
       required:
       - access_token
@@ -3907,7 +3921,7 @@ components:
         scope:
           description: "The [scopes](https://www.canva.dev/docs/connect/appendix/scopes/)\
             \ that the token has been granted."
-          example: asset:read design:meta:read design:permission:read folder:read
+          example: asset:read design:meta:read folder:read
           type: string
         client:
           description: The ID of the client that requested the token.
@@ -3970,10 +3984,13 @@ components:
       required:
       - token
       type: object
+    RevokeTokensResponse:
+      description: The response on a successful token revocation.
+      type: object
     scope_response:
       description: "The [scopes](https://www.canva.dev/docs/connect/appendix/scopes/)\
         \ that the token has been granted."
-      example: asset:read design:meta:read design:permission:read folder:read
+      example: asset:read design:meta:read folder:read
       type: string
     client_id:
       description: |
@@ -4165,6 +4182,7 @@ components:
           design_access_requested: '#/components/schemas/DesignAccessRequestedNotificationContent'
           design_approval_requested: '#/components/schemas/DesignApprovalRequestedNotificationContent'
           design_approval_response: '#/components/schemas/DesignApprovalResponseNotificationContent'
+          design_approval_reviewer_invalidated: '#/components/schemas/DesignApprovalReviewerInvalidatedNotificationContent'
           design_mention: '#/components/schemas/DesignMentionNotificationContent'
           team_invite: '#/components/schemas/TeamInviteNotificationContent'
           folder_access_requested: '#/components/schemas/FolderAccessRequestedNotificationContent'
@@ -4176,6 +4194,7 @@ components:
       - $ref: '#/components/schemas/DesignAccessRequestedNotificationContent'
       - $ref: '#/components/schemas/DesignApprovalRequestedNotificationContent'
       - $ref: '#/components/schemas/DesignApprovalResponseNotificationContent'
+      - $ref: '#/components/schemas/DesignApprovalReviewerInvalidatedNotificationContent'
       - $ref: '#/components/schemas/DesignMentionNotificationContent'
       - $ref: '#/components/schemas/TeamInviteNotificationContent'
       - $ref: '#/components/schemas/FolderAccessRequestedNotificationContent'
@@ -4329,9 +4348,29 @@ components:
       - triggering_user
       - type
       type: object
+    DesignApprovalReviewerInvalidatedNotificationContent:
+      description: The notification content for when a reviewer in a design is invalidated.
+      properties:
+        type:
+          enum:
+          - design_approval_reviewer_invalidated
+          example: design_approval_reviewer_invalidated
+          type: string
+        receiving_team_user:
+          $ref: '#/components/schemas/TeamUserSummary'
+        design:
+          $ref: '#/components/schemas/DesignSummary'
+      required:
+      - design
+      - receiving_team_user
+      - type
+      type: object
     DesignMentionNotificationContent:
-      description: The notification content for when someone mentions a user in a
-        design.
+      description: |-
+        The notification content for when someone mentions a user in a design.
+
+        The link to the design in this notification is valid for 30 days, and can only be opened by
+        the recipient of the notification.
       properties:
         type:
           enum:
@@ -4423,6 +4462,11 @@ components:
             Whether the design was approved. When `true`, the reviewer has approved
             the design.
           type: boolean
+        ready_to_publish:
+          description: |-
+            Whether the design is ready to publish. When `true`, the design has been approved
+            by all reviewers and can be published.
+          type: boolean
         message:
           description: The message included by a user responding to a design approval
             request.
@@ -4437,23 +4481,17 @@ components:
     oauthAuthCode:
       flows:
         authorizationCode:
-          authorizationUrl: https://www.canva.com/oauth/api/authorize
+          authorizationUrl: https://www.canva.com/api/oauth/authorize
           scopes:
             design:content:read: View the contents of the user's designs.
             design:meta:read: View the metadata of the user's designs.
             design:content:write: Create designs on the user's behalf.
-            design:permission:read: View the permissions assigned to a user's designs.
-            design:permission:write: "Set, update, or remove the permissions assigned\
-              \ to the user's designs."
             folder:read: |-
               View the metadata and contents of the user's folders, including their **Projects**
               folder.
             folder:write: |-
               Add, move, or remove the user's folders. It also lets you edit folder metadata,
               such as the folder's name.
-            folder:permission:read: View permissions assigned to a user's folders.
-            folder:permission:write: "Set, update, or remove permissions assigned\
-              \ to the user's folders."
             asset:read: "View the metadata for the user's assets, such as uploaded\
               \ images."
             asset:write: "Upload, update, or delete assets on the user's behalf."

@@ -1,14 +1,6 @@
-import type { Product } from "../models/product";
-import type { EncryptedData } from "../services/crypto";
+import type { BaseDatabaseSchema } from "../../../common/backend/database/schema";
+import type { Product } from "../models";
 
-export type User = {
-  // The Canva ID of the user
-  id: string;
-  // The Canva access and refresh token for the user
-  token: EncryptedData;
-};
-
-export type DatabaseSchema = {
+export type DatabaseSchema = BaseDatabaseSchema & {
   products: Product[];
-  users: User[];
 };

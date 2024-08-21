@@ -9,10 +9,12 @@ import brandTemplateRoutes from "./routes/brand-template";
 import designRoutes from "./routes/design";
 import userRoutes from "./routes/user";
 import productRoutes from "./routes/product";
+import returnNavRoutes from "./routes/return-nav";
+import exportRoutes from "./routes/export";
 import cookieParser from "cookie-parser";
-import { errorHandler } from "./middleware/errors";
+import { errorHandler } from "../../common/backend/middleware/errors";
 import type { client } from "@hey-api/client-fetch";
-import { logger } from "./middleware/logger";
+import { logger } from "../../common/backend/middleware/logger";
 
 /**
  * We extend the Express Request interface to include the custom properties
@@ -62,8 +64,13 @@ app.use(designRoutes);
 app.use(brandTemplateRoutes);
 app.use(userRoutes);
 app.use(productRoutes);
+app.use(returnNavRoutes);
+app.use(exportRoutes);
 
-app.set("views", path.join(__dirname, "views"));
+app.set(
+  "views",
+  path.join(__dirname, "..", "..", "common", "backend", "views"),
+);
 app.set("view engine", "pug");
 
 app.listen(port, () => {

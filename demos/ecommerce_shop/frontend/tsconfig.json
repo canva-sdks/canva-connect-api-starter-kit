@@ -21,7 +21,7 @@
     "importHelpers": true,
     "noImplicitOverride": true,
     "moduleResolution": "node",
-    "rootDir": ".",
+    "rootDir": "../..",
     "outDir": "dist",
     "noEmit": true,
     "strict": true,
@@ -39,6 +39,7 @@
   "include": [
     "./**/*",
     "../node_modules/@types/**/*",
+    "../../common/utils"
   ],
   "ts-node": {
     "compilerOptions": {

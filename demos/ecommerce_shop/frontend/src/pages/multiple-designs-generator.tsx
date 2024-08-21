@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
-import type {
-  BrandTemplate,
-  GetDesignAutofillJobResponse,
-} from "@canva/connect-api-ts/types.gen";
+import type { BrandTemplate } from "@canva/connect-api-ts/types.gen";
 import { Grid, Stack, Typography } from "@mui/material";
 import {
   AutofillResults,
@@ -13,13 +10,21 @@ import {
   PublishDialog,
 } from "src/components";
 import { useAppContext, useCampaignContext } from "src/context";
-import { autoFillTemplateWithProduct, getBrandTemplates } from "src/services";
+import {
+  autoFillTemplateWithProduct,
+  fetchDesign,
+  getBrandTemplates,
+} from "src/services";
 
 export const MultipleDesignsGeneratorPage = () => {
-  const { setErrors } = useAppContext();
+  const {
+    addAlert,
+    selectedCampaignProduct,
+    marketingMultiDesignResults,
+    setMarketingMultiDesignResults,
+  } = useAppContext();
   const {
     campaignName,
-    selectedProduct,
     selectedDiscount,
     selectedBrandTemplates,
     setSelectedBrandTemplates,
@@ -27,11 +32,9 @@ export const MultipleDesignsGeneratorPage = () => {
   const [brandTemplates, setBrandTemplates] = useState<BrandTemplate[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const [progress, setProgress] = useState<number>();
-  const [autoFillResults, setAutoFillResults] = useState<
-    GetDesignAutofillJobResponse[]
-  >([]);
   const [loadingModalIsOpen, setLoadingModalIsOpen] = useState(false);
   const [publishDialogIsOpen, setPublishDialogIsOpen] = useState(false);
+  const [isFirstGenerated, setIsFirstGenerated] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,11 +43,10 @@ export const MultipleDesignsGeneratorPage = () => {
         const { items } = await getBrandTemplates();
         setBrandTemplates(items);
       } catch (e) {
-        setErrors((prevState) =>
-          prevState.concat(
-            "Something went wrong fetching your brand templates.",
-          ),
-        );
+        addAlert({
+          title: "Something went wrong fetching your brand templates.",
+          variant: "error",
+        });
       } finally {
         setIsFetching(false);
       }
@@ -55,39 +57,73 @@ export const MultipleDesignsGeneratorPage = () => {
 
   const autofillSelectedBrandTemplates = async () => {
     try {
-      if (!selectedProduct) {
-        setErrors((prevState) => prevState.concat("No product selected."));
+      if (!selectedCampaignProduct) {
+        addAlert({ title: "No product selected.", variant: "error" });
         return;
       }
 
       if (!selectedBrandTemplates.length) {
-        setErrors((prevState) =>
-          prevState.concat("No brand templates selected."),
-        );
+        addAlert({
+          title: "No brand templates selected.",
+          variant: "error",
+        });
         return;
       }
 
       const autoFillPromises = selectedBrandTemplates.map((brandTemplate) =>
         autoFillTemplateWithProduct({
           brandTemplateId: brandTemplate.id,
-          product: selectedProduct,
+          product: selectedCampaignProduct,
           discount: selectedDiscount,
         }),
       );
 
       const results = await Promise.allSettled(autoFillPromises);
 
-      results.forEach((result) => {
+      results.forEach(async (result) => {
         if (result.status === "rejected") {
-          setErrors((prevState) =>
-            prevState.concat(`Error creating design: ${result.reason}`),
-          );
+          addAlert({
+            title: `Error creating design: ${result.reason}.`,
+            variant: "error",
+          });
         } else if (result.status === "fulfilled") {
-          setAutoFillResults((prevResults) => [...prevResults, result.value]);
+          if (result.value.job.result?.design.id) {
+            const response = await fetchDesign({
+              designId: result.value.job.result.design.id,
+            });
+            setMarketingMultiDesignResults((currentDesigns) => [
+              ...currentDesigns,
+              {
+                ...response.design,
+                /**
+                 * A design created from an autoFill request doesn't have a design.thumbnail,
+                 * whereas the auto-fill job result does.  Falling back to the job result
+                 * thumbnail where design thumbnail is undefined
+                 */
+                thumbnail:
+                  response.design.thumbnail ??
+                  result.value.job.result?.design.thumbnail,
+              },
+            ]);
+          }
         }
       });
+
+      setIsFirstGenerated(true);
+
+      addAlert({
+        title:
+          results.filter((result) => result.status === "fulfilled").length === 1
+            ? "1 Canva design was generated"
+            : `${results.length} Canva designs were generated`,
+        variant: "success",
+        hideAfterMs: -1,
+      });
     } catch (error) {
-      setErrors((prevState) => prevState.concat(`Unexpected error: ${error}`));
+      addAlert({
+        title: `Unexpected error: ${error}`,
+        variant: "error",
+      });
     }
   };
 
@@ -119,7 +155,10 @@ export const MultipleDesignsGeneratorPage = () => {
       await autofillSelectedBrandTemplates();
     } catch (error) {
       console.error(error);
-      setErrors((prevState) => prevState.concat("Error auto-filling template"));
+      addAlert({
+        title: "Error auto-filling template.",
+        variant: "error",
+      });
     } finally {
       clearInterval(intervalId);
       setLoadingModalIsOpen(false);
@@ -142,11 +181,14 @@ export const MultipleDesignsGeneratorPage = () => {
         description="Create multiple designs at once by adding products to your Brand Templates"
       />
       <Grid item={true} xs={8}>
-        {autoFillResults.length ? (
+        {marketingMultiDesignResults.length ? (
           <Stack spacing={4}>
-            <AutofillResults autoFillResults={autoFillResults} />
+            <AutofillResults
+              designResults={marketingMultiDesignResults}
+              firstGenerated={isFirstGenerated}
+            />
             <PublishCampaignButtons
-              onCancel={() => setAutoFillResults([])}
+              onCancel={() => setMarketingMultiDesignResults([])}
               onPublish={() => {
                 if (campaignName) {
                   setPublishDialogIsOpen(true);

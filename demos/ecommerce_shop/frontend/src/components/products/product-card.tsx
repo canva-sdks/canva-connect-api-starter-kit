@@ -27,13 +27,33 @@ export const ProductCard = ({
     <Box position="relative">
       <CardMedia
         component="img"
-        image={product.imageUrl}
+        image={product.canvaDesign?.designExportUrl ?? product.imageUrl}
         alt={product.name}
         sx={{
           borderRadius: 3,
           marginBottom: 2,
         }}
       />
+      {product.canvaDesign?.designEditUrl && (
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 24,
+            left: 8,
+            opacity: 0.7,
+            background: (theme) => theme.palette.background.default,
+          }}
+          display="flex"
+          alignItems="center"
+          gap={1}
+          px={1}
+          py={1}
+          borderRadius={3}
+        >
+          <CanvaIcon />
+          <Typography>Recently Edited</Typography>
+        </Box>
+      )}
       <DemoButton
         demoVariant="primary"
         onClick={onClick}

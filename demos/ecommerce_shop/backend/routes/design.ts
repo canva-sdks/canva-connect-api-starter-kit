@@ -6,6 +6,7 @@ const router = express.Router();
 
 const endpoints = {
   DESIGNS: "/designs",
+  GET_DESIGN: "/design/:id",
 };
 
 router.post(endpoints.DESIGNS, async (req, res) => {
@@ -17,6 +18,24 @@ router.post(endpoints.DESIGNS, async (req, res) => {
   if (result.error) {
     console.log(result.error);
     return res.status(result.response.status).json(result.error);
+  }
+
+  return res.json(result.data);
+});
+
+router.get(endpoints.GET_DESIGN, async (req, res) => {
+  const result = await DesignService.getDesign({
+    client: req.client,
+    path: { designId: req.params.id },
+  });
+
+  if (result.error) {
+    console.log(result.error);
+    return res.status(result.response.status).json(result.error);
+  }
+
+  if (!result.data) {
+    return res.status(404).json();
   }
 
   return res.json(result.data);

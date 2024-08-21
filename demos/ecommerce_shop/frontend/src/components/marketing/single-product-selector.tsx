@@ -13,11 +13,10 @@ import {
 import { useAppContext } from "src/context";
 import type { Product } from "src/models";
 import { getProducts } from "src/services";
-import { useCampaignContext } from "src/context";
 
 export const SingleProductSelector = ({ disabled }: { disabled: boolean }) => {
-  const { setErrors } = useAppContext();
-  const { selectedProduct, setSelectedProduct } = useCampaignContext();
+  const { addAlert, selectedCampaignProduct, setSelectedCampaignProduct } =
+    useAppContext();
   const [isFetching, setIsFetching] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -28,12 +27,13 @@ export const SingleProductSelector = ({ disabled }: { disabled: boolean }) => {
         try {
           const { products } = await getProducts();
           setProducts(products);
-          setSelectedProduct(products[0]);
+          setSelectedCampaignProduct(products[0]);
         } catch (error) {
           console.error(error);
-          setErrors((prevState: string[]) =>
-            prevState.concat("Something went wrong fetching products."),
-          );
+          addAlert({
+            title: "Something went wrong fetching products.",
+            variant: "error",
+          });
         }
       } finally {
         setIsFetching(false);
@@ -47,7 +47,7 @@ export const SingleProductSelector = ({ disabled }: { disabled: boolean }) => {
     const filteredProduct = products.find(
       (product) => product.id === selectedId,
     );
-    setSelectedProduct(filteredProduct);
+    setSelectedCampaignProduct(filteredProduct);
   };
 
   if (isFetching) {
@@ -66,8 +66,8 @@ export const SingleProductSelector = ({ disabled }: { disabled: boolean }) => {
           label="Product"
           labelId="product-select-label"
           onChange={handleChange}
-          value={selectedProduct?.id || ""}
-          renderValue={() => selectedProduct?.name || ""}
+          value={selectedCampaignProduct?.id || ""}
+          renderValue={() => selectedCampaignProduct?.name || ""}
           disabled={disabled}
         >
           {products.map((product) => (

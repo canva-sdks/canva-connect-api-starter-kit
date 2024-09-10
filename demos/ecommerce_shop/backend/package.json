@@ -8,7 +8,9 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier . --no-config --write",
     "format:check": "prettier . --no-config --check --ignore-path ./.prettierignore",
-    "format:file": "prettier $1 --no-config --write"
+    "format:file": "prettier $1 --no-config --write",
+    "products:read": "ts-node ./scripts/products.ts read",
+    "products:reset": "ts-node ./scripts/products.ts reset"
   },
   "author": "Canva Pty Ltd.",
   "license": "SEE LICENSE IN LICENSE.md in root directory",

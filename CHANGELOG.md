@@ -1,5 +1,13 @@
 # Changelog
 
+## 2024-09-11
+
+### 🔧 Changed
+
+- Refreshed the OpenAPI yml spec `openapi/spec.yml` to be based on the latest Connect API design.
+- `ecommerce_demo`:
+  - Added commands to easily reset products in the database to help with testing
+
 ## 2024-08-19
 
 ### 🧰 Added

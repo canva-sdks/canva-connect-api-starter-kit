@@ -514,15 +514,32 @@ export class DesignImportService {
    * </Warning>
    *
    * Starts a new job to import an external file as a new design in Canva.
+   *
+   * You can check the status and get the results of import jobs created with this API using the [Get design import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/get-design-import-job/).
+   *
    * The request format for this endpoint has an `application/octet-stream` body of bytes,
    * and the information about the import is attached using an `Import-Metadata` header.
    *
-   * Supported formats: PDFs(`.pdf`), Adobe Illustrator(`.ai`), Adobe Photoshop(`.psd`),
-   * Microsoft Word(`.docx`), Microsoft Powerpoint(`.pptx`), Microsoft Excel(`.xls`, `.xlsx`),
-   * OpenOffice Draw(`.odg`), OpenOffice Presentation(`.odp`), OpenOffice Sheets(`.ods`),
-   * OpenOffice Text(`.odt`).
+   * Supported file types:
    *
-   * You can check the status and get the results of import jobs created with this API using the [Get design import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/get-design-import-job/).
+   * | Name                              | MIME type                                                                 | File extension |
+   * | --------------------------------- | ------------------------------------------------------------------------- | -------------- |
+   * | Adobe Illustrator                 | application/illustrator                                                   | .ai            |
+   * | Adobe Photoshop                   | image/vnd.adobe.photoshop                                                 | .psd           |
+   * | Apple Keynote                     | application/vnd.apple.keynote                                             | .key           |
+   * | Apple Numbers                     | application/vnd.apple.numbers                                             | .numbers       |
+   * | Apple Pages                       | application/vnd.apple.pages                                               | .pages         |
+   * | Microsoft Excel (pre 2007)        | application/vnd.ms-excel                                                  | .xls           |
+   * | Microsoft Excel                   | application/vnd.openxmlformats-officedocument.spreadsheetml.sheet         | .xlsx          |
+   * | Microsoft PowerPoint (pre 2007)   | application/vnd.ms-powerpoint                                             | .ppt           |
+   * | Microsoft PowerPoint              | application/vnd.openxmlformats-officedocument.presentationml.presentation | .pptx          |
+   * | Microsoft Word (pre 2007)         | application/msword                                                        | .doc           |
+   * | Microsoft Word                    | application/vnd.openxmlformats-officedocument.wordprocessingml.document   | .docx          |
+   * | OpenOffice Draw                   | application/vnd.oasis.opendocument.graphics                               | .odg           |
+   * | OpenOffice Presentation           | application/vnd.oasis.opendocument.presentation                           | .odp           |
+   * | OpenOffice Sheets                 | application/vnd.oasis.opendocument.spreadsheet                            | .ods           |
+   * | OpenOffice Text                   | application/vnd.oasis.opendocument.text                                   | .odt           |
+   * | PDF                               | application/pdf                                                           | .pdf           |
    *
    * For upload formats and requirements, see
    * [Canva Help — Upload formats and requirements](https://www.canva.com/help/upload-formats-requirements/).
@@ -568,10 +585,9 @@ export class ExportService {
    * Starts a new job to export a file from Canva. Once the exported file is generated, you can download
    * it using the link(s) provided.
    *
-   * The request requires the design ID and the exported file format.
+   * The request requires the design ID and the exported file format type.
    *
-   * Supported formats: pdf(`.pdf`), jpg(`.jpg`), png(`.png`), gif(`.gif`),
-   * pptx(`.pptx`), and mp4(`.mp4`).
+   * Supported file formats (and export file type values): PDF (`pdf`), JPG (`jpg`), PNG (`png`), GIF (`gif`), Microsoft PowerPoint (`pptx`), and MP4 (`mp4`).
    *
    * You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/connect/api-reference/exports/get-design-export-job/).
    *
@@ -694,9 +710,8 @@ export class FolderService {
    * Folders can contain:
    *
    * - Other folders.
-   * - Assets, such as uploaded images and videos.
    * - Designs, such as Instagram posts, Presentations, and Documents ([Canva Docs](https://www.canva.com/create/documents/)).
-   * - [Brand templates](https://www.canva.com/help/manage-team-template/).
+   * - Image assets.
    */
   public static listFolderItems(options: Options<ListFolderItemsData>) {
     return (options?.client ?? client).get<
@@ -719,7 +734,9 @@ export class FolderService {
    *
    * </Warning>
    *
-   * Moves items from one folder to another. You must specify the the folder IDs of both the source and destination folders, as well as the ID of the item you want to move.
+   * Moves an item to another folder. You must specify the folder ID of the destination folder, as well as the ID of the item you want to move.
+   *
+   * NOTE: In some situations, a single item can exist in multiple folders. If you attempt to move an item that exists in multiple folders, the API returns an `item_in_multiple_folders` error. In this case, you must use the Canva UI to move the item to another folder.
    */
   public static moveFolderItem(options?: Options<MoveFolderItemData>) {
     return (options?.client ?? client).post<

@@ -85,6 +85,7 @@ export type UpdateAssetResponse = {
  * The asset object, which contains metadata about the asset.
  */
 export type Asset = {
+  type: AssetType;
   /**
    * The ID of the asset.
    */
@@ -114,6 +115,52 @@ export type Asset = {
   updated_at: number;
   thumbnail?: Thumbnail;
 };
+
+/**
+ * An object representing an asset with associated metadata.
+ */
+export type AssetSummary = {
+  type: AssetType;
+  /**
+   * The ID of the asset.
+   */
+  id: string;
+  /**
+   * The name of the asset.
+   */
+  name: string;
+  /**
+   * The user-facing tags attached to the asset.
+   * Users can add these tags to their uploaded assets, and they can search their uploaded
+   * assets in the Canva UI by searching for these tags. For information on how users use
+   * tags, see the
+   * [Canva Help Center page on asset tags](https://www.canva.com/help/add-edit-tags/).
+   */
+  tags: Array<string>;
+  /**
+   * When the asset was added to Canva, as a Unix timestamp (in seconds since the Unix
+   * Epoch).
+   */
+  created_at: number;
+  /**
+   * When the asset was last updated in Canva, as a Unix timestamp (in seconds since the
+   * Unix Epoch).
+   */
+  updated_at: number;
+  thumbnail?: Thumbnail;
+};
+
+/**
+ * Type of an asset.
+ */
+export type AssetType = "image";
+
+/**
+ * Type of an asset.
+ */
+export const AssetType = {
+  IMAGE: "image",
+} as const;
 
 /**
  * The import status of the asset.
@@ -414,6 +461,16 @@ export type BrandTemplate = {
    */
   create_url: string;
   thumbnail?: Thumbnail;
+  /**
+   * When the brand template was created, as a Unix timestamp
+   * (in seconds since the Unix Epoch).
+   */
+  created_at: number;
+  /**
+   * When the brand template was last updated, as a Unix timestamp
+   * (in seconds since the Unix Epoch).
+   */
+  updated_at: number;
 };
 
 /**
@@ -782,6 +839,20 @@ export type Design = {
   owner: TeamUserSummary;
   thumbnail?: Thumbnail;
   urls: DesignLinks;
+  /**
+   * When the design was created in Canva, as a Unix timestamp (in seconds since the Unix
+   * Epoch).
+   */
+  created_at: number;
+  /**
+   * When the design was last updated in Canva, as a Unix timestamp (in seconds since the
+   * Unix Epoch).
+   */
+  updated_at: number;
+  /**
+   * The total number of pages in the design. Some design types don't have pages (for example, Canva docs).
+   */
+  page_count?: number;
 };
 
 /**
@@ -810,7 +881,7 @@ export type DesignSummary = {
   /**
    * The design ID.
    */
-  id?: string;
+  id: string;
   /**
    * The design title.
    */
@@ -820,6 +891,17 @@ export type DesignSummary = {
    */
   url?: string;
   thumbnail?: Thumbnail;
+  urls: DesignLinks;
+  /**
+   * When the design was created in Canva, as a Unix timestamp (in seconds since the Unix
+   * Epoch).
+   */
+  created_at: number;
+  /**
+   * When the design was last updated in Canva, as a Unix timestamp (in seconds since the
+   * Unix Epoch).
+   */
+  updated_at: number;
 };
 
 /**
@@ -837,6 +919,10 @@ export type DesignImportMetadata = {
    * is `TXkgQXdlc29tZSBEZXNpZ24g8J+YjQ==`.
    */
   title_base64: string;
+  /**
+   * The MIME type of the file being imported. If not provided, Canva attempts to automatically detect the type of the file.
+   */
+  mime_type?: string;
 };
 
 export type CreateDesignImportJobResponse = {
@@ -1014,6 +1100,7 @@ export type ErrorCode =
   | "unsupported_content_type"
   | "request_too_large"
   | "folder_not_found"
+  | "item_in_multiple_folders"
   | "asset_not_found"
   | "max_limit_reached"
   | "permission_not_found"
@@ -1025,6 +1112,8 @@ export type ErrorCode =
   | "content_not_found"
   | "doctype_not_found"
   | "design_not_found"
+  | "offset_too_large"
+  | "page_not_found"
   | "design_type_not_found"
   | "team_not_found"
   | "comment_not_found"
@@ -1069,6 +1158,7 @@ export const ErrorCode = {
   UNSUPPORTED_CONTENT_TYPE: "unsupported_content_type",
   REQUEST_TOO_LARGE: "request_too_large",
   FOLDER_NOT_FOUND: "folder_not_found",
+  ITEM_IN_MULTIPLE_FOLDERS: "item_in_multiple_folders",
   ASSET_NOT_FOUND: "asset_not_found",
   MAX_LIMIT_REACHED: "max_limit_reached",
   PERMISSION_NOT_FOUND: "permission_not_found",
@@ -1080,6 +1170,8 @@ export const ErrorCode = {
   CONTENT_NOT_FOUND: "content_not_found",
   DOCTYPE_NOT_FOUND: "doctype_not_found",
   DESIGN_NOT_FOUND: "design_not_found",
+  OFFSET_TOO_LARGE: "offset_too_large",
+  PAGE_NOT_FOUND: "page_not_found",
   DESIGN_TYPE_NOT_FOUND: "design_type_not_found",
   TEAM_NOT_FOUND: "team_not_found",
   COMMENT_NOT_FOUND: "comment_not_found",
@@ -1220,8 +1312,8 @@ export type PngExportFormat = {
    */
   width?: number;
   /**
-   * When `true`, the PNG is compressed with a lossless compression algorithm (`false` by
-   * default).
+   * If set to `true` (Default), the PNG is exported without compression.
+   * If set to `false`, the PNG is compressed using a lossy compression algorithm. Lossy PNG compression is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `false`, the export operation will fail.
    */
   lossless?: boolean;
   /**
@@ -1370,11 +1462,11 @@ export const Mp4ExportQuality = {
  * If the export fails, this object provides details about the error.
  */
 export type ExportError = {
-  code?: ExportErrorCode;
+  code: ExportErrorCode;
   /**
    * A human-readable description of what went wrong.
    */
-  message?: string;
+  message: string;
 };
 
 /**
@@ -1434,13 +1526,12 @@ export const FolderItemSortBy = {
   TITLE_DESCENDING: "title_descending",
 } as const;
 
-export type FolderItemType = "asset" | "design" | "folder" | "template";
+export type FolderItemType = "design" | "folder" | "image";
 
 export const FolderItemType = {
-  ASSET: "asset",
   DESIGN: "design",
   FOLDER: "folder",
-  TEMPLATE: "template",
+  IMAGE: "image",
 } as const;
 
 /**
@@ -1517,19 +1608,7 @@ export type ListFolderItemsResponse = {
 /**
  * Details about the folder item.
  */
-export type FolderItemSummary =
-  | AssetItem
-  | FolderItem
-  | DesignItem
-  | TemplateItem;
-
-/**
- * Details about the asset.
- */
-export type AssetItem = {
-  type: "asset";
-  asset: Asset;
-};
+export type FolderItemSummary = FolderItem | DesignItem | ImageItem;
 
 /**
  * Details about the folder.
@@ -1544,27 +1623,21 @@ export type FolderItem = {
  */
 export type DesignItem = {
   type: "design";
-  design: Design;
+  design: DesignSummary;
 };
 
 /**
- * Details about the template.
+ * Details about the image asset.
  */
-export type TemplateItem = {
-  type: "template";
-  template: Template;
+export type ImageItem = {
+  type: "image";
+  image: AssetSummary;
 };
 
 /**
  * Body parameters for moving the folder.
  */
 export type MoveFolderItemRequest = {
-  /**
-   * The ID of the folder that contains the item you want to move (the source folder).
-   * If the item is in the top level of a Canva user's
-   * [projects](https://www.canva.com/help/find-designs-and-folders/), use the ID `root`.
-   */
-  from_folder_id: string;
   /**
    * The ID of the folder you want to move the item to (the destination folder).
    * If you want to move the item to the top level of a Canva user's
@@ -1882,28 +1955,6 @@ export type Team = {
 };
 
 /**
- * The template object, which contains metadata about the template.
- */
-export type Template = {
-  /**
-   * The template ID.
-   */
-  id: string;
-  /**
-   * The template title, as shown in the Canva UI.
-   */
-  title: string;
-  /**
-   * A URL Canva users can visit to create a new design from this template.
-   */
-  url: string;
-  /**
-   * A list of thumbnail images representing the template. This list contains one thumbnail for each page of the template.
-   */
-  thumbnails: Array<Thumbnail>;
-};
-
-/**
  * A thumbnail image representing the object.
  */
 export type Thumbnail = {
@@ -2065,6 +2116,7 @@ export type DesignAccessRequestedNotificationContent = {
 export type DesignApprovalRequestedNotificationContent = {
   type: "design_approval_requested";
   triggering_user: User;
+  initial_requesting_user: TeamUser;
   receiving_team_user: TeamUser;
   requested_groups: Array<Group>;
   design: DesignSummary;
@@ -2078,7 +2130,7 @@ export type DesignApprovalResponseNotificationContent = {
   type: "design_approval_response";
   triggering_user: User;
   receiving_team_user: TeamUser;
-  requesting_user?: User;
+  initial_requesting_user: TeamUser;
   responding_groups: Array<Group>;
   design: DesignSummary;
   approval_response: ApprovalResponseAction;
@@ -2145,7 +2197,7 @@ export type ApprovalRequestAction = {
   /**
    * The message included by the user when requesting a design approval.
    */
-  message: string;
+  message?: string;
 };
 
 /**
@@ -2574,8 +2626,8 @@ export type ListFolderItemsData = {
     continuation?: string;
     /**
      * Filter the folder items to only return specified types. The available types are:
-     * `asset`, `design`, `folder`, and `template`. To filter for more than one item type,
-     * provide a comma-delimited list.
+     * `design`, 'folder', and `image`. To filter for more than one item type, provide a comma-
+     * delimited list.
      */
     item_types?: Array<FolderItemType>;
     /**

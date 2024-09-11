@@ -116,6 +116,9 @@ export const $UpdateAssetResponse = {
 export const $Asset = {
   description: "The asset object, which contains metadata about the asset.",
   properties: {
+    type: {
+      $ref: "#/components/schemas/AssetType",
+    },
     id: {
       description: "The ID of the asset.",
       example: "Msd59349ff",
@@ -159,8 +162,65 @@ Unix Epoch).`,
       $ref: "#/components/schemas/Thumbnail",
     },
   },
-  required: ["created_at", "id", "name", "tags", "updated_at"],
+  required: ["created_at", "id", "name", "tags", "type", "updated_at"],
   type: "object",
+} as const;
+
+export const $AssetSummary = {
+  description: "An object representing an asset with associated metadata.",
+  properties: {
+    type: {
+      $ref: "#/components/schemas/AssetType",
+    },
+    id: {
+      description: "The ID of the asset.",
+      example: "Msd59349ff",
+      type: "string",
+    },
+    name: {
+      description: "The name of the asset.",
+      example: "My Awesome Upload",
+      type: "string",
+    },
+    tags: {
+      description: `The user-facing tags attached to the asset.
+Users can add these tags to their uploaded assets, and they can search their uploaded
+assets in the Canva UI by searching for these tags. For information on how users use
+tags, see the
+[Canva Help Center page on asset tags](https://www.canva.com/help/add-edit-tags/).`,
+      example: ["image", "holiday", "best day ever"],
+      items: {
+        type: "string",
+      },
+      type: "array",
+    },
+    created_at: {
+      description: `When the asset was added to Canva, as a Unix timestamp (in seconds since the Unix
+Epoch).`,
+      example: 1377396000,
+      format: "int64",
+      type: "integer",
+    },
+    updated_at: {
+      description: `When the asset was last updated in Canva, as a Unix timestamp (in seconds since the
+Unix Epoch).`,
+      example: 1692928800,
+      format: "int64",
+      type: "integer",
+    },
+    thumbnail: {
+      $ref: "#/components/schemas/Thumbnail",
+    },
+  },
+  required: ["created_at", "id", "name", "tags", "type", "updated_at"],
+  type: "object",
+} as const;
+
+export const $AssetType = {
+  description: "Type of an asset.",
+  enum: ["image"],
+  example: "image",
+  type: "string",
 } as const;
 
 export const $ImportStatus = {
@@ -593,14 +653,35 @@ export const $BrandTemplate = {
     create_url: {
       description:
         "A URL Canva users can visit to create a new design from the template.",
-      example: "https://www.canva.com/templates/DADao7wZnAA/remix",
+      example: "https://www.canva.com/design/DAE35hE8FA4/remix",
       type: "string",
     },
     thumbnail: {
       $ref: "#/components/schemas/Thumbnail",
     },
+    created_at: {
+      description: `When the brand template was created, as a Unix timestamp
+(in seconds since the Unix Epoch).`,
+      example: 1704110400,
+      format: "int64",
+      type: "integer",
+    },
+    updated_at: {
+      description: `When the brand template was last updated, as a Unix timestamp
+(in seconds since the Unix Epoch).`,
+      example: 1719835200,
+      format: "int64",
+      type: "integer",
+    },
   },
-  required: ["create_url", "id", "title", "view_url"],
+  required: [
+    "create_url",
+    "created_at",
+    "id",
+    "title",
+    "updated_at",
+    "view_url",
+  ],
   type: "object",
 } as const;
 
@@ -1203,8 +1284,30 @@ export const $Design = {
     urls: {
       $ref: "#/components/schemas/DesignLinks",
     },
+    created_at: {
+      description: `When the design was created in Canva, as a Unix timestamp (in seconds since the Unix
+Epoch).`,
+      example: 1377396000,
+      format: "int64",
+      type: "integer",
+    },
+    updated_at: {
+      description: `When the design was last updated in Canva, as a Unix timestamp (in seconds since the
+Unix Epoch).`,
+      example: 1692928800,
+      format: "int64",
+      type: "integer",
+    },
+    page_count: {
+      description:
+        "The total number of pages in the design. Some design types don't have pages (for example, Canva docs).",
+      example: 5,
+      format: "int32",
+      minimum: 0,
+      type: "integer",
+    },
   },
-  required: ["id", "owner", "urls"],
+  required: ["created_at", "id", "owner", "updated_at", "urls"],
   type: "object",
 } as const;
 
@@ -1253,7 +1356,25 @@ export const $DesignSummary = {
     thumbnail: {
       $ref: "#/components/schemas/Thumbnail",
     },
+    urls: {
+      $ref: "#/components/schemas/DesignLinks",
+    },
+    created_at: {
+      description: `When the design was created in Canva, as a Unix timestamp (in seconds since the Unix
+Epoch).`,
+      example: 1377396000,
+      format: "int64",
+      type: "integer",
+    },
+    updated_at: {
+      description: `When the design was last updated in Canva, as a Unix timestamp (in seconds since the
+Unix Epoch).`,
+      example: 1692928800,
+      format: "int64",
+      type: "integer",
+    },
   },
+  required: ["created_at", "id", "updated_at", "urls"],
   type: "object",
 } as const;
 
@@ -1272,6 +1393,12 @@ For example, "My Awesome Design 😍" Base64 encoded
 is \`TXkgQXdlc29tZSBEZXNpZ24g8J+YjQ==\`.`,
       example: "TXkgQXdlc29tZSBEZXNpZ24g8J+YjQ==",
       minLength: 1,
+      type: "string",
+    },
+    mime_type: {
+      description:
+        "The MIME type of the file being imported. If not provided, Canva attempts to automatically detect the type of the file.",
+      example: "application/pdf",
       type: "string",
     },
   },
@@ -1495,6 +1622,7 @@ export const $ErrorCode = {
     "unsupported_content_type",
     "request_too_large",
     "folder_not_found",
+    "item_in_multiple_folders",
     "asset_not_found",
     "max_limit_reached",
     "permission_not_found",
@@ -1506,6 +1634,8 @@ export const $ErrorCode = {
     "content_not_found",
     "doctype_not_found",
     "design_not_found",
+    "offset_too_large",
+    "page_not_found",
     "design_type_not_found",
     "team_not_found",
     "comment_not_found",
@@ -1756,9 +1886,9 @@ dimensions of the design.`,
       type: "integer",
     },
     lossless: {
-      default: false,
-      description: `When \`true\`, the PNG is compressed with a lossless compression algorithm (\`false\` by
-default).`,
+      default: true,
+      description: `If set to \`true\` (Default), the PNG is exported without compression.
+If set to \`false\`, the PNG is compressed using a lossy compression algorithm. Lossy PNG compression is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to \`false\`, the export operation will fail.`,
       type: "boolean",
     },
     as_single_image: {
@@ -1951,6 +2081,7 @@ export const $ExportError = {
       type: "string",
     },
   },
+  required: ["code", "message"],
   type: "object",
 } as const;
 
@@ -1988,7 +2119,7 @@ export const $FolderItemSortBy = {
 } as const;
 
 export const $FolderItemType = {
-  enum: ["asset", "design", "folder", "template"],
+  enum: ["design", "folder", "image"],
   type: "string",
 } as const;
 
@@ -2097,17 +2228,13 @@ export const $FolderItemSummary = {
   description: "Details about the folder item.",
   discriminator: {
     mapping: {
-      asset: "#/components/schemas/AssetItem",
       folder: "#/components/schemas/FolderItem",
       design: "#/components/schemas/DesignItem",
-      template: "#/components/schemas/TemplateItem",
+      image: "#/components/schemas/ImageItem",
     },
     propertyName: "type",
   },
   oneOf: [
-    {
-      $ref: "#/components/schemas/AssetItem",
-    },
     {
       $ref: "#/components/schemas/FolderItem",
     },
@@ -2115,24 +2242,9 @@ export const $FolderItemSummary = {
       $ref: "#/components/schemas/DesignItem",
     },
     {
-      $ref: "#/components/schemas/TemplateItem",
+      $ref: "#/components/schemas/ImageItem",
     },
   ],
-  type: "object",
-} as const;
-
-export const $AssetItem = {
-  description: "Details about the asset.",
-  properties: {
-    type: {
-      enum: ["asset"],
-      type: "string",
-    },
-    asset: {
-      $ref: "#/components/schemas/Asset",
-    },
-  },
-  required: ["asset", "type"],
   type: "object",
 } as const;
 
@@ -2159,40 +2271,31 @@ export const $DesignItem = {
       type: "string",
     },
     design: {
-      $ref: "#/components/schemas/Design",
+      $ref: "#/components/schemas/DesignSummary",
     },
   },
   required: ["design", "type"],
   type: "object",
 } as const;
 
-export const $TemplateItem = {
-  description: "Details about the template.",
+export const $ImageItem = {
+  description: "Details about the image asset.",
   properties: {
     type: {
-      enum: ["template"],
+      enum: ["image"],
       type: "string",
     },
-    template: {
-      $ref: "#/components/schemas/Template",
+    image: {
+      $ref: "#/components/schemas/AssetSummary",
     },
   },
-  required: ["template", "type"],
+  required: ["image", "type"],
   type: "object",
 } as const;
 
 export const $MoveFolderItemRequest = {
   description: "Body parameters for moving the folder.",
   properties: {
-    from_folder_id: {
-      description: `The ID of the folder that contains the item you want to move (the source folder).
-If the item is in the top level of a Canva user's
-[projects](https://www.canva.com/help/find-designs-and-folders/), use the ID \`root\`.`,
-      example: "root",
-      maxLength: 50,
-      minLength: 1,
-      type: "string",
-    },
     to_folder_id: {
       description: `The ID of the folder you want to move the item to (the destination folder).
 If you want to move the item to the top level of a Canva user's
@@ -2210,7 +2313,7 @@ If you want to move the item to the top level of a Canva user's
       type: "string",
     },
   },
-  required: ["from_folder_id", "item_id", "to_folder_id"],
+  required: ["item_id", "to_folder_id"],
   type: "object",
 } as const;
 
@@ -2443,7 +2546,7 @@ export const $ExchangeAccessTokenResponse = {
     scope: {
       description:
         "The [scopes](https://www.canva.dev/docs/connect/appendix/scopes/) that the token has been granted.",
-      example: "asset:read design:meta:read folder:read",
+      example: "asset:read design:meta:read design:permission:read folder:read",
       type: "string",
     },
   },
@@ -2494,7 +2597,7 @@ If \`true\`, the access token is valid and active. If \`false\`, the access toke
     scope: {
       description:
         "The [scopes](https://www.canva.dev/docs/connect/appendix/scopes/) that the token has been granted.",
-      example: "asset:read design:meta:read folder:read",
+      example: "asset:read design:meta:read design:permission:read folder:read",
       type: "string",
     },
     client: {
@@ -2580,7 +2683,7 @@ export const $RevokeTokensResponse = {
 export const $scope_response = {
   description:
     "The [scopes](https://www.canva.dev/docs/connect/appendix/scopes/) that the token has been granted.",
-  example: "asset:read design:meta:read folder:read",
+  example: "asset:read design:meta:read design:permission:read folder:read",
   type: "string",
 } as const;
 
@@ -2625,40 +2728,6 @@ display name, and whether it's an external Canva Team.`,
     },
   },
   required: ["display_name", "external", "id"],
-  type: "object",
-} as const;
-
-export const $Template = {
-  description:
-    "The template object, which contains metadata about the template.",
-  properties: {
-    id: {
-      description: "The template ID.",
-      example: "TEMzWSwy3BI",
-      type: "string",
-    },
-    title: {
-      description: "The template title, as shown in the Canva UI.",
-      example: "My posts template",
-      type: "string",
-    },
-    url: {
-      description:
-        "A URL Canva users can visit to create a new design from this template.",
-      example:
-        "https://www.canva.com/templates/EADao7wZnAA-black-white-simple-quote-instagram-post/",
-      type: "string",
-    },
-    thumbnails: {
-      description:
-        "A list of thumbnail images representing the template. This list contains one thumbnail for each page of the template.",
-      items: {
-        $ref: "#/components/schemas/Thumbnail",
-      },
-      type: "array",
-    },
-  },
-  required: ["id", "thumbnails", "title", "url"],
   type: "object",
 } as const;
 
@@ -2978,6 +3047,9 @@ export const $DesignApprovalRequestedNotificationContent = {
     triggering_user: {
       $ref: "#/components/schemas/User",
     },
+    initial_requesting_user: {
+      $ref: "#/components/schemas/TeamUser",
+    },
     receiving_team_user: {
       $ref: "#/components/schemas/TeamUser",
     },
@@ -2997,6 +3069,7 @@ export const $DesignApprovalRequestedNotificationContent = {
   required: [
     "approval_request",
     "design",
+    "initial_requesting_user",
     "receiving_team_user",
     "requested_groups",
     "triggering_user",
@@ -3020,8 +3093,8 @@ export const $DesignApprovalResponseNotificationContent = {
     receiving_team_user: {
       $ref: "#/components/schemas/TeamUser",
     },
-    requesting_user: {
-      $ref: "#/components/schemas/User",
+    initial_requesting_user: {
+      $ref: "#/components/schemas/TeamUser",
     },
     responding_groups: {
       items: {
@@ -3039,6 +3112,7 @@ export const $DesignApprovalResponseNotificationContent = {
   required: [
     "approval_response",
     "design",
+    "initial_requesting_user",
     "receiving_team_user",
     "responding_groups",
     "triggering_user",
@@ -3162,7 +3236,6 @@ export const $ApprovalRequestAction = {
       type: "string",
     },
   },
-  required: ["message"],
   type: "object",
 } as const;
 

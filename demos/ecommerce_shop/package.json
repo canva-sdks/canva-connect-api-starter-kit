@@ -12,6 +12,8 @@
     "format:check": "npm run format:check:scripts && cd backend && npm run format:check && cd ../frontend && npm run format:check",
     "generate:db-key": "ts-node ../common/scripts/generate-key.ts --save",
     "generate:dotenv": "ts-node ../common/scripts/setup-env.ts",
+    "products:read": "cd backend && npm run products:read",
+    "products:reset": "cd backend && npm run products:reset",
     "postinstall": "npm run generate:dotenv && npm run generate:db-key",
     "test": "cd backend && npm run test"
   },

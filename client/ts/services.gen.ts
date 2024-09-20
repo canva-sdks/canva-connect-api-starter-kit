@@ -211,8 +211,15 @@ export class AutofillService {
    * To get a list of input data fields, use the [Get brand template dataset
    * API](https://www.canva.dev/docs/connect/api-reference/brand-templates/get-brand-template-dataset/).
    *
-   * Brand templates contain references to image media. You can reference image media by providing the value of `type` with `image` within the `data` object. The number of
-   * references to image media within a brand template cannot currently exceed 300 references.
+   * Available data field types to autofill include:
+   *
+   * - Images
+   * - Text
+   * - Charts
+   *
+   * WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
+   *
+   * You can check the status and get the results of autofill jobs created with this API using the [Get design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/get-design-autofill-job/).
    */
   public static createDesignAutofillJob(
     options?: Options<CreateDesignAutofillJobData>,
@@ -320,8 +327,16 @@ export class BrandTemplateService {
    * template contains autofill data fields, this API returns an object with the data field
    * names and the type of data they accept.
    *
+   * Available data field types include:
+   *
+   * - Images
+   * - Text
+   * - Charts
+   *
    * You can autofill a brand template using the [Create a design autofill job
    * API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
+   *
+   * WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
    */
   public static getBrandTemplateDataset(
     options: Options<GetBrandTemplateDatasetData>,
@@ -503,16 +518,6 @@ export class DesignService {
 
 export class DesignImportService {
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Starts a new job to import an external file as a new design in Canva.
    *
    * You can check the status and get the results of import jobs created with this API using the [Get design import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/get-design-import-job/).
@@ -557,16 +562,6 @@ export class DesignImportService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Gets the status and results of design import jobs created using the [Create design import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/create-design-import-job/).
    */
   public static getDesignImportJob(options: Options<GetDesignImportJobData>) {
@@ -624,16 +619,6 @@ export class ExportService {
 
 export class FolderService {
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Deletes a folder with the specified `folderID`.
    * Deleting a folder moves the user's content in the folder to the
    * [Trash](https://www.canva.com/help/deleted-designs/) and content owned by
@@ -651,16 +636,6 @@ export class FolderService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Gets the name and other details of a folder using a folder's `folderID`.
    */
   public static getFolder(options: Options<GetFolderData>) {
@@ -671,16 +646,6 @@ export class FolderService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Updates a folder's details using its `folderID`.
    * Currently, you can only update a folder's name.
    */
@@ -695,16 +660,6 @@ export class FolderService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Lists the items in a folder, including each item's `type`.
    *
    * Folders can contain:
@@ -724,16 +679,6 @@ export class FolderService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Moves an item to another folder. You must specify the folder ID of the destination folder, as well as the ID of the item you want to move.
    *
    * NOTE: In some situations, a single item can exist in multiple folders. If you attempt to move an item that exists in multiple folders, the API returns an `item_in_multiple_folders` error. In this case, you must use the Canva UI to move the item to another folder.
@@ -749,16 +694,6 @@ export class FolderService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Creates a folder in either the top level of a Canva user's
    * [projects](https://www.canva.com/help/find-designs-and-folders/) (using the ID `root`), or
    * another folder (using the parent folder's ID). When a folder is successfully created, the

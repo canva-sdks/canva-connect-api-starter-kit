@@ -274,8 +274,15 @@ paths:
         To get a list of input data fields, use the [Get brand template dataset
         API](https://www.canva.dev/docs/connect/api-reference/brand-templates/get-brand-template-dataset/).
 
-        Brand templates contain references to image media. You can reference image media by providing the value of `type` with `image` within the `data` object. The number of
-        references to image media within a brand template cannot currently exceed 300 references.
+        Available data field types to autofill include:
+
+        - Images
+        - Text
+        - Charts
+
+        WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
+
+        You can check the status and get the results of autofill jobs created with this API using the [Get design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/get-design-autofill-job/).
       operationId: createDesignAutofillJob
       requestBody:
         content:
@@ -429,6 +436,21 @@ paths:
         schema:
           $ref: '#/components/schemas/SortByType'
         style: form
+      - description: |-
+          Filter the list of brand templates based on the brand templates' dataset definitions.
+          Brand templates with dataset definitions are mainly used with the [Autofill APIs](https://www.canva.dev/docs/connect/api-reference/autofills/).
+          This can be one of the following:
+
+          - `any`: (Default) Brand templates with and without dataset definitions.
+          - `non_empty`: Brand templates with one or more data fields defined.
+          - `empty`: Brand templates with no data fields defined.
+        explode: true
+        in: query
+        name: dataset
+        required: false
+        schema:
+          $ref: '#/components/schemas/DatasetFilter'
+        style: form
       responses:
         "200":
           content:
@@ -511,8 +533,16 @@ paths:
         template contains autofill data fields, this API returns an object with the data field
         names and the type of data they accept.
 
+        Available data field types include:
+
+        - Images
+        - Text
+        - Charts
+
         You can autofill a brand template using the [Create a design autofill job
         API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
+
+        WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
       operationId: getBrandTemplateDataset
       parameters:
       - description: The brand template ID.
@@ -892,16 +922,6 @@ paths:
   /v1/imports:
     post:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
         Starts a new job to import an external file as a new design in Canva.
 
         You can check the status and get the results of import jobs created with this API using the [Get design import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/get-design-import-job/).
@@ -953,6 +973,13 @@ paths:
         "200":
           content:
             application/json:
+              examples:
+                in_progress:
+                  $ref: '#/components/examples/InProgressDesignImportJobExample'
+                success:
+                  $ref: '#/components/examples/SuccessDesignImportJobExample'
+                failed:
+                  $ref: '#/components/examples/FailedDesignImportJobExample'
               schema:
                 $ref: '#/components/schemas/CreateDesignImportJobResponse'
           description: OK
@@ -970,18 +997,8 @@ paths:
       x-rate-limit-per-client-user: 20
   /v1/imports/{jobId}:
     get:
-      description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
-        Gets the status and results of design import jobs created using the [Create design import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/create-design-import-job/).
+      description: "Gets the status and results of design import jobs created using\
+        \ the [Create design import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/create-design-import-job/)."
       operationId: getDesignImportJob
       parameters:
       - description: The design import job ID.
@@ -998,6 +1015,13 @@ paths:
         "200":
           content:
             application/json:
+              examples:
+                in_progress:
+                  $ref: '#/components/examples/InProgressDesignImportJobExample'
+                success:
+                  $ref: '#/components/examples/SuccessDesignImportJobExample'
+                failed:
+                  $ref: '#/components/examples/FailedDesignImportJobExample'
               schema:
                 $ref: '#/components/schemas/GetDesignImportJobResponse'
           description: OK
@@ -1105,16 +1129,6 @@ paths:
   /v1/folders/{folderId}:
     delete:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
         Deletes a folder with the specified `folderID`.
         Deleting a folder moves the user's content in the folder to the
         [Trash](https://www.canva.com/help/deleted-designs/) and content owned by
@@ -1148,18 +1162,7 @@ paths:
       - folder
       x-rate-limit-per-client-user: 20
     get:
-      description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
-        Gets the name and other details of a folder using a folder's `folderID`.
+      description: Gets the name and other details of a folder using a folder's `folderID`.
       operationId: getFolder
       parameters:
       - description: The folder ID.
@@ -1192,16 +1195,6 @@ paths:
       - folder
     patch:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
         Updates a folder's details using its `folderID`.
         Currently, you can only update a folder's name.
       operationId: updateFolder
@@ -1244,16 +1237,6 @@ paths:
   /v1/folders/{folderId}/items:
     get:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
         Lists the items in a folder, including each item's `type`.
 
         Folders can contain:
@@ -1290,7 +1273,7 @@ paths:
         style: form
       - description: |-
           Filter the folder items to only return specified types. The available types are:
-          `design`, 'folder', and `image`. To filter for more than one item type, provide a comma-
+          `design`, `folder`, and `image`. To filter for more than one item type, provide a comma-
           delimited list.
         explode: false
         in: query
@@ -1343,16 +1326,6 @@ paths:
   /v1/folders/move:
     post:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
         Moves an item to another folder. You must specify the folder ID of the destination folder, as well as the ID of the item you want to move.
 
         NOTE: In some situations, a single item can exist in multiple folders. If you attempt to move an item that exists in multiple folders, the API returns an `item_in_multiple_folders` error. In this case, you must use the Canva UI to move the item to another folder.
@@ -1379,16 +1352,6 @@ paths:
   /v1/folders:
     post:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
         Creates a folder in either the top level of a Canva user's
         [projects](https://www.canva.com/help/find-designs-and-folders/) (using the ID `root`), or
         another folder (using the parent folder's ID). When a folder is successfully created, the
@@ -1670,6 +1633,40 @@ components:
           error:
             code: autofill_error
             message: Error autofilling design from brand template
+    InProgressDesignImportJobExample:
+      summary: In progress job
+      value:
+        job:
+          id: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
+          status: in_progress
+    SuccessDesignImportJobExample:
+      summary: Successfully completed job
+      value:
+        job:
+          id: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
+          status: success
+          result:
+            designs:
+            - id: DAGQm2AkzOk
+              title: My Awesome Design
+              thumbnail:
+                width: 376
+                height: 531
+                url: https://document-export.canva.com/...
+              urls:
+                edit_url: https://www.canva.com/api/design/...
+                view_url: https://www.canva.com/api/design/...
+              created_at: 1726198998
+              updated_at: 1726199000
+    FailedDesignImportJobExample:
+      summary: Failed job
+      value:
+        job:
+          id: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
+          status: failed
+          error:
+            code: invalid_file
+            message: Document couldn't be imported because the file is corrupt.
     InProgressExportJobExample:
       summary: In progress job
       value:
@@ -2185,6 +2182,36 @@ components:
             cute_pet_witty_pet_says:
               type: text
               text: It was like this when I got here!
+            cute_pet_sales_chart:
+              type: chart
+              chart_data:
+                rows:
+                - cells:
+                  - type: string
+                    value: Geographic Region
+                  - type: string
+                    value: Sales (millions AUD)
+                  - type: string
+                    value: Target met?
+                  - type: string
+                    value: Date met
+                - cells:
+                  - type: string
+                    value: Asia Pacific
+                  - type: number
+                    value: 10.2
+                  - type: boolean
+                    value: true
+                  - type: date
+                    value: 1721944387
+                - cells:
+                  - type: string
+                    value: EMEA
+                  - type: number
+                    value: 13.8
+                  - type: boolean
+                    value: false
+                  - type: date
           type: object
       required:
       - brand_template_id
@@ -2203,10 +2230,12 @@ components:
         mapping:
           image: '#/components/schemas/DatasetImageValue'
           text: '#/components/schemas/DatasetTextValue'
+          chart: '#/components/schemas/DatasetChartValue'
         propertyName: type
       oneOf:
       - $ref: '#/components/schemas/DatasetImageValue'
       - $ref: '#/components/schemas/DatasetTextValue'
+      - $ref: '#/components/schemas/DatasetChartValue'
       type: object
     Dataset:
       additionalProperties:
@@ -2219,6 +2248,36 @@ components:
         cute_pet_witty_pet_says:
           type: text
           text: It was like this when I got here!
+        cute_pet_sales_chart:
+          type: chart
+          chart_data:
+            rows:
+            - cells:
+              - type: string
+                value: Geographic Region
+              - type: string
+                value: Sales (millions AUD)
+              - type: string
+                value: Target met?
+              - type: string
+                value: Date met
+            - cells:
+              - type: string
+                value: Asia Pacific
+              - type: number
+                value: 10.2
+              - type: boolean
+                value: true
+              - type: date
+                value: 1721944387
+            - cells:
+              - type: string
+                value: EMEA
+              - type: number
+                value: 13.8
+              - type: boolean
+                value: false
+              - type: date
       type: object
     DatasetImageValue:
       description: If the data field is an image field.
@@ -2248,6 +2307,22 @@ components:
           type: string
       required:
       - text
+      - type
+      type: object
+    DatasetChartValue:
+      description: |-
+        If the data field is a chart.
+
+         WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
+      properties:
+        type:
+          enum:
+          - chart
+          type: string
+        chart_data:
+          $ref: '#/components/schemas/DataTable'
+      required:
+      - chart_data
       - type
       type: object
     GetDesignAutofillJobResponse:
@@ -2325,6 +2400,12 @@ components:
       - code
       - message
       type: object
+    DatasetFilter:
+      enum:
+      - any
+      - non_empty
+      - empty
+      type: string
     ListBrandTemplatesResponse:
       properties:
         continuation:
@@ -2411,6 +2492,8 @@ components:
               type: image
             cute_pet_witty_pet_says:
               type: text
+            cute_pet_sales_chart:
+              type: chart
           type: object
       type: object
     DatasetDefinition:
@@ -2424,6 +2507,8 @@ components:
           type: image
         cute_pet_witty_pet_says:
           type: text
+        cute_pet_sales_chart:
+          type: chart
       type: object
     DataField:
       description: A named data field that can be autofilled in the brand template.
@@ -2431,10 +2516,12 @@ components:
         mapping:
           image: '#/components/schemas/ImageDataField'
           text: '#/components/schemas/TextDataField'
+          chart: '#/components/schemas/ChartDataField'
         propertyName: type
       oneOf:
       - $ref: '#/components/schemas/ImageDataField'
       - $ref: '#/components/schemas/TextDataField'
+      - $ref: '#/components/schemas/ChartDataField'
       type: object
     ImageDataField:
       description: An image for a brand template. You can autofill the brand template
@@ -2454,6 +2541,19 @@ components:
         type:
           enum:
           - text
+          type: string
+      required:
+      - type
+      type: object
+    ChartDataField:
+      description: |-
+        Chart data for a brand template. You can autofill the brand template with tabular data.
+
+        WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
+      properties:
+        type:
+          enum:
+          - chart
           type: string
       required:
       - type
@@ -2800,6 +2900,146 @@ components:
       - kty
       - x
       type: object
+    DataTable:
+      description: |-
+        Tabular data, structured in rows of cells.
+
+        - The first row usually contains column headers.
+        - Each cell must have a data type configured.
+        - All rows must have the same number of cells.
+        - Maximum of 100 rows and 20 columns.
+
+        WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
+      example:
+        rows:
+        - cells:
+          - type: string
+            value: Geographic Region
+          - type: string
+            value: Sales (millions AUD)
+          - type: string
+            value: Target (millions AUD)
+          - type: string
+            value: Target met?
+          - type: string
+            value: Date met
+        - cells:
+          - type: string
+            value: Asia Pacific
+          - type: number
+            value: 10.2
+          - type: number
+            value: 10
+          - type: boolean
+            value: true
+          - type: date
+            value: 1721944387
+        - cells:
+          - type: string
+            value: EMEA
+          - type: number
+            value: 13.8
+          - type: number
+            value: 14
+          - type: boolean
+            value: false
+          - type: date
+      properties:
+        rows:
+          description: |-
+            Rows of data.
+
+            The first row usually contains column headers. Maximum of 100 rows.
+          items:
+            $ref: '#/components/schemas/DataTableRow'
+          maxItems: 100
+          type: array
+      required:
+      - rows
+      type: object
+    DataTableRow:
+      description: A single row of tabular data.
+      properties:
+        cells:
+          description: |-
+            Cells of data in row.
+
+            All rows must have the same number of cells. Maximum of 20 cells per row.
+          items:
+            $ref: '#/components/schemas/DataTableCell'
+          maxItems: 20
+          type: array
+      required:
+      - cells
+      type: object
+    DataTableCell:
+      description: A single tabular data cell.
+      discriminator:
+        mapping:
+          string: '#/components/schemas/StringDataTableCell'
+          number: '#/components/schemas/NumberDataTableCell'
+          boolean: '#/components/schemas/BooleanDataTableCell'
+          date: '#/components/schemas/DateDataTableCell'
+        propertyName: type
+      oneOf:
+      - $ref: '#/components/schemas/StringDataTableCell'
+      - $ref: '#/components/schemas/NumberDataTableCell'
+      - $ref: '#/components/schemas/BooleanDataTableCell'
+      - $ref: '#/components/schemas/DateDataTableCell'
+      type: object
+    StringDataTableCell:
+      description: A string tabular data cell.
+      properties:
+        type:
+          enum:
+          - string
+          type: string
+        value:
+          type: string
+      required:
+      - type
+      type: object
+    NumberDataTableCell:
+      description: A number tabular data cell.
+      properties:
+        type:
+          enum:
+          - number
+          type: string
+        value:
+          format: double
+          type: number
+      required:
+      - type
+      type: object
+    BooleanDataTableCell:
+      description: A boolean tabular data cell.
+      properties:
+        type:
+          enum:
+          - boolean
+          type: string
+        value:
+          type: boolean
+      required:
+      - type
+      type: object
+    DateDataTableCell:
+      description: |-
+        A date tabular data cell.
+
+        Specified as a Unix timestamp (in seconds since the Unix Epoch).
+      properties:
+        type:
+          enum:
+          - date
+          type: string
+        value:
+          format: int64
+          type: integer
+      required:
+      - type
+      type: object
     SortByType:
       enum:
       - relevance
@@ -3003,40 +3243,46 @@ components:
       type: object
     CreateDesignImportJobResponse:
       properties:
-        job_id:
-          description: The design import job ID.
-          example: f81b26fd-a33d-4c2d-9e8c-4a7aca798b17
-          type: string
+        job:
+          $ref: '#/components/schemas/DesignImportJob'
       required:
-      - job_id
+      - job
       type: object
-    DesignImportStatus:
-      description: The status of the design import.
+    DesignImportJob:
+      description: The status of the design import job.
       properties:
-        state:
-          $ref: '#/components/schemas/DesignImportStatusState'
+        id:
+          description: The ID of the design import job.
+          example: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
+          type: string
+        status:
+          $ref: '#/components/schemas/DesignImportStatus'
+        result:
+          $ref: '#/components/schemas/DesignImportJobResult'
         error:
           $ref: '#/components/schemas/DesignImportError'
       required:
-      - state
+      - id
+      - status
       type: object
-    DesignImportStatusState:
-      description: State of the design import job.
+    DesignImportStatus:
+      description: The status of the design import job.
       enum:
       - failed
-      - importing
+      - in_progress
       - success
       example: success
       type: string
     DesignImportError:
-      description: Information about why the import failed.
+      description: "If the import job fails, this object provides details about the\
+        \ error."
       properties:
         code:
           $ref: '#/components/schemas/DesignImportErrorCode'
         message:
-          description: A human-readable description of why the import failed.
-          example: "We're sorry, but the file upload quota has been exceeded. Please\
-            \ try again later."
+          description: A human-readable description of what went wrong.
+          example: "We're sorry, but the file upload quota has exceeded. Please try\
+            \ again later."
           type: string
       required:
       - code
@@ -3044,34 +3290,34 @@ components:
       type: object
     DesignImportErrorCode:
       description: |-
-        A short string about why the import failed. You can programmatically
-        handle errors using this field.
+        A short string about why the import failed. This field can be used to handle errors
+        programmatically.
       enum:
       - design_creation_throttled
       - design_import_throttled
       - duplicate_import
-      - internal_server_error
+      - internal_error
       - invalid_file
       example: design_creation_throttled
       type: string
-    GetDesignImportJobResponse:
+    DesignImportJobResult:
       properties:
-        job_id:
-          description: The design import job ID.
-          example: f81b26fd-a33d-4c2d-9e8c-4a7aca798b17
-          type: string
-        status:
-          $ref: '#/components/schemas/DesignImportStatus'
         designs:
           description: |-
             A list of designs imported from the external file. It usually contains one item.
             Imports with a large number of pages or assets are split into multiple designs.
           items:
-            $ref: '#/components/schemas/Design'
+            $ref: '#/components/schemas/DesignSummary'
           type: array
       required:
-      - job_id
-      - status
+      - designs
+      type: object
+    GetDesignImportJobResponse:
+      properties:
+        job:
+          $ref: '#/components/schemas/DesignImportJob'
+      required:
+      - job
       type: object
     DesignTypeInput:
       description: The desired design type.
@@ -3692,7 +3938,7 @@ components:
         name:
           description: "The folder name, as shown in the Canva UI."
           example: My awesome holiday
-          maxLength: 250
+          maxLength: 255
           minLength: 1
           type: string
       required:

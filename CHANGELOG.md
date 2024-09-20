@@ -1,5 +1,11 @@
 # Changelog
 
+## 2024-09-20
+
+### 🔧 Changed
+
+- Refreshed the OpenAPI yml spec `openapi/spec.yml` to be based on the latest Connect API design.
+
 ## 2024-09-11
 
 ### 🔧 Changed

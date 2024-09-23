@@ -412,6 +412,72 @@ If no design title is provided, the autofilled design will have the same title a
           type: "text",
           text: "It was like this when I got here!",
         },
+        cute_pet_sales_chart: {
+          type: "chart",
+          chart_data: {
+            rows: [
+              {
+                cells: [
+                  {
+                    type: "string",
+                    value: "Geographic Region",
+                  },
+                  {
+                    type: "string",
+                    value: "Sales (millions AUD)",
+                  },
+                  {
+                    type: "string",
+                    value: "Target met?",
+                  },
+                  {
+                    type: "string",
+                    value: "Date met",
+                  },
+                ],
+              },
+              {
+                cells: [
+                  {
+                    type: "string",
+                    value: "Asia Pacific",
+                  },
+                  {
+                    type: "number",
+                    value: 10.2,
+                  },
+                  {
+                    type: "boolean",
+                    value: true,
+                  },
+                  {
+                    type: "date",
+                    value: 1721944387,
+                  },
+                ],
+              },
+              {
+                cells: [
+                  {
+                    type: "string",
+                    value: "EMEA",
+                  },
+                  {
+                    type: "number",
+                    value: 13.8,
+                  },
+                  {
+                    type: "boolean",
+                    value: false,
+                  },
+                  {
+                    type: "date",
+                  },
+                ],
+              },
+            ],
+          },
+        },
       },
       type: "object",
     },
@@ -436,6 +502,7 @@ export const $DatasetValue = {
     mapping: {
       image: "#/components/schemas/DatasetImageValue",
       text: "#/components/schemas/DatasetTextValue",
+      chart: "#/components/schemas/DatasetChartValue",
     },
     propertyName: "type",
   },
@@ -445,6 +512,9 @@ export const $DatasetValue = {
     },
     {
       $ref: "#/components/schemas/DatasetTextValue",
+    },
+    {
+      $ref: "#/components/schemas/DatasetChartValue",
     },
   ],
   type: "object",
@@ -463,6 +533,72 @@ export const $Dataset = {
     cute_pet_witty_pet_says: {
       type: "text",
       text: "It was like this when I got here!",
+    },
+    cute_pet_sales_chart: {
+      type: "chart",
+      chart_data: {
+        rows: [
+          {
+            cells: [
+              {
+                type: "string",
+                value: "Geographic Region",
+              },
+              {
+                type: "string",
+                value: "Sales (millions AUD)",
+              },
+              {
+                type: "string",
+                value: "Target met?",
+              },
+              {
+                type: "string",
+                value: "Date met",
+              },
+            ],
+          },
+          {
+            cells: [
+              {
+                type: "string",
+                value: "Asia Pacific",
+              },
+              {
+                type: "number",
+                value: 10.2,
+              },
+              {
+                type: "boolean",
+                value: true,
+              },
+              {
+                type: "date",
+                value: 1721944387,
+              },
+            ],
+          },
+          {
+            cells: [
+              {
+                type: "string",
+                value: "EMEA",
+              },
+              {
+                type: "number",
+                value: 13.8,
+              },
+              {
+                type: "boolean",
+                value: false,
+              },
+              {
+                type: "date",
+              },
+            ],
+          },
+        ],
+      },
     },
   },
   type: "object",
@@ -499,6 +635,23 @@ export const $DatasetTextValue = {
     },
   },
   required: ["text", "type"],
+  type: "object",
+} as const;
+
+export const $DatasetChartValue = {
+  description: `If the data field is a chart.
+
+ WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.`,
+  properties: {
+    type: {
+      enum: ["chart"],
+      type: "string",
+    },
+    chart_data: {
+      $ref: "#/components/schemas/DataTable",
+    },
+  },
+  required: ["chart_data", "type"],
   type: "object",
 } as const;
 
@@ -593,6 +746,11 @@ export const $AutofillError = {
   },
   required: ["code", "message"],
   type: "object",
+} as const;
+
+export const $DatasetFilter = {
+  enum: ["any", "non_empty", "empty"],
+  type: "string",
 } as const;
 
 export const $ListBrandTemplatesResponse = {
@@ -701,6 +859,9 @@ export const $GetBrandTemplateDatasetResponse = {
         cute_pet_witty_pet_says: {
           type: "text",
         },
+        cute_pet_sales_chart: {
+          type: "chart",
+        },
       },
       type: "object",
     },
@@ -721,6 +882,9 @@ export const $DatasetDefinition = {
     cute_pet_witty_pet_says: {
       type: "text",
     },
+    cute_pet_sales_chart: {
+      type: "chart",
+    },
   },
   type: "object",
 } as const;
@@ -732,6 +896,7 @@ export const $DataField = {
     mapping: {
       image: "#/components/schemas/ImageDataField",
       text: "#/components/schemas/TextDataField",
+      chart: "#/components/schemas/ChartDataField",
     },
     propertyName: "type",
   },
@@ -741,6 +906,9 @@ export const $DataField = {
     },
     {
       $ref: "#/components/schemas/TextDataField",
+    },
+    {
+      $ref: "#/components/schemas/ChartDataField",
     },
   ],
   type: "object",
@@ -765,6 +933,20 @@ export const $TextDataField = {
   properties: {
     type: {
       enum: ["text"],
+      type: "string",
+    },
+  },
+  required: ["type"],
+  type: "object",
+} as const;
+
+export const $ChartDataField = {
+  description: `Chart data for a brand template. You can autofill the brand template with tabular data.
+
+WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.`,
+  properties: {
+    type: {
+      enum: ["chart"],
       type: "string",
     },
   },
@@ -1174,6 +1356,216 @@ Parameter](https://www.rfc-editor.org/rfc/rfc8037#section-2).`,
   type: "object",
 } as const;
 
+export const $DataTable = {
+  description: `Tabular data, structured in rows of cells.
+
+- The first row usually contains column headers.
+- Each cell must have a data type configured.
+- All rows must have the same number of cells.
+- Maximum of 100 rows and 20 columns.
+
+WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.`,
+  example: {
+    rows: [
+      {
+        cells: [
+          {
+            type: "string",
+            value: "Geographic Region",
+          },
+          {
+            type: "string",
+            value: "Sales (millions AUD)",
+          },
+          {
+            type: "string",
+            value: "Target (millions AUD)",
+          },
+          {
+            type: "string",
+            value: "Target met?",
+          },
+          {
+            type: "string",
+            value: "Date met",
+          },
+        ],
+      },
+      {
+        cells: [
+          {
+            type: "string",
+            value: "Asia Pacific",
+          },
+          {
+            type: "number",
+            value: 10.2,
+          },
+          {
+            type: "number",
+            value: 10,
+          },
+          {
+            type: "boolean",
+            value: true,
+          },
+          {
+            type: "date",
+            value: 1721944387,
+          },
+        ],
+      },
+      {
+        cells: [
+          {
+            type: "string",
+            value: "EMEA",
+          },
+          {
+            type: "number",
+            value: 13.8,
+          },
+          {
+            type: "number",
+            value: 14,
+          },
+          {
+            type: "boolean",
+            value: false,
+          },
+          {
+            type: "date",
+          },
+        ],
+      },
+    ],
+  },
+  properties: {
+    rows: {
+      description: `Rows of data.
+
+The first row usually contains column headers. Maximum of 100 rows.`,
+      items: {
+        $ref: "#/components/schemas/DataTableRow",
+      },
+      maxItems: 100,
+      type: "array",
+    },
+  },
+  required: ["rows"],
+  type: "object",
+} as const;
+
+export const $DataTableRow = {
+  description: "A single row of tabular data.",
+  properties: {
+    cells: {
+      description: `Cells of data in row.
+
+All rows must have the same number of cells. Maximum of 20 cells per row.`,
+      items: {
+        $ref: "#/components/schemas/DataTableCell",
+      },
+      maxItems: 20,
+      type: "array",
+    },
+  },
+  required: ["cells"],
+  type: "object",
+} as const;
+
+export const $DataTableCell = {
+  description: "A single tabular data cell.",
+  discriminator: {
+    mapping: {
+      string: "#/components/schemas/StringDataTableCell",
+      number: "#/components/schemas/NumberDataTableCell",
+      boolean: "#/components/schemas/BooleanDataTableCell",
+      date: "#/components/schemas/DateDataTableCell",
+    },
+    propertyName: "type",
+  },
+  oneOf: [
+    {
+      $ref: "#/components/schemas/StringDataTableCell",
+    },
+    {
+      $ref: "#/components/schemas/NumberDataTableCell",
+    },
+    {
+      $ref: "#/components/schemas/BooleanDataTableCell",
+    },
+    {
+      $ref: "#/components/schemas/DateDataTableCell",
+    },
+  ],
+  type: "object",
+} as const;
+
+export const $StringDataTableCell = {
+  description: "A string tabular data cell.",
+  properties: {
+    type: {
+      enum: ["string"],
+      type: "string",
+    },
+    value: {
+      type: "string",
+    },
+  },
+  required: ["type"],
+  type: "object",
+} as const;
+
+export const $NumberDataTableCell = {
+  description: "A number tabular data cell.",
+  properties: {
+    type: {
+      enum: ["number"],
+      type: "string",
+    },
+    value: {
+      format: "double",
+      type: "number",
+    },
+  },
+  required: ["type"],
+  type: "object",
+} as const;
+
+export const $BooleanDataTableCell = {
+  description: "A boolean tabular data cell.",
+  properties: {
+    type: {
+      enum: ["boolean"],
+      type: "string",
+    },
+    value: {
+      type: "boolean",
+    },
+  },
+  required: ["type"],
+  type: "object",
+} as const;
+
+export const $DateDataTableCell = {
+  description: `A date tabular data cell.
+
+Specified as a Unix timestamp (in seconds since the Unix Epoch).`,
+  properties: {
+    type: {
+      enum: ["date"],
+      type: "string",
+    },
+    value: {
+      format: "int64",
+      type: "integer",
+    },
+  },
+  required: ["type"],
+  type: "object",
+} as const;
+
 export const $SortByType = {
   enum: [
     "relevance",
@@ -1408,47 +1800,54 @@ is \`TXkgQXdlc29tZSBEZXNpZ24g8J+YjQ==\`.`,
 
 export const $CreateDesignImportJobResponse = {
   properties: {
-    job_id: {
-      description: "The design import job ID.",
-      example: "f81b26fd-a33d-4c2d-9e8c-4a7aca798b17",
-      type: "string",
+    job: {
+      $ref: "#/components/schemas/DesignImportJob",
     },
   },
-  required: ["job_id"],
+  required: ["job"],
   type: "object",
 } as const;
 
-export const $DesignImportStatus = {
-  description: "The status of the design import.",
+export const $DesignImportJob = {
+  description: "The status of the design import job.",
   properties: {
-    state: {
-      $ref: "#/components/schemas/DesignImportStatusState",
+    id: {
+      description: "The ID of the design import job.",
+      example: "e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8",
+      type: "string",
+    },
+    status: {
+      $ref: "#/components/schemas/DesignImportStatus",
+    },
+    result: {
+      $ref: "#/components/schemas/DesignImportJobResult",
     },
     error: {
       $ref: "#/components/schemas/DesignImportError",
     },
   },
-  required: ["state"],
+  required: ["id", "status"],
   type: "object",
 } as const;
 
-export const $DesignImportStatusState = {
-  description: "State of the design import job.",
-  enum: ["failed", "importing", "success"],
+export const $DesignImportStatus = {
+  description: "The status of the design import job.",
+  enum: ["failed", "in_progress", "success"],
   example: "success",
   type: "string",
 } as const;
 
 export const $DesignImportError = {
-  description: "Information about why the import failed.",
+  description:
+    "If the import job fails, this object provides details about the error.",
   properties: {
     code: {
       $ref: "#/components/schemas/DesignImportErrorCode",
     },
     message: {
-      description: "A human-readable description of why the import failed.",
+      description: "A human-readable description of what went wrong.",
       example:
-        "We're sorry, but the file upload quota has been exceeded. Please try again later.",
+        "We're sorry, but the file upload quota has exceeded. Please try again later.",
       type: "string",
     },
   },
@@ -1457,39 +1856,41 @@ export const $DesignImportError = {
 } as const;
 
 export const $DesignImportErrorCode = {
-  description: `A short string about why the import failed. You can programmatically
-handle errors using this field.`,
+  description: `A short string about why the import failed. This field can be used to handle errors
+programmatically.`,
   enum: [
     "design_creation_throttled",
     "design_import_throttled",
     "duplicate_import",
-    "internal_server_error",
+    "internal_error",
     "invalid_file",
   ],
   example: "design_creation_throttled",
   type: "string",
 } as const;
 
-export const $GetDesignImportJobResponse = {
+export const $DesignImportJobResult = {
   properties: {
-    job_id: {
-      description: "The design import job ID.",
-      example: "f81b26fd-a33d-4c2d-9e8c-4a7aca798b17",
-      type: "string",
-    },
-    status: {
-      $ref: "#/components/schemas/DesignImportStatus",
-    },
     designs: {
       description: `A list of designs imported from the external file. It usually contains one item.
 Imports with a large number of pages or assets are split into multiple designs.`,
       items: {
-        $ref: "#/components/schemas/Design",
+        $ref: "#/components/schemas/DesignSummary",
       },
       type: "array",
     },
   },
-  required: ["job_id", "status"],
+  required: ["designs"],
+  type: "object",
+} as const;
+
+export const $GetDesignImportJobResponse = {
+  properties: {
+    job: {
+      $ref: "#/components/schemas/DesignImportJob",
+    },
+  },
+  required: ["job"],
   type: "object",
 } as const;
 
@@ -2173,7 +2574,7 @@ export const $UpdateFolderRequest = {
     name: {
       description: "The folder name, as shown in the Canva UI.",
       example: "My awesome holiday",
-      maxLength: 250,
+      maxLength: 255,
       minLength: 1,
       type: "string",
     },

@@ -320,7 +320,10 @@ export type CreateDesignAutofillJobResponse = {
 /**
  * The data field to autofill.
  */
-export type DatasetValue = DatasetImageValue | DatasetTextValue;
+export type DatasetValue =
+  | DatasetImageValue
+  | DatasetTextValue
+  | DatasetChartValue;
 
 /**
  * Data object containing the data fields and values to autofill.
@@ -349,6 +352,16 @@ export type DatasetTextValue = {
    * Text to insert into the template element.
    */
   text: string;
+};
+
+/**
+ * If the data field is a chart.
+ *
+ * WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
+ */
+export type DatasetChartValue = {
+  type: "chart";
+  chart_data: DataTable;
 };
 
 export type GetDesignAutofillJobResponse = {
@@ -416,6 +429,14 @@ export type AutofillError = {
    */
   message: string;
 };
+
+export type DatasetFilter = "any" | "non_empty" | "empty";
+
+export const DatasetFilter = {
+  ANY: "any",
+  NON_EMPTY: "non_empty",
+  EMPTY: "empty",
+} as const;
 
 export type ListBrandTemplatesResponse = {
   /**
@@ -497,7 +518,7 @@ export type DatasetDefinition = {
 /**
  * A named data field that can be autofilled in the brand template.
  */
-export type DataField = ImageDataField | TextDataField;
+export type DataField = ImageDataField | TextDataField | ChartDataField;
 
 /**
  * An image for a brand template. You can autofill the brand template with an image by providing its `asset_id`.
@@ -511,6 +532,15 @@ export type ImageDataField = {
  */
 export type TextDataField = {
   type: "text";
+};
+
+/**
+ * Chart data for a brand template. You can autofill the brand template with tabular data.
+ *
+ * WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
+ */
+export type ChartDataField = {
+  type: "chart";
 };
 
 export type CreateCommentRequest = {
@@ -753,6 +783,80 @@ export type EdDsaJwk = {
   x: string;
 };
 
+/**
+ * Tabular data, structured in rows of cells.
+ *
+ * - The first row usually contains column headers.
+ * - Each cell must have a data type configured.
+ * - All rows must have the same number of cells.
+ * - Maximum of 100 rows and 20 columns.
+ *
+ * WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
+ */
+export type DataTable = {
+  /**
+   * Rows of data.
+   *
+   * The first row usually contains column headers. Maximum of 100 rows.
+   */
+  rows: Array<DataTableRow>;
+};
+
+/**
+ * A single row of tabular data.
+ */
+export type DataTableRow = {
+  /**
+   * Cells of data in row.
+   *
+   * All rows must have the same number of cells. Maximum of 20 cells per row.
+   */
+  cells: Array<DataTableCell>;
+};
+
+/**
+ * A single tabular data cell.
+ */
+export type DataTableCell =
+  | StringDataTableCell
+  | NumberDataTableCell
+  | BooleanDataTableCell
+  | DateDataTableCell;
+
+/**
+ * A string tabular data cell.
+ */
+export type StringDataTableCell = {
+  type: "string";
+  value?: string;
+};
+
+/**
+ * A number tabular data cell.
+ */
+export type NumberDataTableCell = {
+  type: "number";
+  value?: number;
+};
+
+/**
+ * A boolean tabular data cell.
+ */
+export type BooleanDataTableCell = {
+  type: "boolean";
+  value?: boolean;
+};
+
+/**
+ * A date tabular data cell.
+ *
+ * Specified as a Unix timestamp (in seconds since the Unix Epoch).
+ */
+export type DateDataTableCell = {
+  type: "date";
+  value?: number;
+};
+
 export type SortByType =
   | "relevance"
   | "modified_descending"
@@ -926,79 +1030,80 @@ export type DesignImportMetadata = {
 };
 
 export type CreateDesignImportJobResponse = {
-  /**
-   * The design import job ID.
-   */
-  job_id: string;
+  job: DesignImportJob;
 };
 
 /**
- * The status of the design import.
+ * The status of the design import job.
  */
-export type DesignImportStatus = {
-  state: DesignImportStatusState;
+export type DesignImportJob = {
+  /**
+   * The ID of the design import job.
+   */
+  id: string;
+  status: DesignImportStatus;
+  result?: DesignImportJobResult;
   error?: DesignImportError;
 };
 
 /**
- * State of the design import job.
+ * The status of the design import job.
  */
-export type DesignImportStatusState = "failed" | "importing" | "success";
+export type DesignImportStatus = "failed" | "in_progress" | "success";
 
 /**
- * State of the design import job.
+ * The status of the design import job.
  */
-export const DesignImportStatusState = {
+export const DesignImportStatus = {
   FAILED: "failed",
-  IMPORTING: "importing",
+  IN_PROGRESS: "in_progress",
   SUCCESS: "success",
 } as const;
 
 /**
- * Information about why the import failed.
+ * If the import job fails, this object provides details about the error.
  */
 export type DesignImportError = {
   code: DesignImportErrorCode;
   /**
-   * A human-readable description of why the import failed.
+   * A human-readable description of what went wrong.
    */
   message: string;
 };
 
 /**
- * A short string about why the import failed. You can programmatically
- * handle errors using this field.
+ * A short string about why the import failed. This field can be used to handle errors
+ * programmatically.
  */
 export type DesignImportErrorCode =
   | "design_creation_throttled"
   | "design_import_throttled"
   | "duplicate_import"
-  | "internal_server_error"
+  | "internal_error"
   | "invalid_file";
 
 /**
- * A short string about why the import failed. You can programmatically
- * handle errors using this field.
+ * A short string about why the import failed. This field can be used to handle errors
+ * programmatically.
  */
 export const DesignImportErrorCode = {
   DESIGN_CREATION_THROTTLED: "design_creation_throttled",
   DESIGN_IMPORT_THROTTLED: "design_import_throttled",
   DUPLICATE_IMPORT: "duplicate_import",
-  INTERNAL_SERVER_ERROR: "internal_server_error",
+  INTERNAL_ERROR: "internal_error",
   INVALID_FILE: "invalid_file",
 } as const;
 
-export type GetDesignImportJobResponse = {
-  /**
-   * The design import job ID.
-   */
-  job_id: string;
-  status: DesignImportStatus;
+export type DesignImportJobResult = {
   /**
    * A list of designs imported from the external file. It usually contains one item.
    * Imports with a large number of pages or assets are split into multiple designs.
    */
-  designs?: Array<Design>;
+  designs: Array<DesignSummary>;
+};
+
+export type GetDesignImportJobResponse = {
+  job: DesignImportJob;
 };
 
 /**
@@ -2358,6 +2463,16 @@ export type ListBrandTemplatesData = {
      */
     continuation?: string;
     /**
+     * Filter the list of brand templates based on the brand templates' dataset definitions.
+     * Brand templates with dataset definitions are mainly used with the [Autofill APIs](https://www.canva.dev/docs/connect/api-reference/autofills/).
+     * This can be one of the following:
+     *
+     * - `any`: (Default) Brand templates with and without dataset definitions.
+     * - `non_empty`: Brand templates with one or more data fields defined.
+     * - `empty`: Brand templates with no data fields defined.
+     */
+    dataset?: DatasetFilter;
+    /**
      * Filter the list of brand templates based on the user's ownership of the brand templates.
      * This can be one of the following:
      *
@@ -2626,7 +2741,7 @@ export type ListFolderItemsData = {
     continuation?: string;
     /**
      * Filter the folder items to only return specified types. The available types are:
-     * `design`, 'folder', and `image`. To filter for more than one item type, provide a comma-
+     * `design`, `folder`, and `image`. To filter for more than one item type, provide a comma-
      * delimited list.
      */
     item_types?: Array<FolderItemType>;

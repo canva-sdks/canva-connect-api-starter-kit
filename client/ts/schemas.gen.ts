@@ -1654,6 +1654,21 @@ export const $GetDesignResponse = {
   type: "object",
 } as const;
 
+export const $GetDesignPagesResponse = {
+  description: "Successful response from a `getDesignPages` request.",
+  properties: {
+    items: {
+      description: "The list of pages.",
+      items: {
+        $ref: "#/components/schemas/DesignPage",
+      },
+      type: "array",
+    },
+  },
+  required: ["items"],
+  type: "object",
+} as const;
+
 export const $Design = {
   description: "The design object, which contains metadata about the design.",
   properties: {
@@ -1701,6 +1716,14 @@ Unix Epoch).`,
   },
   required: ["created_at", "id", "owner", "updated_at", "urls"],
   type: "object",
+} as const;
+
+export const $PageIndex = {
+  description:
+    "The index of the page in the design. The first page in a design has the index value `1`.",
+  maximum: 500,
+  minimum: 1,
+  type: "integer",
 } as const;
 
 export const $DesignLinks = {
@@ -1767,6 +1790,25 @@ Unix Epoch).`,
     },
   },
   required: ["created_at", "id", "updated_at", "urls"],
+  type: "object",
+} as const;
+
+export const $DesignPage = {
+  description:
+    "Basic details about a page in a design, such as the page's index and thumbnail.",
+  properties: {
+    index: {
+      description:
+        "The index of the page in the design. The first page in a design has the index value `1`.",
+      maximum: 500,
+      minimum: 1,
+      type: "integer",
+    },
+    thumbnail: {
+      $ref: "#/components/schemas/Thumbnail",
+    },
+  },
+  required: ["index"],
   type: "object",
 } as const;
 
@@ -2037,6 +2079,7 @@ export const $ErrorCode = {
     "design_not_found",
     "offset_too_large",
     "page_not_found",
+    "design_or_comment_not_found",
     "design_type_not_found",
     "team_not_found",
     "comment_not_found",
@@ -3348,11 +3391,24 @@ export const $ShareDesignNotificationContent = {
     design: {
       $ref: "#/components/schemas/DesignSummary",
     },
+    share_url: {
+      description:
+        "A URL that the user who receives the notification can use to access the shared design.",
+      example:
+        "https://www.canva.com/api/action?token=zWiz3GqRaWVkolwSgfBa9sKbsKgfHAoxv_mjs-mlX2M",
+      type: "string",
+    },
     share: {
       $ref: "#/components/schemas/ShareAction",
     },
   },
-  required: ["design", "receiving_team_user", "triggering_user", "type"],
+  required: [
+    "design",
+    "receiving_team_user",
+    "share_url",
+    "triggering_user",
+    "type",
+  ],
   type: "object",
 } as const;
 
@@ -3399,12 +3455,19 @@ export const $CommentNotificationContent = {
     design: {
       $ref: "#/components/schemas/DesignSummary",
     },
+    comment_url: {
+      description: "A URL to the design, focused on the new comment.",
+      example:
+        "https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA",
+      type: "string",
+    },
     comment: {
       $ref: "#/components/schemas/CommentEvent",
     },
   },
   required: [
     "comment",
+    "comment_url",
     "design",
     "receiving_team_user",
     "triggering_user",
@@ -3431,8 +3494,21 @@ export const $DesignAccessRequestedNotificationContent = {
     design: {
       $ref: "#/components/schemas/DesignSummary",
     },
+    grant_access_url: {
+      description: `A URL, which is scoped only to the user that can grant the requested access to the
+design, that approves the requested access.`,
+      example:
+        "https://www.canva.com/api/action?token=OosRN8M_eO2-QbLpUmP5JCwTMSXWfadtQYWuj9WKzoE",
+      type: "string",
+    },
   },
-  required: ["design", "receiving_team_user", "triggering_user", "type"],
+  required: [
+    "design",
+    "grant_access_url",
+    "receiving_team_user",
+    "triggering_user",
+    "type",
+  ],
   type: "object",
 } as const;
 
@@ -3463,12 +3539,20 @@ export const $DesignApprovalRequestedNotificationContent = {
     design: {
       $ref: "#/components/schemas/DesignSummary",
     },
+    approve_url: {
+      description: `A URL, which is scoped only to the user requested to review the design, that links to
+the design with the approval UI opened.`,
+      example:
+        "https://canva.com/api/action?token=HZb0lLHaEhNkT1qQrAwoe0-8SqyXUgJ4vnHGvN2rLZ0",
+      type: "string",
+    },
     approval_request: {
       $ref: "#/components/schemas/ApprovalRequestAction",
     },
   },
   required: [
     "approval_request",
+    "approve_url",
     "design",
     "initial_requesting_user",
     "receiving_team_user",

@@ -55,6 +55,9 @@ import type {
   GetDesignData,
   GetDesignError,
   GetDesignResponse2,
+  GetDesignPagesData,
+  GetDesignPagesError,
+  GetDesignPagesResponse2,
   CreateDesignImportJobData,
   CreateDesignImportJobError,
   CreateDesignImportJobResponse2,
@@ -512,6 +515,33 @@ export class DesignService {
     return (options?.client ?? client).get<GetDesignResponse2, GetDesignError>({
       ...options,
       url: "/v1/designs/{designId}",
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Lists metadata for pages in a design, such as page-specific thumbnails.
+   *
+   * For the specified design, you can provide `offset` and `limit` values to specify the range of pages to return.
+   *
+   * NOTE: Some design types don't have pages (for example, Canva docs).
+   */
+  public static getDesignPages(options: Options<GetDesignPagesData>) {
+    return (options?.client ?? client).get<
+      GetDesignPagesResponse2,
+      GetDesignPagesError
+    >({
+      ...options,
+      url: "/v1/designs/{designId}/pages",
     });
   }
 }

@@ -929,6 +929,16 @@ export type GetDesignResponse = {
 };
 
 /**
+ * Successful response from a `getDesignPages` request.
+ */
+export type GetDesignPagesResponse = {
+  /**
+   * The list of pages.
+   */
+  items: Array<DesignPage>;
+};
+
+/**
  * The design object, which contains metadata about the design.
  */
 export type Design = {
@@ -958,6 +968,11 @@ export type Design = {
    */
   page_count?: number;
 };
+
+/**
+ * The index of the page in the design. The first page in a design has the index value `1`.
+ */
+export type PageIndex = number;
 
 /**
  * A temporary set of URLs for viewing or editing the design.
@@ -1006,6 +1021,17 @@ export type DesignSummary = {
    * Unix Epoch).
    */
   updated_at: number;
+};
+
+/**
+ * Basic details about a page in a design, such as the page's index and thumbnail.
+ */
+export type DesignPage = {
+  /**
+   * The index of the page in the design. The first page in a design has the index value `1`.
+   */
+  index: number;
+  thumbnail?: Thumbnail;
 };
 
 /**
@@ -1219,6 +1245,7 @@ export type ErrorCode =
   | "design_not_found"
   | "offset_too_large"
   | "page_not_found"
+  | "design_or_comment_not_found"
   | "design_type_not_found"
   | "team_not_found"
   | "comment_not_found"
@@ -1277,6 +1304,7 @@ export const ErrorCode = {
   DESIGN_NOT_FOUND: "design_not_found",
   OFFSET_TOO_LARGE: "offset_too_large",
   PAGE_NOT_FOUND: "page_not_found",
+  DESIGN_OR_COMMENT_NOT_FOUND: "design_or_comment_not_found",
   DESIGN_TYPE_NOT_FOUND: "design_type_not_found",
   TEAM_NOT_FOUND: "team_not_found",
   COMMENT_NOT_FOUND: "comment_not_found",
@@ -2179,6 +2207,10 @@ export type ShareDesignNotificationContent = {
   triggering_user: User;
   receiving_team_user: TeamUser;
   design: DesignSummary;
+  /**
+   * A URL that the user who receives the notification can use to access the shared design.
+   */
+  share_url: string;
   share?: ShareAction;
 };
 
@@ -2201,6 +2233,10 @@ export type CommentNotificationContent = {
   triggering_user: User;
   receiving_team_user: TeamUser;
   design: DesignSummary;
+  /**
+   * A URL to the design, focused on the new comment.
+   */
+  comment_url: string;
   comment: CommentEvent;
 };
 
@@ -2212,6 +2248,11 @@ export type DesignAccessRequestedNotificationContent = {
   triggering_user: TeamUser;
   receiving_team_user: TeamUser;
   design: DesignSummary;
+  /**
+   * A URL, which is scoped only to the user that can grant the requested access to the
+   * design, that approves the requested access.
+   */
+  grant_access_url: string;
 };
 
 /**
@@ -2225,6 +2266,11 @@ export type DesignApprovalRequestedNotificationContent = {
   receiving_team_user: TeamUser;
   requested_groups: Array<Group>;
   design: DesignSummary;
+  /**
+   * A URL, which is scoped only to the user requested to review the design, that links to
+   * the design with the approval UI opened.
+   */
+  approve_url: string;
   approval_request: ApprovalRequestAction;
 };
 
@@ -2633,6 +2679,32 @@ export type GetDesignData = {
 export type GetDesignResponse2 = GetDesignResponse;
 
 export type GetDesignError = unknown;
+
+export type GetDesignPagesData = {
+  path: {
+    /**
+     * The design ID.
+     */
+    designId: string;
+  };
+  query?: {
+    /**
+     * The number of pages to return, starting at the page index specified using the `offset` parameter. Default is `50` pages.
+     */
+    limit?: number;
+    /**
+     * The page index to start the range of pages to return. Default is `1`.
+     *
+     * Pages are indexed using one-based numbering, so the first page in a design has the index value `1`.
+     *
+     */
+    offset?: number;
+  };
+};
+
+export type GetDesignPagesResponse2 = GetDesignPagesResponse;
+
+export type GetDesignPagesError = unknown;
 
 export type CreateDesignImportJobData = {
   /**
@@ -3066,6 +3138,21 @@ export type $OpenApiTs = {
          * OK
          */
         "200": GetDesignResponse;
+        /**
+         * Error Response
+         */
+        default: Error;
+      };
+    };
+  };
+  "/v1/designs/{designId}/pages": {
+    get: {
+      req: GetDesignPagesData;
+      res: {
+        /**
+         * OK
+         */
+        "200": GetDesignPagesResponse;
         /**
          * Error Response
          */

@@ -120,6 +120,7 @@ paths:
         - asset:read
       tags:
       - asset
+      x-rate-limit-per-client-user: 100
     patch:
       description: |-
         You can update the name and tags of an asset by specifying its `assetId`. Updating the tags
@@ -469,6 +470,7 @@ paths:
         - brandtemplate:meta:read
       tags:
       - brand_template
+      x-rate-limit-per-client-user: 100
   /v1/brand-templates/{brandTemplateId}:
     get:
       description: |-
@@ -514,6 +516,7 @@ paths:
         - brandtemplate:meta:read
       tags:
       - brand_template
+      x-rate-limit-per-client-user: 100
   /v1/brand-templates/{brandTemplateId}/dataset:
     get:
       description: |-
@@ -572,6 +575,7 @@ paths:
         - brandtemplate:content:read
       tags:
       - brand_template
+      x-rate-limit-per-client-user: 100
   /v1/comments:
     post:
       description: |-
@@ -727,6 +731,7 @@ paths:
         - comment:read
       tags:
       - comment
+      x-rate-limit-per-client-user: 100
   /v1/connect/keys:
     get:
       description: |-
@@ -853,6 +858,7 @@ paths:
         - design:meta:read
       tags:
       - design
+      x-rate-limit-per-client-user: 100
     post:
       description: |-
         Creates a new Canva design. To create a new design, you can either:
@@ -919,6 +925,83 @@ paths:
         - design:meta:read
       tags:
       - design
+      x-rate-limit-per-client-user: 100
+  /v1/designs/{designId}/pages:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Lists metadata for pages in a design, such as page-specific thumbnails.
+
+        For the specified design, you can provide `offset` and `limit` values to specify the range of pages to return.
+
+        NOTE: Some design types don't have pages (for example, Canva docs).
+      operationId: getDesignPages
+      parameters:
+      - description: The design ID.
+        explode: false
+        in: path
+        name: designId
+        required: true
+        schema:
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
+          type: string
+        style: simple
+      - description: |
+          The page index to start the range of pages to return. Default is `1`.
+
+          Pages are indexed using one-based numbering, so the first page in a design has the index value `1`.
+        explode: true
+        in: query
+        name: offset
+        required: false
+        schema:
+          default: 1
+          format: int32
+          maximum: 500
+          minimum: 1
+          type: integer
+        style: form
+      - description: "The number of pages to return, starting at the page index specified\
+          \ using the `offset` parameter. Default is `50` pages."
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 50
+          format: int32
+          maximum: 200
+          minimum: 1
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDesignPagesResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error Response
+      security:
+      - oauthAuthCode:
+        - design:content:read
+      tags:
+      - design
+      x-rate-limit-per-client-user: 100
   /v1/imports:
     post:
       description: |-
@@ -1193,6 +1276,7 @@ paths:
         - folder:read
       tags:
       - folder
+      x-rate-limit-per-client-user: 100
     patch:
       description: |-
         Updates a folder's details using its `folderID`.
@@ -1323,6 +1407,7 @@ paths:
         - folder:read
       tags:
       - folder
+      x-rate-limit-per-client-user: 100
   /v1/folders/move:
     post:
       description: |-
@@ -1349,6 +1434,7 @@ paths:
         - folder:write
       tags:
       - folder
+      x-rate-limit-per-client-user: 100
   /v1/folders:
     post:
       description: |-
@@ -3110,6 +3196,17 @@ components:
       required:
       - design
       type: object
+    GetDesignPagesResponse:
+      description: Successful response from a `getDesignPages` request.
+      properties:
+        items:
+          description: The list of pages.
+          items:
+            $ref: '#/components/schemas/DesignPage'
+          type: array
+      required:
+      - items
+      type: object
     Design:
       description: "The design object, which contains metadata about the design."
       properties:
@@ -3155,6 +3252,12 @@ components:
       - updated_at
       - urls
       type: object
+    PageIndex:
+      description: The index of the page in the design. The first page in a design
+        has the index value `1`.
+      maximum: 500
+      minimum: 1
+      type: integer
     DesignLinks:
       description: A temporary set of URLs for viewing or editing the design.
       properties:
@@ -3215,6 +3318,21 @@ components:
       - id
       - updated_at
       - urls
+      type: object
+    DesignPage:
+      description: "Basic details about a page in a design, such as the page's index\
+        \ and thumbnail."
+      properties:
+        index:
+          description: The index of the page in the design. The first page in a design
+            has the index value `1`.
+          maximum: 500
+          minimum: 1
+          type: integer
+        thumbnail:
+          $ref: '#/components/schemas/Thumbnail'
+      required:
+      - index
       type: object
     DesignImportMetadata:
       description: Metadata about the design that you include as a header parameter
@@ -3445,6 +3563,7 @@ components:
       - design_not_found
       - offset_too_large
       - page_not_found
+      - design_or_comment_not_found
       - design_type_not_found
       - team_not_found
       - comment_not_found
@@ -4553,11 +4672,17 @@ components:
           $ref: '#/components/schemas/TeamUser'
         design:
           $ref: '#/components/schemas/DesignSummary'
+        share_url:
+          description: A URL that the user who receives the notification can use to
+            access the shared design.
+          example: https://www.canva.com/api/action?token=zWiz3GqRaWVkolwSgfBa9sKbsKgfHAoxv_mjs-mlX2M
+          type: string
         share:
           $ref: '#/components/schemas/ShareAction'
       required:
       - design
       - receiving_team_user
+      - share_url
       - triggering_user
       - type
       type: object
@@ -4597,10 +4722,15 @@ components:
           $ref: '#/components/schemas/TeamUser'
         design:
           $ref: '#/components/schemas/DesignSummary'
+        comment_url:
+          description: "A URL to the design, focused on the new comment."
+          example: https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA
+          type: string
         comment:
           $ref: '#/components/schemas/CommentEvent'
       required:
       - comment
+      - comment_url
       - design
       - receiving_team_user
       - triggering_user
@@ -4621,8 +4751,15 @@ components:
           $ref: '#/components/schemas/TeamUser'
         design:
           $ref: '#/components/schemas/DesignSummary'
+        grant_access_url:
+          description: |-
+            A URL, which is scoped only to the user that can grant the requested access to the
+            design, that approves the requested access.
+          example: https://www.canva.com/api/action?token=OosRN8M_eO2-QbLpUmP5JCwTMSXWfadtQYWuj9WKzoE
+          type: string
       required:
       - design
+      - grant_access_url
       - receiving_team_user
       - triggering_user
       - type
@@ -4649,10 +4786,17 @@ components:
           type: array
         design:
           $ref: '#/components/schemas/DesignSummary'
+        approve_url:
+          description: |-
+            A URL, which is scoped only to the user requested to review the design, that links to
+            the design with the approval UI opened.
+          example: https://canva.com/api/action?token=HZb0lLHaEhNkT1qQrAwoe0-8SqyXUgJ4vnHGvN2rLZ0
+          type: string
         approval_request:
           $ref: '#/components/schemas/ApprovalRequestAction'
       required:
       - approval_request
+      - approve_url
       - design
       - initial_requesting_user
       - receiving_team_user

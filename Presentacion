@@ -1,0 +1,56 @@
+Para crear estos 50 guiones usando la API de Canva, necesitarás estructurarlos de manera adecuada en solicitudes a la API. A continuación, te proporciono un ejemplo de cómo podría verse una estructura básica en Python para crear cada uno de estos guiones en Canva.
+
+### Ejemplo de Código para Crear Guiones en Canva
+
+```python
+import requests
+
+# Información de autenticación
+API_KEY = 'TU_API_KEY'  # Reemplaza esto con tu clave de API real
+URL = 'https://api.canva.com/v1/designs'
+
+# Lista de guiones
+guiones = [
+    {
+        "title": "Introducción a Saludos y Presentaciones",
+        "elements": [
+            {"type": "text", "text": "Tema: Saludos formales e informales.", "fontSize": 24, "color": "#000"},
+            {"type": "text", "text": "Actividad: Role-play de presentaciones.", "fontSize": 20, "color": "#555"},
+            {"type": "text", "text": "Enfoque: Práctica conversacional.", "fontSize": 20, "color": "#555"}
+        ]
+    },
+    {
+        "title": "Vocabulario de la Casa",
+        "elements": [
+            {"type": "text", "text": "Tema: Partes de la casa.", "fontSize": 24, "color": "#000"},
+            {"type": "text", "text": "Actividad: Tour virtual y descripción.", "fontSize": 20, "color": "#555"},
+            {"type": "text", "text": "Enfoque: Aprendizaje visual.", "fontSize": 20, "color": "#555"}
+        ]
+    },
+    # Agrega aquí el resto de guiones siguiendo el mismo formato...
+]
+
+# Crear un diseño por cada guion
+for guion in guiones:
+    design_data = {
+        "title": guion["title"],
+        "elements": guion["elements"]
+    }
+    
+    # Realizar la solicitud a la API de Canva
+    response = requests.post(URL, json=design_data, headers={'Authorization': f'Bearer {API_KEY}'})
+    
+    if response.status_code == 201:
+        print(f"Diseño '{guion['title']}' creado con éxito")
+    else:
+        print(f"Error al crear el diseño '{guion['title']}':", response.json())
+```
+
+### Notas Importantes:
+
+1. **API Key**: Reemplaza `'TU_API_KEY'` con tu clave de API de Canva.
+2. **Estructura**: Asegúrate de definir todos los elementos (textos, imágenes, etc.) que desees en cada guion como se muestra.
+3. **Completar Guiones**: Agrega los 50 guiones restantes en la lista `guiones` siguiendo el mismo formato que se mostró.
+4. **Revisión de API**: Consulta la [documentación de la API de Canva](https://www.canva.com/developers/docs/getting-started/introduction) para asegurarte de que estás utilizando el formato y los endpoints correctos, e implementa correctamente los elementos que desees crear.
+
+Este código es un esquema base y es posible que necesites modificarlo según tus requisitos específicos y el manejo de datos que desees implementar. Si tienes alguna pregunta o necesitas más detalles, ¡estaré encantado de ayudar!

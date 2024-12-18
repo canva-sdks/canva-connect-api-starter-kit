@@ -2,6 +2,7 @@ import { createClient } from "@hey-api/client-fetch";
 import { getToken, setToken } from "../database/queries";
 import * as jose from "jose";
 import { OauthService } from "@canva/connect-api-ts";
+import type { ExchangeAccessTokenRequest } from "@canva/connect-api-ts";
 import { JSONFileDatabase } from "../database/database";
 
 export async function getAccessTokenForUser(
@@ -27,10 +28,10 @@ export async function getAccessTokenForUser(
   // Otherwise, we need to refresh the token
   const refreshToken = storedToken.refresh_token;
 
-  const params = new URLSearchParams({
+  const params: ExchangeAccessTokenRequest = {
     grant_type: "refresh_token",
     refresh_token: refreshToken,
-  });
+  };
 
   const result = await OauthService.exchangeAccessToken({
     client: getBasicAuthClient(),
@@ -61,7 +62,6 @@ export async function getAccessTokenForUser(
 
 export function getUserClient(token: string) {
   const localClient = createClient({
-    global: false,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -88,7 +88,6 @@ export function getUserClient(token: string) {
 export function getBasicAuthClient() {
   const credentials = `${process.env.CANVA_CLIENT_ID}:${process.env.CANVA_CLIENT_SECRET}`;
   const localClient = createClient({
-    global: false,
     headers: {
       Authorization: `Basic ${Buffer.from(credentials).toString("base64")}`,
     },

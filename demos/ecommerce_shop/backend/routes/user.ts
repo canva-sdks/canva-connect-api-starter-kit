@@ -1,20 +1,20 @@
 import express from "express";
-import { UserService } from "@canva/connect-api-ts";
 import { injectClient } from "../../../common/backend/middleware/client";
 import { db } from "../database/database";
 
 const router = express.Router();
 
 router.use((req, res, next) => injectClient(req, res, next, db));
+const endpoints = {
+  TOKEN: "/token",
+};
 
-router.get("/user", async (req, res) => {
-  const result = await UserService.getUserProfile({
-    client: req.client,
-  });
-  if (result.error) {
-    return res.status(result.response.status).json(result.error);
+router.get(endpoints.TOKEN, async (req, res) => {
+  // Only our FE may ask for the user's token
+  if (req.headers.origin !== process.env.FRONTEND_URL) {
+    return res.status(401).send("Unauthorized");
   }
-  return res.json(result.data);
+  return res.status(200).send(req.token);
 });
 
 export default router;

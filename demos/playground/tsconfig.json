@@ -11,12 +11,10 @@
       "es2020.promise",
       "es2020.string"
     ],
-    "types": [
-      "node"
-    ],
-    "composite": true,
+    "types": ["node"],
+    "composite": false,
     "declaration": true,
-    "declarationMap": true,
+    "declarationMap": false,
     "experimentalDecorators": true,
     "importHelpers": true,
     "noImplicitOverride": true,
@@ -35,14 +33,10 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./"
   },
-  "include": [
-    "./node_modules/@types/**/*",
-    "./scripts/*",
-    "../common",
-  ],
+  "include": ["./node_modules/@types/**/*", "./scripts/*", "../common"],
   "ts-node": {
     "compilerOptions": {
-      "module": "commonjs",
+      "module": "commonjs"
     }
   }
 }

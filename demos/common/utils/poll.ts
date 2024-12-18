@@ -22,7 +22,7 @@ export const poll = async <T extends AsyncJobResponse>(
     increaseFactor?: number;
     /**
      * The maximum delay in between consecutive polls
-     * @default 5_000
+     * @default 10_000
      */
     maxDelayMs?: number;
   } = {},

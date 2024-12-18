@@ -10,11 +10,6 @@ import {
   PublishDialog,
 } from "src/components";
 import { useAppContext, useCampaignContext } from "src/context";
-import {
-  autoFillTemplateWithProduct,
-  fetchDesign,
-  getBrandTemplates,
-} from "src/services";
 
 export const MultipleDesignsGeneratorPage = () => {
   const {
@@ -22,6 +17,7 @@ export const MultipleDesignsGeneratorPage = () => {
     selectedCampaignProduct,
     marketingMultiDesignResults,
     setMarketingMultiDesignResults,
+    services,
   } = useAppContext();
   const {
     campaignName,
@@ -40,9 +36,9 @@ export const MultipleDesignsGeneratorPage = () => {
     const fetchData = async () => {
       try {
         setIsFetching(true);
-        const { items } = await getBrandTemplates();
+        const items = await services.autofill.listBrandTemplates();
         setBrandTemplates(items);
-      } catch (e) {
+      } catch {
         addAlert({
           title: "Something went wrong fetching your brand templates.",
           variant: "error",
@@ -71,7 +67,7 @@ export const MultipleDesignsGeneratorPage = () => {
       }
 
       const autoFillPromises = selectedBrandTemplates.map((brandTemplate) =>
-        autoFillTemplateWithProduct({
+        services.autofill.autoFillTemplateWithProduct({
           brandTemplateId: brandTemplate.id,
           product: selectedCampaignProduct,
           discount: selectedDiscount,
@@ -88,9 +84,9 @@ export const MultipleDesignsGeneratorPage = () => {
           });
         } else if (result.status === "fulfilled") {
           if (result.value.job.result?.design.id) {
-            const response = await fetchDesign({
-              designId: result.value.job.result.design.id,
-            });
+            const response = await services.designs.getDesign(
+              result.value.job.result.design.id,
+            );
             setMarketingMultiDesignResults((currentDesigns) => [
               ...currentDesigns,
               {

@@ -1,11 +1,11 @@
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-import { checkAuthorizationStatus } from "src/services";
+import type { Services } from "src/services";
+import { checkForAccessToken, installServices } from "src/services";
 import type { ShopAlert, ShopAlertOptions } from "src/components";
 
 export interface AppContextType {
   isAuthorized: boolean;
-  setIsAuthorized: Dispatch<SetStateAction<boolean>>;
   displayName: string;
   setDisplayName: Dispatch<SetStateAction<string>>;
   alerts: ShopAlert[];
@@ -13,16 +13,19 @@ export interface AppContextType {
   addAlert: (newAlert: ShopAlertOptions) => void;
   /** clearAlert: remove alert based on the index from the alerts array.  */
   clearAlert: (alertIndex: number) => void;
+  services: Services;
+  setToken: Dispatch<SetStateAction<string | undefined>>;
 }
 
 export const AppContext = createContext<AppContextType>({
   isAuthorized: false,
-  setIsAuthorized: () => {},
   displayName: "",
   setDisplayName: () => {},
   alerts: [],
   addAlert: (alert: ShopAlertOptions) => {},
   clearAlert: (alertIndex: number) => {},
+  services: installServices(),
+  setToken: () => {},
 });
 
 export const ContextProvider = ({
@@ -30,15 +33,15 @@ export const ContextProvider = ({
 }: {
   children: ReactNode;
 }): JSX.Element => {
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
+  const [token, setToken] = useState<string | undefined>(undefined);
   const [displayName, setDisplayName] = useState("");
   const [alerts, setAlerts] = useState<ShopAlert[]>([]);
 
   useEffect(() => {
     const checkAuthorization = async () => {
       try {
-        const { status } = await checkAuthorizationStatus();
-        setIsAuthorized(status);
+        const { token } = await checkForAccessToken();
+        setToken(token);
       } catch (error) {
         console.error(error);
         console.error("Error checking authorization:", error);
@@ -66,14 +69,18 @@ export const ContextProvider = ({
     );
   };
 
+  const services = installServices(token);
+  const isAuthorized = !!token;
+
   const value: AppContextType = {
     isAuthorized,
-    setIsAuthorized,
     displayName,
     setDisplayName,
     alerts,
     addAlert,
     clearAlert,
+    services,
+    setToken,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -3,33 +3,34 @@ import { BACKEND_HOST } from "src/config";
 const endpoints = {
   AUTHORIZE: "/authorize",
   REVOKE: "/revoke",
-  IS_AUTHORIZED: "/isauthorized",
+  TOKEN: "/token",
 };
 
 export const getCanvaAuthorization = async () => {
-  return new Promise<boolean>((resolve, reject) => {
+  return new Promise<string | undefined>((resolve, reject) => {
     try {
       const url = new URL(endpoints.AUTHORIZE, BACKEND_HOST);
       const windowFeatures = ["popup", "height=800", "width=800"];
       const authWindow = window.open(url, "", windowFeatures.join(","));
 
+      const checkAuth = async () => {
+        try {
+          const authorized = await checkForAccessToken();
+          resolve(authorized.token);
+        } catch (error) {
+          reject(error);
+        }
+      };
+
       window.addEventListener("message", (event) => {
         if (event.data === "authorization_success") {
-          resolve(true);
+          checkAuth();
           authWindow?.close();
         } else if (event.data === "authorization_error") {
           reject(new Error("Authorization failed"));
           authWindow?.close();
         }
       });
-      const checkAuth = async () => {
-        try {
-          const authorized = await checkAuthorizationStatus();
-          resolve(authorized.status);
-        } catch (error) {
-          reject(error);
-        }
-      };
 
       // Some errors from authorizing may not redirect to our servers,
       // in that case we need to check to see if the window has been manually closed by the user.
@@ -57,14 +58,14 @@ export const revoke = async () => {
   return true;
 };
 
-export const checkAuthorizationStatus = async (): Promise<{
-  status: boolean;
+export const checkForAccessToken = async (): Promise<{
+  token?: string;
 }> => {
-  const url = new URL(endpoints.IS_AUTHORIZED, BACKEND_HOST);
+  const url = new URL(endpoints.TOKEN, BACKEND_HOST);
   const response = await fetch(url, { credentials: "include" });
 
   if (!response.ok) {
-    return { status: false };
+    return { token: undefined };
   }
-  return response.json();
+  return { token: await response.text() };
 };

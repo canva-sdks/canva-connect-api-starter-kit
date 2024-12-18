@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { DemoButton } from "src/components";
 import { useAppContext } from "src/context";
-import { getCanvaAuthorization, getUser, revoke } from "src/services";
+import { getCanvaAuthorization, revoke } from "src/services";
 import LinkOffIcon from "@mui/icons-material/LinkOff";
 import { CanvaIcon } from "src/components";
 
 export const ConnectButton = () => {
-  const { isAuthorized, setIsAuthorized, setDisplayName, addAlert } =
+  const { isAuthorized, setToken, setDisplayName, addAlert, services } =
     useAppContext();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -14,7 +14,7 @@ export const ConnectButton = () => {
     const getAndSetDisplayName = async () => {
       const {
         profile: { display_name },
-      } = await getUser();
+      } = await services.users.getUserProfile();
       display_name && setDisplayName(display_name);
     };
 
@@ -30,23 +30,23 @@ export const ConnectButton = () => {
   const onConnectClick = async () => {
     try {
       setIsLoading(true);
-      const result = await getCanvaAuthorization();
+      const token = await getCanvaAuthorization();
 
-      if (result) {
-        setIsAuthorized(true);
-        const { profile } = await getUser();
+      if (token) {
+        setToken(token);
+
         addAlert({
           title: "The Canva for Nourish integration is now connected",
-          body: `You're currently logged in as ${profile.display_name}.`,
+          body: `You're currently logged in.`,
           variant: "success",
           hideAfterMs: 5000,
         });
       } else {
-        setIsAuthorized(false);
+        setToken(undefined);
       }
     } catch (error) {
       console.error(error);
-      setIsAuthorized(false);
+      setToken(undefined);
       addAlert({
         title: "Authorization has failed. Please try again later.",
         variant: "error",
@@ -60,7 +60,7 @@ export const ConnectButton = () => {
     const result = await revoke();
 
     if (result) {
-      setIsAuthorized(false);
+      setToken(undefined);
       setDisplayName("");
       addAlert({
         title: "Your Canva integration has been disconnected",

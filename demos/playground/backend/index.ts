@@ -2,7 +2,6 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import path from "path";
-import dummyRoutes from "./routes/dummy";
 import userRoutes from "./routes/user";
 import authRoutes from "./routes/auth";
 import cookieParser from "cookie-parser";
@@ -10,7 +9,7 @@ import { errorHandler } from "../../common/backend/middleware/errors";
 import { logger } from "../../common/backend/middleware/logger";
 import { JSONFileDatabase } from "../../common/backend/database/database";
 import type { DatabaseSchema } from "./schema";
-import type { client } from "@hey-api/client-fetch";
+import type { Client } from "@hey-api/client-fetch";
 
 const port = process.env.BACKEND_PORT;
 
@@ -18,7 +17,7 @@ declare global {
   namespace Express {
     interface Request {
       // The Canva Connect client, configured for the current user
-      client: typeof client;
+      client: Client;
       // The access token, in case you need to make a call to the
       // Connect API that isn't yet supported by the client
       token: string;
@@ -53,7 +52,6 @@ app.use(logger);
 
 // Mount routes
 app.use(authRoutes);
-app.use(dummyRoutes);
 app.use(userRoutes);
 
 app.set(

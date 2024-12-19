@@ -11,13 +11,10 @@
       "es2020.promise",
       "es2020.string"
     ],
-    "types": [
-      "node",
-      "jest"
-    ],
-    "composite": true,
-    "declaration": true,
-    "declarationMap": true,
+    "types": ["node", "jest"],
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
     "experimentalDecorators": true,
     "importHelpers": true,
     "noImplicitOverride": true,
@@ -34,16 +31,12 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "./",
+    "baseUrl": "./"
   },
-  "include": [
-    "./node_modules/@types/**/*",
-    "./scripts/*",
-    "../common"
-  ],
+  "include": ["./node_modules/@types/**/*", "./scripts/*", "../common"],
   "ts-node": {
     "compilerOptions": {
-      "module": "commonjs",
+      "module": "commonjs"
     }
   }
 }

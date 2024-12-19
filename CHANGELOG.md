@@ -1,5 +1,14 @@
 # Changelog
 
+## 2024-12-19
+
+### 🔧 Changed
+
+- Both demo projects now take advantage of the CORS support for the Connect API and make most requests directly from the frontend code
+- Updated HeyAPI to version 0.5, and TypeScript to version 5.5
+- Dependencies are now pinned to exact versions to reduce accidental incompatabilities
+- Refreshed the OpenAPI yml spec `openapi/spec.yml` to be based on the latest Connect API design
+
 ## 2024-09-23
 
 ### 🔧 Changed

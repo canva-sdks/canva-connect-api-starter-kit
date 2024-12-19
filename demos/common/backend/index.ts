@@ -1,4 +1,4 @@
-import type { client } from "@hey-api/client-fetch";
+import type { Client } from "@hey-api/client-fetch";
 
 /**
  * We extend the Express Request interface to include the custom properties
@@ -9,7 +9,7 @@ declare global {
   namespace Express {
     interface Request {
       // The Canva Connect client, configured for the current user
-      client: typeof client;
+      client: Client;
       // The access token, in case you need to make a call to the
       // Connect API that isn't yet supported by the client
       token: string;

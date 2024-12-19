@@ -2,18 +2,14 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import path from "path";
-import assetRoutes from "./routes/asset";
 import authRoutes from "./routes/auth";
-import autofillRoutes from "./routes/autofill";
-import brandTemplateRoutes from "./routes/brand-template";
-import designRoutes from "./routes/design";
 import userRoutes from "./routes/user";
 import productRoutes from "./routes/product";
 import returnNavRoutes from "./routes/return-nav";
 import exportRoutes from "./routes/export";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "../../common/backend/middleware/errors";
-import type { client } from "@hey-api/client-fetch";
+import type { Client } from "@hey-api/client-fetch";
 import { logger } from "../../common/backend/middleware/logger";
 
 /**
@@ -25,7 +21,7 @@ declare global {
   namespace Express {
     interface Request {
       // The Canva Connect client, configured for the current user
-      client: typeof client;
+      client: Client;
       // The access token, in case you need to make a call to the
       // Connect API that isn't yet supported by the client
       token: string;
@@ -58,10 +54,6 @@ app.use(logger);
 
 // Mount routes
 app.use(authRoutes);
-app.use(assetRoutes);
-app.use(autofillRoutes);
-app.use(designRoutes);
-app.use(brandTemplateRoutes);
 app.use(userRoutes);
 app.use(productRoutes);
 app.use(returnNavRoutes);

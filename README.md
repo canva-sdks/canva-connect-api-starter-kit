@@ -63,7 +63,7 @@ cd demos/ecommerce_shop
 
 2. Add your integration settings to the `demos/ecommerce_shop/.env` file.
 
-- `DATABASE_ENCRYPTION_KEY`: This will encrypt and decrypt the tokens stored in the JSON database. A key is automatically get generated for you after running `npm install`, and will already be set in `.env`. If not, run `npm start generate:db-key` from the `demos/ecommerce_shop` directory.
+- `DATABASE_ENCRYPTION_KEY`: This will encrypt and decrypt the tokens stored in the JSON database. A key is automatically get generated for you after running `npm install`, and will already be set in `.env`. If not, run `npm run generate:db-key` from the `demos/ecommerce_shop` directory.
 - `CANVA_CLIENT_ID`: This is the `Client ID` from the prerequisites.
 - `CANVA_CLIENT_SECRET`: This is the `client secret` you generated in the prerequisites.
 

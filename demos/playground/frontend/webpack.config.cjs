@@ -119,9 +119,7 @@ function buildConfig({
       path: path.resolve(__dirname, "dist"),
       clean: true,
     },
-    plugins: [
-      new optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
-    ],
+    plugins: [new optimize.LimitChunkCountPlugin({ maxChunks: 1 })],
     devtool: "source-map",
     devServer: {
       port: 3000,
@@ -130,7 +128,7 @@ function buildConfig({
         logging: "verbose",
       },
       static: {
-        directory: path.join(__dirname, 'public'),
+        directory: path.join(__dirname, "public"),
       },
     },
   };

@@ -1,13 +1,13 @@
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-import { checkAuthorizationStatus } from "src/services";
+import type { Services } from "src/services";
+import { checkForAccessToken, installServices } from "src/services";
 import type { ShopAlertOptions, ShopAlert } from "src/components";
 import type { Design } from "@canva/connect-api-ts/types.gen";
 import type { Product } from "src/models";
 
 export interface AppContextType {
   isAuthorized: boolean;
-  setIsAuthorized: Dispatch<SetStateAction<boolean>>;
   displayName: string;
   setDisplayName: Dispatch<SetStateAction<string>>;
   alerts: ShopAlert[];
@@ -21,11 +21,12 @@ export interface AppContextType {
   setSelectedCampaignProduct: (product: Product | undefined) => void;
   marketingMultiDesignResults: Design[];
   setMarketingMultiDesignResults: Dispatch<SetStateAction<Design[]>>;
+  services: Services;
+  setToken: Dispatch<SetStateAction<string | undefined>>;
 }
 
 export const AppContext = createContext<AppContextType>({
   isAuthorized: false,
-  setIsAuthorized: () => {},
   displayName: "",
   setDisplayName: () => {},
   alerts: [],
@@ -37,6 +38,8 @@ export const AppContext = createContext<AppContextType>({
   setSelectedCampaignProduct: () => {},
   marketingMultiDesignResults: [],
   setMarketingMultiDesignResults: () => {},
+  services: installServices(),
+  setToken: () => {},
 });
 
 export const ContextProvider = ({
@@ -44,7 +47,6 @@ export const ContextProvider = ({
 }: {
   children: ReactNode;
 }): JSX.Element => {
-  const [isAuthorized, setIsAuthorized] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [alerts, setAlerts] = useState<ShopAlert[]>([]);
   const [createdSingleDesign, setCreatedSingleDesign] = useState<
@@ -55,12 +57,13 @@ export const ContextProvider = ({
   >(undefined);
   const [marketingMultiDesignResults, setMarketingMultiDesignResults] =
     useState<Design[]>([]);
+  const [token, setToken] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const checkAuthorization = async () => {
       try {
-        const { status } = await checkAuthorizationStatus();
-        setIsAuthorized(status);
+        const { token } = await checkForAccessToken();
+        setToken(token);
       } catch (error) {
         console.error(error);
         console.error("Error checking authorization:", error);
@@ -88,9 +91,11 @@ export const ContextProvider = ({
     );
   };
 
+  const services = installServices(token);
+  const isAuthorized = !!token;
+
   const value: AppContextType = {
     isAuthorized,
-    setIsAuthorized,
     displayName,
     setDisplayName,
     alerts,
@@ -102,6 +107,8 @@ export const ContextProvider = ({
     setSelectedCampaignProduct,
     marketingMultiDesignResults,
     setMarketingMultiDesignResults,
+    services,
+    setToken,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

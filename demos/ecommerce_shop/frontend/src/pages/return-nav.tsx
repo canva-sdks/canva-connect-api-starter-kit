@@ -20,13 +20,7 @@ import { useAppContext } from "src/context";
 import type { CorrelationState } from "src/models";
 import { EditInCanvaPageOrigins } from "src/models";
 import { Paths } from "src/routes";
-import {
-  downloadExportedImage,
-  exportDesign,
-  fetchDesign,
-  getDesign,
-  getProducts,
-} from "src/services";
+import { downloadExportedImage, getProducts } from "src/services";
 import { decodeCorrelationState } from "src/services/canva-return";
 
 const STEPS = [
@@ -127,6 +121,8 @@ export const ReturnNavPage = (): JSX.Element => {
     setCreatedSingleDesign,
     setSelectedCampaignProduct,
     setMarketingMultiDesignResults,
+    services,
+    isAuthorized,
   } = useAppContext();
   const [activeStep, setActiveStep] = useState(0);
   const navigate = useNavigate();
@@ -168,10 +164,12 @@ export const ReturnNavPage = (): JSX.Element => {
 
   const fetchAndExportUpdatedDesign = async () => {
     try {
-      const fetchDesignResult = await fetchDesign({ designId });
+      const fetchDesignResult = await services.designs.getDesign(designId);
       handleNext(); // move from "Get Design" to "Export Design".
 
-      const designExportJobResponse = await exportDesign({ designId });
+      const designExportJobResponse = await services.exports.exportDesign({
+        designId,
+      });
 
       // Next we yield the first url that is defined, since an export can have multiple pages and the service here only exports the first page
       const exportedDesignUrl = designExportJobResponse.job.urls?.find(
@@ -254,7 +252,7 @@ export const ReturnNavPage = (): JSX.Element => {
 
           const designPromises =
             parsedCorrelationState.originMarketingMultiDesignIds.map((id) =>
-              getDesign(id),
+              services.designs.getDesign(id),
             );
           const results = await Promise.allSettled(designPromises);
 
@@ -314,10 +312,14 @@ export const ReturnNavPage = (): JSX.Element => {
   useEffect(() => {
     // Step 1 - Initialize mount:
     handleNext();
-
-    // Step 2/3/4 - Fetch Design, Export Design and Redirect:
-    fetchAndExportUpdatedDesign();
   }, []);
+
+  useEffect(() => {
+    if (isAuthorized) {
+      // Step 2/3/4 - Fetch Design, Export Design and Redirect:
+      fetchAndExportUpdatedDesign();
+    }
+  }, [isAuthorized]);
 
   return (
     <Box display="flex" paddingTop={12} sx={{ placeContent: "center" }}>

@@ -1,5 +1,3 @@
-import type { CreateDesignExportJobRequest } from "@canva/connect-api-ts";
-import { ExportService } from "@canva/connect-api-ts/ts/services.gen";
 import express from "express";
 import fs from "fs";
 import https from "https";
@@ -12,43 +10,8 @@ const router = express.Router();
 const BACKEND_URL = process.env.BACKEND_URL;
 
 const endpoints = {
-  CREATE_DESIGN_EXPORT_JOB: "/exports",
-  GET_DESIGN_EXPORT_JOB: "/exports/:id",
   DOWNLOAD_EXPORT: "/exports/download",
 };
-
-router.post(endpoints.CREATE_DESIGN_EXPORT_JOB, async (req, res) => {
-  const requestBody: CreateDesignExportJobRequest = req.body;
-  const result = await ExportService.createDesignExportJob({
-    client: req.client,
-    body: requestBody,
-  });
-
-  if (result.error) {
-    console.log(result.error);
-    return res.status(result.response.status).json(result.error);
-  }
-
-  return res.json(result.data);
-});
-
-router.get(endpoints.GET_DESIGN_EXPORT_JOB, async (req, res) => {
-  const result = await ExportService.getDesignExportJob({
-    client: req.client,
-    path: { exportId: req.params.id },
-  });
-
-  if (result.error) {
-    console.log(result.error);
-    return res.status(result.response.status).json(result.error);
-  }
-
-  if (!result.data) {
-    return res.status(404).json();
-  }
-
-  return res.json(result.data);
-});
 
 /**
  * NOTE: Exported image urls from Canva expire after some time, so you should

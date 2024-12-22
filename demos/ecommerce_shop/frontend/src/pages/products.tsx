@@ -9,14 +9,11 @@ import {
 import { useAppContext } from "src/context";
 import type { Product } from "src/models";
 import { EditInCanvaPageOrigins } from "src/models";
-import {
-  getProducts,
-  uploadAssetAndCreateDesignFromProduct,
-} from "src/services";
+import { getProducts } from "src/services";
 import { createNavigateToCanvaUrl } from "src/services/canva-return";
 
 export const ProductsPage = () => {
-  const { addAlert } = useAppContext();
+  const { addAlert, services } = useAppContext();
 
   const [isModelOpen, setIsModelOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>();
@@ -54,7 +51,9 @@ export const ProductsPage = () => {
     try {
       if (!product.canvaDesign) {
         const createDesignFromProductResult =
-          await uploadAssetAndCreateDesignFromProduct({ product });
+          await services.designs.uploadAssetAndCreateDesignFromProduct({
+            product,
+          });
         setProducts(createDesignFromProductResult.refreshedProducts);
         canvaEditUrl = createDesignFromProductResult.design.urls.edit_url;
       } else {

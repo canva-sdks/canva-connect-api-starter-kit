@@ -17,6 +17,10 @@ import {
   getAccessTokenForUser,
   getBasicAuthClient,
 } from "../../../common/backend/services/client";
+import type {
+  ExchangeAccessTokenRequest,
+  RevokeTokensRequest,
+} from "@canva/connect-api-ts";
 import { OauthService } from "@canva/connect-api-ts";
 import { db } from "../database/database";
 
@@ -62,12 +66,12 @@ router.get(endpoints.REDIRECT, async (req, res) => {
 
     const codeVerifier = req.signedCookies[OAUTH_CODE_VERIFIER_COOKIE_NAME];
 
-    const params = new URLSearchParams({
+    const params: ExchangeAccessTokenRequest = {
       grant_type: "authorization_code",
       code_verifier: codeVerifier,
       code: authorizationCode,
       redirect_uri: globals.redirectUri,
-    });
+    };
 
     const result = await OauthService.exchangeAccessToken({
       client: getBasicAuthClient(),
@@ -81,6 +85,7 @@ router.get(endpoints.REDIRECT, async (req, res) => {
     });
 
     if (result.error) {
+      console.error(result.error);
       return res.status(result.response.status).json(result.error);
     }
 
@@ -192,13 +197,13 @@ router.get(endpoints.REVOKE, async (req, res) => {
       throw new Error("'CANVA_CLIENT_SECRET' env variable is undefined");
     }
 
-    const params = new URLSearchParams({
+    const params: RevokeTokensRequest = {
       client_secret,
       client_id,
       // Revoking the refresh token revokes the consent and the access token,
       // this is the way for Connect API clients to disconnect users.
       token: token.refresh_token,
-    });
+    };
 
     await OauthService.revokeTokens({
       client: getBasicAuthClient(),
@@ -231,7 +236,7 @@ router.get(endpoints.IS_AUTHORIZED, async (req, res) => {
   try {
     await getAccessTokenForUser(auth, db);
     return res.json({ status: true });
-  } catch (error) {
+  } catch {
     return res.sendStatus(404);
   }
 });

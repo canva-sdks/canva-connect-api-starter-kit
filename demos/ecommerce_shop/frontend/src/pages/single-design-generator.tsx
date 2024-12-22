@@ -13,7 +13,6 @@ import {
   SingleProductSelector,
 } from "src/components";
 import { useAppContext, useCampaignContext } from "src/context";
-import { uploadAssetAndCreateDesignFromProduct } from "src/services";
 import { DesignResult } from "src/components/marketing/design-result";
 import { EditInCanvaPageOrigins } from "src/models";
 
@@ -27,6 +26,7 @@ export const SingleDesignGeneratorPage = () => {
     createdSingleDesign,
     setCreatedSingleDesign,
     selectedCampaignProduct,
+    services,
   } = useAppContext();
 
   const onCreate = async () => {
@@ -35,10 +35,11 @@ export const SingleDesignGeneratorPage = () => {
     }
     setIsLoading(true);
     try {
-      const design = await uploadAssetAndCreateDesignFromProduct({
-        campaignName,
-        product: selectedCampaignProduct,
-      });
+      const design =
+        await services.designs.uploadAssetAndCreateDesignFromProduct({
+          campaignName,
+          product: selectedCampaignProduct,
+        });
       setCreatedSingleDesign(design.design);
       setIsFirstGenerated(true);
       addAlert({
@@ -46,7 +47,7 @@ export const SingleDesignGeneratorPage = () => {
         variant: "success",
         hideAfterMs: -1,
       });
-    } catch (error) {
+    } catch {
       addAlert({
         title: "Something went wrong. Please try again later.",
         variant: "error",

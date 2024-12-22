@@ -64,7 +64,7 @@ export type GetAssetResponse = {
 export type UpdateAssetRequest = {
   /**
    * The name of the asset. This is shown in the Canva UI.
-   * When this field is undefined, nothing is updated.
+   * When this field is undefined or empty, nothing is updated.
    * Maximum length 50 characters.
    */
   name?: string;
@@ -151,15 +151,16 @@ export type AssetSummary = {
 };
 
 /**
- * Type of an asset.
+ * Type of an asset. Support for `video` assets is currently provided as a [preview](https://www.canva.dev/docs/connect/api-reference/assets/#videos).
  */
-export type AssetType = "image";
+export type AssetType = "image" | "video";
 
 /**
- * Type of an asset.
+ * Type of an asset. Support for `video` assets is currently provided as a [preview](https://www.canva.dev/docs/connect/api-reference/assets/#videos).
  */
 export const AssetType = {
   IMAGE: "image",
+  VIDEO: "video",
 } as const;
 
 /**
@@ -321,9 +322,15 @@ export type CreateDesignAutofillJobResponse = {
  * The data field to autofill.
  */
 export type DatasetValue =
-  | DatasetImageValue
-  | DatasetTextValue
-  | DatasetChartValue;
+  | ({
+      type?: "image";
+    } & DatasetImageValue)
+  | ({
+      type?: "text";
+    } & DatasetTextValue)
+  | ({
+      type?: "chart";
+    } & DatasetChartValue);
 
 /**
  * Data object containing the data fields and values to autofill.
@@ -384,7 +391,9 @@ export type DesignAutofillJob = {
 /**
  * Result of the design autofill job. Only present if job status is `success`.
  */
-export type DesignAutofillJobResult = CreateDesignAutofillJobResult;
+export type DesignAutofillJobResult = {
+  type?: "create_design";
+} & CreateDesignAutofillJobResult;
 
 /**
  * Design has been created and saved to user's root folder.
@@ -518,7 +527,16 @@ export type DatasetDefinition = {
 /**
  * A named data field that can be autofilled in the brand template.
  */
-export type DataField = ImageDataField | TextDataField | ChartDataField;
+export type DataField =
+  | ({
+      type?: "image";
+    } & ImageDataField)
+  | ({
+      type?: "text";
+    } & TextDataField)
+  | ({
+      type?: "chart";
+    } & ChartDataField);
 
 /**
  * An image for a brand template. You can autofill the brand template with an image by providing its `asset_id`.
@@ -589,7 +607,13 @@ export type GetCommentResponse = {
 /**
  * The comment object, which contains metadata about the comment.
  */
-export type Comment = ParentComment | ReplyComment;
+export type Comment =
+  | ({
+      type?: "parent";
+    } & ParentComment)
+  | ({
+      type?: "reply";
+    } & ReplyComment);
 
 /**
  * Data about the comment, including the message, author, and
@@ -673,7 +697,9 @@ export type ReplyComment = {
 /**
  * Identifying information about the object (such as a design) that the comment is attached to.
  */
-export type CommentObject = DesignCommentObject;
+export type CommentObject = {
+  type?: "design";
+} & DesignCommentObject;
 
 /**
  * If the comment is attached to a Canva Design.
@@ -690,7 +716,9 @@ export type DesignCommentObject = {
  * An object containing identifying information for the design or other object you want to
  * attach the comment to.
  */
-export type CommentObjectInput = DesignCommentObjectInput;
+export type CommentObjectInput = {
+  type?: "design";
+} & DesignCommentObjectInput;
 
 /**
  * If the comment is attached to a Canva Design.
@@ -738,6 +766,313 @@ export const CommentEventType = {
   ASSIGN: "assign",
   RESOLVE: "resolve",
 } as const;
+
+/**
+ * A discussion thread on a design.
+ *
+ * The `type` of the thread can be found in the `thread_type` object, along with additional type-specific properties.
+ */
+export type Thread = {
+  /**
+   * The ID of the thread.
+   *
+   * You can use this ID to create replies to the thread using the [Create reply API](https://www.canva.dev/docs/connect/api-reference/comments/create-reply/).
+   */
+  id: string;
+  /**
+   * The ID of the design that the discussion thread is on.
+   */
+  design_id: string;
+  thread_type: ThreadType;
+  author: User;
+  /**
+   * When the thread was created, as a Unix timestamp
+   * (in seconds since the Unix Epoch).
+   */
+  created_at: number;
+  /**
+   * When the thread was last updated, as a Unix timestamp
+   * (in seconds since the Unix Epoch).
+   */
+  updated_at: number;
+};
+
+/**
+ * The type of the discussion thread, along with additional type-specific properties.
+ */
+export type ThreadType =
+  | ({
+      type?: "comment";
+    } & CommentThreadType)
+  | ({
+      type?: "suggestion";
+    } & SuggestionThreadType);
+
+/**
+ * A comment thread.
+ */
+export type CommentThreadType = {
+  type: "comment";
+  /**
+   * The comment's message.
+   * Any user mentions are shown in the format `[user_id:team_id]`.
+   */
+  message: string;
+  /**
+   * The Canva users mentioned in the comment.
+   */
+  mentions: {
+    [key: string]: TeamUser;
+  };
+  assignee?: User;
+  resolver?: User;
+};
+
+/**
+ * A suggestion thread.
+ */
+export type SuggestionThreadType = {
+  type: "suggestion";
+  content: SuggestionContent;
+  status: SuggestionStatus;
+};
+
+/**
+ * The suggestion's content.
+ */
+export type SuggestionContent =
+  | ({
+      type?: "add";
+    } & AddSuggestionContent)
+  | ({
+      type?: "delete";
+    } & DeleteSuggestionContent)
+  | ({
+      type?: "replace";
+    } & ReplaceSuggestionContent)
+  | ({
+      type?: "format";
+    } & FormatSuggestionContent);
+
+/**
+ * A suggestion to add some text.
+ */
+export type AddSuggestionContent = {
+  type: "add";
+  add: string;
+};
+
+/**
+ * A suggestion to delete some text.
+ */
+export type DeleteSuggestionContent = {
+  type: "delete";
+  delete: string;
+};
+
+/**
+ * A suggestion to replace some text.
+ */
+export type ReplaceSuggestionContent = {
+  type: "replace";
+  add: string;
+  delete: string;
+};
+
+/**
+ * A suggestion to format some text.
+ */
+export type FormatSuggestionContent = {
+  type: "format";
+  formats: Array<SuggestionFormat>;
+};
+
+/**
+ * The current status of the suggestion.
+ * This can be one of the following:
+ *
+ * - `open`: A suggestion was made, but it hasn't been accepted or rejected yet.
+ * - `accepted`: A suggestion was accepted and applied to the design.
+ * - `rejected`: A suggestion was rejected and not applied to the design.
+ */
+export type SuggestionStatus = "open" | "accepted" | "rejected";
+
+/**
+ * The current status of the suggestion.
+ * This can be one of the following:
+ *
+ * - `open`: A suggestion was made, but it hasn't been accepted or rejected yet.
+ * - `accepted`: A suggestion was accepted and applied to the design.
+ * - `rejected`: A suggestion was rejected and not applied to the design.
+ */
+export const SuggestionStatus = {
+  OPEN: "open",
+  ACCEPTED: "accepted",
+  REJECTED: "rejected",
+} as const;
+
+/**
+ * The suggested format change.
+ */
+export type SuggestionFormat =
+  | "font_family"
+  | "font_size"
+  | "font_weight"
+  | "font_style"
+  | "color"
+  | "decoration"
+  | "strikethrough"
+  | "link"
+  | "letter_spacing"
+  | "line_height"
+  | "direction"
+  | "text_align"
+  | "list_marker"
+  | "list_level"
+  | "margin_inline_start"
+  | "text_indent";
+
+/**
+ * The suggested format change.
+ */
+export const SuggestionFormat = {
+  FONT_FAMILY: "font_family",
+  FONT_SIZE: "font_size",
+  FONT_WEIGHT: "font_weight",
+  FONT_STYLE: "font_style",
+  COLOR: "color",
+  DECORATION: "decoration",
+  STRIKETHROUGH: "strikethrough",
+  LINK: "link",
+  LETTER_SPACING: "letter_spacing",
+  LINE_HEIGHT: "line_height",
+  DIRECTION: "direction",
+  TEXT_ALIGN: "text_align",
+  LIST_MARKER: "list_marker",
+  LIST_LEVEL: "list_level",
+  MARGIN_INLINE_START: "margin_inline_start",
+  TEXT_INDENT: "text_indent",
+} as const;
+
+/**
+ * A reply to a thread.
+ */
+export type Reply = {
+  /**
+   * The ID of the reply.
+   */
+  id: string;
+  /**
+   * The ID of the design that the thread for this reply is attached to.
+   */
+  design_id: string;
+  /**
+   * The ID of the thread this reply is in.
+   */
+  thread_id: string;
+  author: User;
+  /**
+   * The reply's message.
+   * Any user mentions are shown in the format `[user_id:team_id]`
+   */
+  message: string;
+  /**
+   * The Canva users mentioned in the comment.
+   */
+  mentions: {
+    [key: string]: TeamUser;
+  };
+  /**
+   * When the reply was created, as a Unix timestamp
+   * (in seconds since the Unix Epoch).
+   */
+  created_at: number;
+  /**
+   * When the reply was last updated, as a Unix timestamp
+   * (in seconds since the Unix Epoch).
+   */
+  updated_at: number;
+};
+
+/**
+ * The type of suggestion event, along with additional type-specific properties.
+ */
+export type SuggestionEventType =
+  | ({
+      type?: "new";
+    } & NewSuggestionEventType)
+  | ({
+      type?: "accepted";
+    } & AcceptedSuggestionEventType)
+  | ({
+      type?: "rejected";
+    } & RejectedSuggestionEventType)
+  | ({
+      type?: "reply";
+    } & ReplySuggestionEventType)
+  | ({
+      type?: "mention";
+    } & MentionSuggestionEventType);
+
+/**
+ * Event type for a new suggestion.
+ */
+export type NewSuggestionEventType = {
+  type: "new";
+  /**
+   * A URL to the design, focused on the suggestion.
+   */
+  suggestion_url: string;
+  suggestion: Thread;
+};
+
+/**
+ * Event type for a suggestion that has been accepted.
+ */
+export type AcceptedSuggestionEventType = {
+  type: "accepted";
+  /**
+   * A URL to the design, focused on the suggestion.
+   */
+  suggestion_url: string;
+  suggestion: Thread;
+};
+
+/**
+ * Event type for a suggestion that has been rejected.
+ */
+export type RejectedSuggestionEventType = {
+  type: "rejected";
+  /**
+   * A URL to the design, focused on the suggestion.
+   */
+  suggestion_url: string;
+  suggestion: Thread;
+};
+
+/**
+ * Event type for a reply to a suggestion.
+ */
+export type ReplySuggestionEventType = {
+  type: "reply";
+  /**
+   * A URL to the design, focused on the suggestion reply.
+   */
+  reply_url: string;
+  reply: Reply;
+};
+
+/**
+ * Event type for a mention in a reply to a suggestion.
+ */
+export type MentionSuggestionEventType = {
+  type: "mention";
+  /**
+   * A URL to the design, focused on the suggestion reply.
+   */
+  reply_url: string;
+  reply: Reply;
+};
 
 export type GetSigningPublicKeysResponse = {
   /**
@@ -818,10 +1153,18 @@ export type DataTableRow = {
  * A single tabular data cell.
  */
 export type DataTableCell =
-  | StringDataTableCell
-  | NumberDataTableCell
-  | BooleanDataTableCell
-  | DateDataTableCell;
+  | ({
+      type?: "string";
+    } & StringDataTableCell)
+  | ({
+      type?: "number";
+    } & NumberDataTableCell)
+  | ({
+      type?: "boolean";
+    } & BooleanDataTableCell)
+  | ({
+      type?: "date";
+    } & DateDataTableCell);
 
 /**
  * A string tabular data cell.
@@ -905,7 +1248,7 @@ export type GetListDesignResponse = {
 export type CreateDesignRequest = {
   design_type?: DesignTypeInput;
   /**
-   * The ID of an asset to insert into the created design.
+   * The ID of an asset to insert into the created design. Currently, this only supports image assets.
    */
   asset_id?: string;
   /**
@@ -936,6 +1279,13 @@ export type GetDesignPagesResponse = {
    * The list of pages.
    */
   items: Array<DesignPage>;
+};
+
+/**
+ * Successful response from a `getDesignExportFormats` request.
+ */
+export type GetDesignExportFormatsResponse = {
+  formats: ExportFormatOptions;
 };
 
 /**
@@ -1021,6 +1371,10 @@ export type DesignSummary = {
    * Unix Epoch).
    */
   updated_at: number;
+  /**
+   * The total number of pages in the design. Some design types don't have pages (for example, Canva docs).
+   */
+  page_count?: number;
 };
 
 /**
@@ -1106,7 +1460,8 @@ export type DesignImportErrorCode =
   | "design_import_throttled"
   | "duplicate_import"
   | "internal_error"
-  | "invalid_file";
+  | "invalid_file"
+  | "fetch_failed";
 
 /**
  * A short string about why the import failed. This field can be used to handle errors
@@ -1118,6 +1473,7 @@ export const DesignImportErrorCode = {
   DUPLICATE_IMPORT: "duplicate_import",
   INTERNAL_ERROR: "internal_error",
   INVALID_FILE: "invalid_file",
+  FETCH_FAILED: "fetch_failed",
 } as const;
 
 export type DesignImportJobResult = {
@@ -1135,7 +1491,13 @@ export type GetDesignImportJobResponse = {
 /**
  * The desired design type.
  */
-export type DesignTypeInput = PresetDesignTypeInput | CustomDesignTypeInput;
+export type DesignTypeInput =
+  | ({
+      type?: "preset";
+    } & PresetDesignTypeInput)
+  | ({
+      type?: "custom";
+    } & CustomDesignTypeInput);
 
 /**
  * Provide the common design type.
@@ -1333,12 +1695,24 @@ export type CreateDesignExportJobRequest = {
  * Details about the desired export format.
  */
 export type ExportFormat =
-  | PdfExportFormat
-  | JpgExportFormat
-  | PngExportFormat
-  | PptxExportFormat
-  | GifExportFormat
-  | Mp4ExportFormat;
+  | ({
+      type?: "pdf";
+    } & PdfExportFormat)
+  | ({
+      type?: "jpg";
+    } & JpgExportFormat)
+  | ({
+      type?: "png";
+    } & PngExportFormat)
+  | ({
+      type?: "pptx";
+    } & PptxExportFormat)
+  | ({
+      type?: "gif";
+    } & GifExportFormat)
+  | ({
+      type?: "mp4";
+    } & Mp4ExportFormat);
 
 /**
  * Export the design as a PDF. Providing a paper size is optional. The default paper size is A4.
@@ -1592,6 +1966,54 @@ export const Mp4ExportQuality = {
 } as const;
 
 /**
+ * The available file formats for exporting the design.
+ */
+export type ExportFormatOptions = {
+  pdf?: PdfExportFormatOption;
+  jpg?: JpgExportFormatOption;
+  png?: PngExportFormatOption;
+  svg?: SvgExportFormatOption;
+  pptx?: PptxExportFormatOption;
+  gif?: GifExportFormatOption;
+  mp4?: Mp4ExportFormatOption;
+};
+
+/**
+ * Whether the design can be exported as a PDF.
+ */
+export type PdfExportFormatOption = {};
+
+/**
+ * Whether the design can be exported as a GIF.
+ */
+export type GifExportFormatOption = {};
+
+/**
+ * Whether the design can be exported as a JPEG.
+ */
+export type JpgExportFormatOption = {};
+
+/**
+ * Whether the design can be exported as a PNG.
+ */
+export type PngExportFormatOption = {};
+
+/**
+ * Whether the design can be exported as an SVG.
+ */
+export type SvgExportFormatOption = {};
+
+/**
+ * Whether the design can be exported as a PPTX.
+ */
+export type PptxExportFormatOption = {};
+
+/**
+ * Whether the design can be exported as an MP4.
+ */
+export type Mp4ExportFormatOption = {};
+
+/**
  * If the export fails, this object provides details about the error.
  */
 export type ExportError = {
@@ -1741,7 +2163,16 @@ export type ListFolderItemsResponse = {
 /**
  * Details about the folder item.
  */
-export type FolderItemSummary = FolderItem | DesignItem | ImageItem;
+export type FolderItemSummary =
+  | ({
+      type?: "folder";
+    } & FolderItem)
+  | ({
+      type?: "design";
+    } & DesignItem)
+  | ({
+      type?: "image";
+    } & ImageItem);
 
 /**
  * Details about the folder.
@@ -1778,7 +2209,7 @@ export type MoveFolderItemRequest = {
    */
   to_folder_id: string;
   /**
-   * The ID of the item you want to move.
+   * The ID of the item you want to move. Currently, video assets are not supported.
    */
   item_id: string;
 };
@@ -1816,11 +2247,27 @@ export type FolderSummary = {
   /**
    * The folder ID.
    */
-  id?: string;
+  id: string;
+  /**
+   * The folder name, as shown in the Canva UI. This property is deprecated, so you should
+   * use the `name` property instead.
+   * @deprecated
+   */
+  title?: string;
   /**
    * The folder name, as shown in the Canva UI.
    */
-  title?: string;
+  name: string;
+  /**
+   * When the folder was created, as a Unix timestamp (in seconds since the
+   * Unix Epoch).
+   */
+  created_at: number;
+  /**
+   * When the folder was last updated, as a Unix timestamp (in seconds since the
+   * Unix Epoch).
+   */
+  updated_at: number;
   /**
    * The folder URL.
    */
@@ -1851,8 +2298,12 @@ export type Group = {
 };
 
 export type ExchangeAccessTokenRequest =
-  | ExchangeAuthCodeRequest
-  | ExchangeRefreshTokenRequest;
+  | ({
+      grant_type?: "authorization_code";
+    } & ExchangeAuthCodeRequest)
+  | ({
+      grant_type?: "refresh_token";
+    } & ExchangeRefreshTokenRequest);
 
 export type ExchangeAuthCodeRequest = {
   /**
@@ -2040,9 +2491,7 @@ export type RevokeTokensRequest = {
 /**
  * The response on a successful token revocation.
  */
-export type RevokeTokensResponse = {
-  [key: string]: unknown;
-};
+export type RevokeTokensResponse = {};
 
 /**
  * The [scopes](https://www.canva.dev/docs/connect/appendix/scopes/) that the token has been granted.
@@ -2188,16 +2637,39 @@ export type Notification = {
  * The notification content object, which contains metadata about the event.
  */
 export type NotificationContent =
-  | ShareDesignNotificationContent
-  | ShareFolderNotificationContent
-  | CommentNotificationContent
-  | DesignAccessRequestedNotificationContent
-  | DesignApprovalRequestedNotificationContent
-  | DesignApprovalResponseNotificationContent
-  | DesignApprovalReviewerInvalidatedNotificationContent
-  | DesignMentionNotificationContent
-  | TeamInviteNotificationContent
-  | FolderAccessRequestedNotificationContent;
+  | ({
+      type?: "share_design";
+    } & ShareDesignNotificationContent)
+  | ({
+      type?: "share_folder";
+    } & ShareFolderNotificationContent)
+  | ({
+      type?: "comment";
+    } & CommentNotificationContent)
+  | ({
+      type?: "design_access_requested";
+    } & DesignAccessRequestedNotificationContent)
+  | ({
+      type?: "design_approval_requested";
+    } & DesignApprovalRequestedNotificationContent)
+  | ({
+      type?: "design_approval_response";
+    } & DesignApprovalResponseNotificationContent)
+  | ({
+      type?: "design_approval_reviewer_invalidated";
+    } & DesignApprovalReviewerInvalidatedNotificationContent)
+  | ({
+      type?: "design_mention";
+    } & DesignMentionNotificationContent)
+  | ({
+      type?: "team_invite";
+    } & TeamInviteNotificationContent)
+  | ({
+      type?: "folder_access_requested";
+    } & FolderAccessRequestedNotificationContent)
+  | ({
+      type?: "suggestion";
+    } & SuggestionNotificationContent);
 
 /**
  * The notification content for when someone shares a design.
@@ -2327,7 +2799,23 @@ export type FolderAccessRequestedNotificationContent = {
   type: "folder_access_requested";
   triggering_user: TeamUser;
   receiving_team_user: TeamUser;
-  folder: Folder;
+  folder: FolderSummary;
+};
+
+/**
+ * The notification content when someone does one of the following actions:
+ *
+ * - Suggests edits to a design.
+ * - Applies or rejects a suggestion.
+ * - Replies to a suggestion.
+ * - Mentions a user in a reply to a suggestion.
+ */
+export type SuggestionNotificationContent = {
+  type: "suggestion";
+  triggering_user: User;
+  receiving_team_user: TeamUser;
+  design: DesignSummary;
+  suggestion_event_type: SuggestionEventType;
 };
 
 /**
@@ -2374,66 +2862,119 @@ export type ApprovalResponseAction = {
 /**
  * The brand template ID.
  */
-export type ParameterbrandTemplateId = string;
+export type brandTemplateId = string;
 
 /**
  * The `id` of the comment.
  */
-export type ParametercommentId = string;
+export type commentId = string;
 
 /**
  * The design ID.
  */
-export type ParameterdesignId = string;
+export type designId = string;
 
 /**
  * The export job ID.
  */
-export type ParameterexportId = string;
+export type exportId = string;
 
 /**
  * The folder ID.
  */
-export type ParameterfolderIdParameter = string;
+export type folderIdParameter = string;
 
 export type GetAppJwksData = {
+  body?: never;
   path: {
     /**
      * The app id
      */
     appId: string;
   };
+  query?: never;
+  url: "/v1/apps/{appId}/jwks";
 };
 
-export type GetAppJwksResponse2 = GetAppJwksResponse;
+export type GetAppJwksErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type GetAppJwksError = unknown;
+export type GetAppJwksError = GetAppJwksErrors[keyof GetAppJwksErrors];
+
+export type GetAppJwksResponses = {
+  /**
+   * OK
+   */
+  200: GetAppJwksResponse;
+};
+
+export type GetAppJwksResponse2 =
+  GetAppJwksResponses[keyof GetAppJwksResponses];
 
 export type DeleteAssetData = {
+  body?: never;
   path: {
     /**
      * The ID of the asset.
      */
     assetId: string;
   };
+  query?: never;
+  url: "/v1/assets/{assetId}";
 };
 
-export type DeleteAssetResponse = void;
+export type DeleteAssetErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type DeleteAssetError = unknown;
+export type DeleteAssetError = DeleteAssetErrors[keyof DeleteAssetErrors];
+
+export type DeleteAssetResponses = {
+  /**
+   * OK
+   */
+  204: void;
+};
+
+export type DeleteAssetResponse =
+  DeleteAssetResponses[keyof DeleteAssetResponses];
 
 export type GetAssetData = {
+  body?: never;
   path: {
     /**
      * The ID of the asset.
      */
     assetId: string;
   };
+  query?: never;
+  url: "/v1/assets/{assetId}";
 };
 
-export type GetAssetResponse2 = GetAssetResponse;
+export type GetAssetErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type GetAssetError = unknown;
+export type GetAssetError = GetAssetErrors[keyof GetAssetErrors];
+
+export type GetAssetResponses = {
+  /**
+   * OK
+   */
+  200: GetAssetResponse;
+};
+
+export type GetAssetResponse2 = GetAssetResponses[keyof GetAssetResponses];
 
 export type UpdateAssetData = {
   body?: UpdateAssetRequest;
@@ -2443,11 +2984,28 @@ export type UpdateAssetData = {
      */
     assetId: string;
   };
+  query?: never;
+  url: "/v1/assets/{assetId}";
 };
 
-export type UpdateAssetResponse2 = UpdateAssetResponse;
+export type UpdateAssetErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type UpdateAssetError = unknown;
+export type UpdateAssetError = UpdateAssetErrors[keyof UpdateAssetErrors];
+
+export type UpdateAssetResponses = {
+  /**
+   * OK
+   */
+  200: UpdateAssetResponse;
+};
+
+export type UpdateAssetResponse2 =
+  UpdateAssetResponses[keyof UpdateAssetResponses];
 
 export type CreateAssetUploadJobData = {
   /**
@@ -2457,48 +3015,128 @@ export type CreateAssetUploadJobData = {
   headers: {
     "Asset-Upload-Metadata": AssetUploadMetadata;
   };
+  path?: never;
+  query?: never;
+  url: "/v1/asset-uploads";
 };
 
-export type CreateAssetUploadJobResponse2 = CreateAssetUploadJobResponse;
+export type CreateAssetUploadJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type CreateAssetUploadJobError = unknown;
+export type CreateAssetUploadJobError =
+  CreateAssetUploadJobErrors[keyof CreateAssetUploadJobErrors];
+
+export type CreateAssetUploadJobResponses = {
+  /**
+   * OK
+   */
+  200: CreateAssetUploadJobResponse;
+};
+
+export type CreateAssetUploadJobResponse2 =
+  CreateAssetUploadJobResponses[keyof CreateAssetUploadJobResponses];
 
 export type GetAssetUploadJobData = {
+  body?: never;
   path: {
     /**
      * The asset upload job ID.
      */
     jobId: string;
   };
+  query?: never;
+  url: "/v1/asset-uploads/{jobId}";
 };
 
-export type GetAssetUploadJobResponse2 = GetAssetUploadJobResponse;
+export type GetAssetUploadJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type GetAssetUploadJobError = unknown;
+export type GetAssetUploadJobError =
+  GetAssetUploadJobErrors[keyof GetAssetUploadJobErrors];
+
+export type GetAssetUploadJobResponses = {
+  /**
+   * OK
+   */
+  200: GetAssetUploadJobResponse;
+};
+
+export type GetAssetUploadJobResponse2 =
+  GetAssetUploadJobResponses[keyof GetAssetUploadJobResponses];
 
 export type CreateDesignAutofillJobData = {
   body?: CreateDesignAutofillJobRequest;
+  url: "/v1/autofills";
 };
 
-export type CreateDesignAutofillJobResponse2 = CreateDesignAutofillJobResponse;
+export type CreateDesignAutofillJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type CreateDesignAutofillJobError = unknown;
+export type CreateDesignAutofillJobError =
+  CreateDesignAutofillJobErrors[keyof CreateDesignAutofillJobErrors];
+
+export type CreateDesignAutofillJobResponses = {
+  /**
+   * OK
+   */
+  200: CreateDesignAutofillJobResponse;
+};
+
+export type CreateDesignAutofillJobResponse2 =
+  CreateDesignAutofillJobResponses[keyof CreateDesignAutofillJobResponses];
 
 export type GetDesignAutofillJobData = {
+  body?: never;
   path: {
     /**
      * The design autofill job ID.
      */
     jobId: string;
   };
+  query?: never;
+  url: "/v1/autofills/{jobId}";
 };
 
-export type GetDesignAutofillJobResponse2 = GetDesignAutofillJobResponse;
+export type GetDesignAutofillJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type GetDesignAutofillJobError = unknown;
+export type GetDesignAutofillJobError =
+  GetDesignAutofillJobErrors[keyof GetDesignAutofillJobErrors];
+
+export type GetDesignAutofillJobResponses = {
+  /**
+   * OK
+   */
+  200: GetDesignAutofillJobResponse;
+};
+
+export type GetDesignAutofillJobResponse2 =
+  GetDesignAutofillJobResponses[keyof GetDesignAutofillJobResponses];
 
 export type ListBrandTemplatesData = {
+  body?: never;
+  path?: never;
   query?: {
+    /**
+     * Lets you search the brand templates available to the user using a search term or terms.
+     */
+    query?: string;
     /**
      * If the success response contains a continuation token, the user has access to more
      * brand templates you can list. You can use this token as a query parameter and retrieve
@@ -2509,16 +3147,6 @@ export type ListBrandTemplatesData = {
      */
     continuation?: string;
     /**
-     * Filter the list of brand templates based on the brand templates' dataset definitions.
-     * Brand templates with dataset definitions are mainly used with the [Autofill APIs](https://www.canva.dev/docs/connect/api-reference/autofills/).
-     * This can be one of the following:
-     *
-     * - `any`: (Default) Brand templates with and without dataset definitions.
-     * - `non_empty`: Brand templates with one or more data fields defined.
-     * - `empty`: Brand templates with no data fields defined.
-     */
-    dataset?: DatasetFilter;
-    /**
      * Filter the list of brand templates based on the user's ownership of the brand templates.
      * This can be one of the following:
      *
@@ -2527,10 +3155,6 @@ export type ListBrandTemplatesData = {
      * - `shared`: Brand templates shared with the user.
      */
     ownership?: OwnershipType;
-    /**
-     * Lets you search the brand templates available to the user using a search term or terms.
-     */
-    query?: string;
     /**
      * Sort the list of brand templates. This can be one of the following:
      *
@@ -2541,46 +3165,127 @@ export type ListBrandTemplatesData = {
      * - `title_ascending`: Sort results by title in ascending order.
      */
     sort_by?: SortByType;
+    /**
+     * Filter the list of brand templates based on the brand templates' dataset definitions.
+     * Brand templates with dataset definitions are mainly used with the [Autofill APIs](https://www.canva.dev/docs/connect/api-reference/autofills/).
+     * This can be one of the following:
+     *
+     * - `any`: (Default) Brand templates with and without dataset definitions.
+     * - `non_empty`: Brand templates with one or more data fields defined.
+     * - `empty`: Brand templates with no data fields defined.
+     */
+    dataset?: DatasetFilter;
   };
+  url: "/v1/brand-templates";
 };
 
-export type ListBrandTemplatesResponse2 = ListBrandTemplatesResponse;
+export type ListBrandTemplatesErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type ListBrandTemplatesError = unknown;
+export type ListBrandTemplatesError =
+  ListBrandTemplatesErrors[keyof ListBrandTemplatesErrors];
+
+export type ListBrandTemplatesResponses = {
+  /**
+   * OK
+   */
+  200: ListBrandTemplatesResponse;
+};
+
+export type ListBrandTemplatesResponse2 =
+  ListBrandTemplatesResponses[keyof ListBrandTemplatesResponses];
 
 export type GetBrandTemplateData = {
+  body?: never;
   path: {
     /**
      * The brand template ID.
      */
     brandTemplateId: string;
   };
+  query?: never;
+  url: "/v1/brand-templates/{brandTemplateId}";
 };
 
-export type GetBrandTemplateResponse2 = GetBrandTemplateResponse;
+export type GetBrandTemplateErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type GetBrandTemplateError = unknown;
+export type GetBrandTemplateError =
+  GetBrandTemplateErrors[keyof GetBrandTemplateErrors];
+
+export type GetBrandTemplateResponses = {
+  /**
+   * OK
+   */
+  200: GetBrandTemplateResponse;
+};
+
+export type GetBrandTemplateResponse2 =
+  GetBrandTemplateResponses[keyof GetBrandTemplateResponses];
 
 export type GetBrandTemplateDatasetData = {
+  body?: never;
   path: {
     /**
      * The brand template ID.
      */
     brandTemplateId: string;
   };
+  query?: never;
+  url: "/v1/brand-templates/{brandTemplateId}/dataset";
 };
 
-export type GetBrandTemplateDatasetResponse2 = GetBrandTemplateDatasetResponse;
+export type GetBrandTemplateDatasetErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type GetBrandTemplateDatasetError = unknown;
+export type GetBrandTemplateDatasetError =
+  GetBrandTemplateDatasetErrors[keyof GetBrandTemplateDatasetErrors];
+
+export type GetBrandTemplateDatasetResponses = {
+  /**
+   * OK
+   */
+  200: GetBrandTemplateDatasetResponse;
+};
+
+export type GetBrandTemplateDatasetResponse2 =
+  GetBrandTemplateDatasetResponses[keyof GetBrandTemplateDatasetResponses];
 
 export type CreateCommentData = {
   body: CreateCommentRequest;
+  url: "/v1/comments";
 };
 
-export type CreateCommentResponse2 = CreateCommentResponse;
+export type CreateCommentErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type CreateCommentError = unknown;
+export type CreateCommentError = CreateCommentErrors[keyof CreateCommentErrors];
+
+export type CreateCommentResponses = {
+  /**
+   * OK
+   */
+  200: CreateCommentResponse;
+};
+
+export type CreateCommentResponse2 =
+  CreateCommentResponses[keyof CreateCommentResponses];
 
 export type CreateReplyData = {
   body: CreateReplyRequest;
@@ -2590,35 +3295,97 @@ export type CreateReplyData = {
      */
     commentId: string;
   };
+  query?: never;
+  url: "/v1/comments/{commentId}/replies";
 };
 
-export type CreateReplyResponse2 = CreateReplyResponse;
+export type CreateReplyErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type CreateReplyError = unknown;
+export type CreateReplyError = CreateReplyErrors[keyof CreateReplyErrors];
+
+export type CreateReplyResponses = {
+  /**
+   * OK
+   */
+  200: CreateReplyResponse;
+};
+
+export type CreateReplyResponse2 =
+  CreateReplyResponses[keyof CreateReplyResponses];
 
 export type GetCommentData = {
+  body?: never;
   path: {
-    /**
-     * The `id` of the comment.
-     */
-    commentId: string;
     /**
      * The design ID.
      */
     designId: string;
+    /**
+     * The `id` of the comment.
+     */
+    commentId: string;
   };
+  query?: never;
+  url: "/v1/designs/{designId}/comments/{commentId}";
 };
 
-export type GetCommentResponse2 = GetCommentResponse;
+export type GetCommentErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type GetCommentError = unknown;
+export type GetCommentError = GetCommentErrors[keyof GetCommentErrors];
 
-export type GetSigningPublicKeysResponse2 = GetSigningPublicKeysResponse;
+export type GetCommentResponses = {
+  /**
+   * OK
+   */
+  200: GetCommentResponse;
+};
 
-export type GetSigningPublicKeysError = unknown;
+export type GetCommentResponse2 =
+  GetCommentResponses[keyof GetCommentResponses];
+
+export type GetSigningPublicKeysData = {
+  body?: never;
+  url: "/v1/connect/keys";
+};
+
+export type GetSigningPublicKeysErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type GetSigningPublicKeysError =
+  GetSigningPublicKeysErrors[keyof GetSigningPublicKeysErrors];
+
+export type GetSigningPublicKeysResponses = {
+  /**
+   * OK
+   */
+  200: GetSigningPublicKeysResponse;
+};
+
+export type GetSigningPublicKeysResponse2 =
+  GetSigningPublicKeysResponses[keyof GetSigningPublicKeysResponses];
 
 export type ListDesignsData = {
+  body?: never;
+  path?: never;
   query?: {
+    /**
+     * Lets you search the user's designs, and designs shared with the user, using a search term or terms.
+     */
+    query?: string;
     /**
      * If the success response contains a continuation token, the list contains more designs
      * you can list. You can use this token as a query parameter and retrieve more
@@ -2638,10 +3405,6 @@ export type ListDesignsData = {
      */
     ownership?: OwnershipType;
     /**
-     * Lets you search the user's designs, and designs shared with the user, using a search term or terms.
-     */
-    query?: string;
-    /**
      * Sort the list of designs.
      * This can be one of the following:
      *
@@ -2653,34 +3416,84 @@ export type ListDesignsData = {
      */
     sort_by?: SortByType;
   };
+  url: "/v1/designs";
 };
 
-export type ListDesignsResponse = GetListDesignResponse;
+export type ListDesignsErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type ListDesignsError = unknown;
+export type ListDesignsError = ListDesignsErrors[keyof ListDesignsErrors];
+
+export type ListDesignsResponses = {
+  /**
+   * OK
+   */
+  200: GetListDesignResponse;
+};
+
+export type ListDesignsResponse =
+  ListDesignsResponses[keyof ListDesignsResponses];
 
 export type CreateDesignData = {
   body?: CreateDesignRequest;
+  url: "/v1/designs";
 };
 
-export type CreateDesignResponse2 = CreateDesignResponse;
+export type CreateDesignErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type CreateDesignError = unknown;
+export type CreateDesignError = CreateDesignErrors[keyof CreateDesignErrors];
+
+export type CreateDesignResponses = {
+  /**
+   * OK
+   */
+  200: CreateDesignResponse;
+};
+
+export type CreateDesignResponse2 =
+  CreateDesignResponses[keyof CreateDesignResponses];
 
 export type GetDesignData = {
+  body?: never;
   path: {
     /**
      * The design ID.
      */
     designId: string;
   };
+  query?: never;
+  url: "/v1/designs/{designId}";
 };
 
-export type GetDesignResponse2 = GetDesignResponse;
+export type GetDesignErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type GetDesignError = unknown;
+export type GetDesignError = GetDesignErrors[keyof GetDesignErrors];
+
+export type GetDesignResponses = {
+  /**
+   * OK
+   */
+  200: GetDesignResponse;
+};
+
+export type GetDesignResponse2 = GetDesignResponses[keyof GetDesignResponses];
 
 export type GetDesignPagesData = {
+  body?: never;
   path: {
     /**
      * The design ID.
@@ -2689,22 +3502,71 @@ export type GetDesignPagesData = {
   };
   query?: {
     /**
-     * The number of pages to return, starting at the page index specified using the `offset` parameter. Default is `50` pages.
-     */
-    limit?: number;
-    /**
      * The page index to start the range of pages to return. Default is `1`.
      *
      * Pages are indexed using one-based numbering, so the first page in a design has the index value `1`.
      *
      */
     offset?: number;
+    /**
+     * The number of pages to return, starting at the page index specified using the `offset` parameter. Default is `50` pages.
+     */
+    limit?: number;
   };
+  url: "/v1/designs/{designId}/pages";
 };
 
-export type GetDesignPagesResponse2 = GetDesignPagesResponse;
+export type GetDesignPagesErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type GetDesignPagesError = unknown;
+export type GetDesignPagesError =
+  GetDesignPagesErrors[keyof GetDesignPagesErrors];
+
+export type GetDesignPagesResponses = {
+  /**
+   * OK
+   */
+  200: GetDesignPagesResponse;
+};
+
+export type GetDesignPagesResponse2 =
+  GetDesignPagesResponses[keyof GetDesignPagesResponses];
+
+export type GetDesignExportFormatsData = {
+  body?: never;
+  path: {
+    /**
+     * The design ID.
+     */
+    designId: string;
+  };
+  query?: never;
+  url: "/v1/designs/{designId}/export-formats";
+};
+
+export type GetDesignExportFormatsErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type GetDesignExportFormatsError =
+  GetDesignExportFormatsErrors[keyof GetDesignExportFormatsErrors];
+
+export type GetDesignExportFormatsResponses = {
+  /**
+   * OK
+   */
+  200: GetDesignExportFormatsResponse;
+};
+
+export type GetDesignExportFormatsResponse2 =
+  GetDesignExportFormatsResponses[keyof GetDesignExportFormatsResponses];
 
 export type CreateDesignImportJobData = {
   /**
@@ -2714,71 +3576,180 @@ export type CreateDesignImportJobData = {
   headers: {
     "Import-Metadata": DesignImportMetadata;
   };
+  path?: never;
+  query?: never;
+  url: "/v1/imports";
 };
 
-export type CreateDesignImportJobResponse2 = CreateDesignImportJobResponse;
+export type CreateDesignImportJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type CreateDesignImportJobError = unknown;
+export type CreateDesignImportJobError =
+  CreateDesignImportJobErrors[keyof CreateDesignImportJobErrors];
+
+export type CreateDesignImportJobResponses = {
+  /**
+   * OK
+   */
+  200: CreateDesignImportJobResponse;
+};
+
+export type CreateDesignImportJobResponse2 =
+  CreateDesignImportJobResponses[keyof CreateDesignImportJobResponses];
 
 export type GetDesignImportJobData = {
+  body?: never;
   path: {
     /**
      * The design import job ID.
      */
     jobId: string;
   };
+  query?: never;
+  url: "/v1/imports/{jobId}";
 };
 
-export type GetDesignImportJobResponse2 = GetDesignImportJobResponse;
+export type GetDesignImportJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type GetDesignImportJobError = unknown;
+export type GetDesignImportJobError =
+  GetDesignImportJobErrors[keyof GetDesignImportJobErrors];
+
+export type GetDesignImportJobResponses = {
+  /**
+   * OK
+   */
+  200: GetDesignImportJobResponse;
+};
+
+export type GetDesignImportJobResponse2 =
+  GetDesignImportJobResponses[keyof GetDesignImportJobResponses];
 
 export type CreateDesignExportJobData = {
   body?: CreateDesignExportJobRequest;
+  url: "/v1/exports";
 };
 
-export type CreateDesignExportJobResponse2 = CreateDesignExportJobResponse;
+export type CreateDesignExportJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type CreateDesignExportJobError = unknown;
+export type CreateDesignExportJobError =
+  CreateDesignExportJobErrors[keyof CreateDesignExportJobErrors];
+
+export type CreateDesignExportJobResponses = {
+  /**
+   * OK
+   */
+  200: CreateDesignExportJobResponse;
+};
+
+export type CreateDesignExportJobResponse2 =
+  CreateDesignExportJobResponses[keyof CreateDesignExportJobResponses];
 
 export type GetDesignExportJobData = {
+  body?: never;
   path: {
     /**
      * The export job ID.
      */
     exportId: string;
   };
+  query?: never;
+  url: "/v1/exports/{exportId}";
 };
 
-export type GetDesignExportJobResponse2 = GetDesignExportJobResponse;
+export type GetDesignExportJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type GetDesignExportJobError = unknown;
+export type GetDesignExportJobError =
+  GetDesignExportJobErrors[keyof GetDesignExportJobErrors];
+
+export type GetDesignExportJobResponses = {
+  /**
+   * OK
+   */
+  200: GetDesignExportJobResponse;
+};
+
+export type GetDesignExportJobResponse2 =
+  GetDesignExportJobResponses[keyof GetDesignExportJobResponses];
 
 export type DeleteFolderData = {
+  body?: never;
   path: {
     /**
      * The folder ID.
      */
     folderId: string;
   };
+  query?: never;
+  url: "/v1/folders/{folderId}";
 };
 
-export type DeleteFolderResponse = void;
+export type DeleteFolderErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type DeleteFolderError = unknown;
+export type DeleteFolderError = DeleteFolderErrors[keyof DeleteFolderErrors];
+
+export type DeleteFolderResponses = {
+  /**
+   * OK
+   */
+  204: void;
+};
+
+export type DeleteFolderResponse =
+  DeleteFolderResponses[keyof DeleteFolderResponses];
 
 export type GetFolderData = {
+  body?: never;
   path: {
     /**
      * The folder ID.
      */
     folderId: string;
   };
+  query?: never;
+  url: "/v1/folders/{folderId}";
 };
 
-export type GetFolderResponse2 = GetFolderResponse;
+export type GetFolderErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type GetFolderError = unknown;
+export type GetFolderError = GetFolderErrors[keyof GetFolderErrors];
+
+export type GetFolderResponses = {
+  /**
+   * OK
+   */
+  200: GetFolderResponse;
+};
+
+export type GetFolderResponse2 = GetFolderResponses[keyof GetFolderResponses];
 
 export type UpdateFolderData = {
   body: UpdateFolderRequest;
@@ -2788,13 +3759,31 @@ export type UpdateFolderData = {
      */
     folderId: string;
   };
+  query?: never;
+  url: "/v1/folders/{folderId}";
 };
 
-export type UpdateFolderResponse2 = UpdateFolderResponse;
+export type UpdateFolderErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type UpdateFolderError = unknown;
+export type UpdateFolderError = UpdateFolderErrors[keyof UpdateFolderErrors];
+
+export type UpdateFolderResponses = {
+  /**
+   * OK
+   */
+  200: UpdateFolderResponse;
+};
+
+export type UpdateFolderResponse2 =
+  UpdateFolderResponses[keyof UpdateFolderResponses];
 
 export type ListFolderItemsData = {
+  body?: never;
   path: {
     /**
      * The folder ID.
@@ -2833,550 +3822,196 @@ export type ListFolderItemsData = {
      */
     sort_by?: FolderItemSortBy;
   };
+  url: "/v1/folders/{folderId}/items";
 };
 
-export type ListFolderItemsResponse2 = ListFolderItemsResponse;
+export type ListFolderItemsErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type ListFolderItemsError = unknown;
+export type ListFolderItemsError =
+  ListFolderItemsErrors[keyof ListFolderItemsErrors];
+
+export type ListFolderItemsResponses = {
+  /**
+   * OK
+   */
+  200: ListFolderItemsResponse;
+};
+
+export type ListFolderItemsResponse2 =
+  ListFolderItemsResponses[keyof ListFolderItemsResponses];
 
 export type MoveFolderItemData = {
   body?: MoveFolderItemRequest;
+  url: "/v1/folders/move";
 };
 
-export type MoveFolderItemResponse = void;
+export type MoveFolderItemErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
 
-export type MoveFolderItemError = unknown;
+export type MoveFolderItemError =
+  MoveFolderItemErrors[keyof MoveFolderItemErrors];
+
+export type MoveFolderItemResponses = {
+  /**
+   * OK
+   */
+  204: void;
+};
+
+export type MoveFolderItemResponse =
+  MoveFolderItemResponses[keyof MoveFolderItemResponses];
 
 export type CreateFolderData = {
   body: CreateFolderRequest;
+  url: "/v1/folders";
 };
 
-export type CreateFolderResponse2 = CreateFolderResponse;
-
-export type CreateFolderError = unknown;
-
-export type ExchangeAccessTokenData = unknown;
-
-export type ExchangeAccessTokenResponse2 = ExchangeAccessTokenResponse;
-
-export type ExchangeAccessTokenError = unknown;
-
-export type IntrospectTokenData = unknown;
-
-export type IntrospectTokenResponse2 = IntrospectTokenResponse;
-
-export type IntrospectTokenError = unknown;
-
-export type RevokeTokensData = unknown;
-
-export type RevokeTokensResponse2 = RevokeTokensResponse;
-
-export type RevokeTokensError = unknown;
-
-export type UsersMeResponse2 = UsersMeResponse;
-
-export type UsersMeError = unknown;
-
-export type GetUserProfileResponse = UserProfileResponse;
-
-export type GetUserProfileError = unknown;
-
-export type $OpenApiTs = {
-  "/v1/apps/{appId}/jwks": {
-    get: {
-      req: GetAppJwksData;
-      res: {
-        /**
-         * OK
-         */
-        "200": GetAppJwksResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/assets/{assetId}": {
-    delete: {
-      req: DeleteAssetData;
-      res: {
-        /**
-         * OK
-         */
-        "204": void;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-    get: {
-      req: GetAssetData;
-      res: {
-        /**
-         * OK
-         */
-        "200": GetAssetResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-    patch: {
-      req: UpdateAssetData;
-      res: {
-        /**
-         * OK
-         */
-        "200": UpdateAssetResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/asset-uploads": {
-    post: {
-      req: CreateAssetUploadJobData;
-      res: {
-        /**
-         * OK
-         */
-        "200": CreateAssetUploadJobResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/asset-uploads/{jobId}": {
-    get: {
-      req: GetAssetUploadJobData;
-      res: {
-        /**
-         * OK
-         */
-        "200": GetAssetUploadJobResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/autofills": {
-    post: {
-      req: CreateDesignAutofillJobData;
-      res: {
-        /**
-         * OK
-         */
-        "200": CreateDesignAutofillJobResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/autofills/{jobId}": {
-    get: {
-      req: GetDesignAutofillJobData;
-      res: {
-        /**
-         * OK
-         */
-        "200": GetDesignAutofillJobResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/brand-templates": {
-    get: {
-      req: ListBrandTemplatesData;
-      res: {
-        /**
-         * OK
-         */
-        "200": ListBrandTemplatesResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/brand-templates/{brandTemplateId}": {
-    get: {
-      req: GetBrandTemplateData;
-      res: {
-        /**
-         * OK
-         */
-        "200": GetBrandTemplateResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/brand-templates/{brandTemplateId}/dataset": {
-    get: {
-      req: GetBrandTemplateDatasetData;
-      res: {
-        /**
-         * OK
-         */
-        "200": GetBrandTemplateDatasetResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/comments": {
-    post: {
-      req: CreateCommentData;
-      res: {
-        /**
-         * OK
-         */
-        "200": CreateCommentResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/comments/{commentId}/replies": {
-    post: {
-      req: CreateReplyData;
-      res: {
-        /**
-         * OK
-         */
-        "200": CreateReplyResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/designs/{designId}/comments/{commentId}": {
-    get: {
-      req: GetCommentData;
-      res: {
-        /**
-         * OK
-         */
-        "200": GetCommentResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/connect/keys": {
-    get: {
-      res: {
-        /**
-         * OK
-         */
-        "200": GetSigningPublicKeysResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/designs": {
-    get: {
-      req: ListDesignsData;
-      res: {
-        /**
-         * OK
-         */
-        "200": GetListDesignResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-    post: {
-      req: CreateDesignData;
-      res: {
-        /**
-         * OK
-         */
-        "200": CreateDesignResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/designs/{designId}": {
-    get: {
-      req: GetDesignData;
-      res: {
-        /**
-         * OK
-         */
-        "200": GetDesignResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/designs/{designId}/pages": {
-    get: {
-      req: GetDesignPagesData;
-      res: {
-        /**
-         * OK
-         */
-        "200": GetDesignPagesResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/imports": {
-    post: {
-      req: CreateDesignImportJobData;
-      res: {
-        /**
-         * OK
-         */
-        "200": CreateDesignImportJobResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/imports/{jobId}": {
-    get: {
-      req: GetDesignImportJobData;
-      res: {
-        /**
-         * OK
-         */
-        "200": GetDesignImportJobResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/exports": {
-    post: {
-      req: CreateDesignExportJobData;
-      res: {
-        /**
-         * OK
-         */
-        "200": CreateDesignExportJobResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/exports/{exportId}": {
-    get: {
-      req: GetDesignExportJobData;
-      res: {
-        /**
-         * OK
-         */
-        "200": GetDesignExportJobResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/folders/{folderId}": {
-    delete: {
-      req: DeleteFolderData;
-      res: {
-        /**
-         * OK
-         */
-        "204": void;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-    get: {
-      req: GetFolderData;
-      res: {
-        /**
-         * OK
-         */
-        "200": GetFolderResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-    patch: {
-      req: UpdateFolderData;
-      res: {
-        /**
-         * OK
-         */
-        "200": UpdateFolderResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/folders/{folderId}/items": {
-    get: {
-      req: ListFolderItemsData;
-      res: {
-        /**
-         * OK
-         */
-        "200": ListFolderItemsResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/folders/move": {
-    post: {
-      req: MoveFolderItemData;
-      res: {
-        /**
-         * OK
-         */
-        "204": void;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/folders": {
-    post: {
-      req: CreateFolderData;
-      res: {
-        /**
-         * OK
-         */
-        "200": CreateFolderResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/oauth/token": {
-    post: {
-      req: ExchangeAccessTokenData;
-      res: {
-        /**
-         * OK
-         */
-        "200": ExchangeAccessTokenResponse;
-        /**
-         * Error Response
-         */
-        default: OauthError;
-      };
-    };
-  };
-  "/v1/oauth/introspect": {
-    post: {
-      req: IntrospectTokenData;
-      res: {
-        /**
-         * OK
-         */
-        "200": IntrospectTokenResponse;
-        /**
-         * Error Response
-         */
-        default: OauthError;
-      };
-    };
-  };
-  "/v1/oauth/revoke": {
-    post: {
-      req: RevokeTokensData;
-      res: {
-        /**
-         * OK
-         */
-        "200": RevokeTokensResponse;
-        /**
-         * Error Response
-         */
-        default: OauthError;
-      };
-    };
-  };
-  "/v1/users/me": {
-    get: {
-      res: {
-        /**
-         * OK
-         */
-        "200": UsersMeResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
-  "/v1/users/me/profile": {
-    get: {
-      res: {
-        /**
-         * OK
-         */
-        "200": UserProfileResponse;
-        /**
-         * Error Response
-         */
-        default: Error;
-      };
-    };
-  };
+export type CreateFolderErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
 };
+
+export type CreateFolderError = CreateFolderErrors[keyof CreateFolderErrors];
+
+export type CreateFolderResponses = {
+  /**
+   * OK
+   */
+  200: CreateFolderResponse;
+};
+
+export type CreateFolderResponse2 =
+  CreateFolderResponses[keyof CreateFolderResponses];
+
+export type ExchangeAccessTokenData = {
+  body: ExchangeAccessTokenRequest;
+  url: "/v1/oauth/token";
+};
+
+export type ExchangeAccessTokenErrors = {
+  /**
+   * Error Response
+   */
+  default: OauthError;
+};
+
+export type ExchangeAccessTokenError =
+  ExchangeAccessTokenErrors[keyof ExchangeAccessTokenErrors];
+
+export type ExchangeAccessTokenResponses = {
+  /**
+   * OK
+   */
+  200: ExchangeAccessTokenResponse;
+};
+
+export type ExchangeAccessTokenResponse2 =
+  ExchangeAccessTokenResponses[keyof ExchangeAccessTokenResponses];
+
+export type IntrospectTokenData = {
+  body: IntrospectTokenRequest;
+  url: "/v1/oauth/introspect";
+};
+
+export type IntrospectTokenErrors = {
+  /**
+   * Error Response
+   */
+  default: OauthError;
+};
+
+export type IntrospectTokenError =
+  IntrospectTokenErrors[keyof IntrospectTokenErrors];
+
+export type IntrospectTokenResponses = {
+  /**
+   * OK
+   */
+  200: IntrospectTokenResponse;
+};
+
+export type IntrospectTokenResponse2 =
+  IntrospectTokenResponses[keyof IntrospectTokenResponses];
+
+export type RevokeTokensData = {
+  body: RevokeTokensRequest;
+  url: "/v1/oauth/revoke";
+};
+
+export type RevokeTokensErrors = {
+  /**
+   * Error Response
+   */
+  default: OauthError;
+};
+
+export type RevokeTokensError = RevokeTokensErrors[keyof RevokeTokensErrors];
+
+export type RevokeTokensResponses = {
+  /**
+   * OK
+   */
+  200: RevokeTokensResponse;
+};
+
+export type RevokeTokensResponse2 =
+  RevokeTokensResponses[keyof RevokeTokensResponses];
+
+export type UsersMeData = {
+  body?: never;
+  url: "/v1/users/me";
+};
+
+export type UsersMeErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type UsersMeError = UsersMeErrors[keyof UsersMeErrors];
+
+export type UsersMeResponses = {
+  /**
+   * OK
+   */
+  200: UsersMeResponse;
+};
+
+export type UsersMeResponse2 = UsersMeResponses[keyof UsersMeResponses];
+
+export type GetUserProfileData = {
+  body?: never;
+  url: "/v1/users/me/profile";
+};
+
+export type GetUserProfileErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type GetUserProfileError =
+  GetUserProfileErrors[keyof GetUserProfileErrors];
+
+export type GetUserProfileResponses = {
+  /**
+   * OK
+   */
+  200: UserProfileResponse;
+};
+
+export type GetUserProfileResponse =
+  GetUserProfileResponses[keyof GetUserProfileResponses];

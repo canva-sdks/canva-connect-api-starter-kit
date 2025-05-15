@@ -3,7 +3,6 @@ export * from "./auth";
 import type { Client } from "@hey-api/client-fetch";
 import { createClient } from "@hey-api/client-fetch";
 import { Users } from "./user";
-import { CANVA_HOST } from "src/config";
 
 export type Services = {
   users: Users;
@@ -15,7 +14,7 @@ export function createUserClient(token?: string) {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    baseUrl: CANVA_HOST,
+    baseUrl: process.env.BASE_CANVA_CONNECT_API_URL,
   });
 
   localClient.interceptors.response.use((res) => {

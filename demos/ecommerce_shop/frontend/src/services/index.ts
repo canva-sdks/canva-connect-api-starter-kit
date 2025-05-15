@@ -4,7 +4,6 @@ import { Autofill } from "./autofill";
 import { Designs } from "./design";
 import { Exports } from "./export";
 import { Users } from "./user";
-import { CANVA_HOST } from "src/config";
 
 export * from "./api";
 export * from "./auth";
@@ -22,7 +21,7 @@ export function getUserClient(token?: string) {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-    baseUrl: CANVA_HOST,
+    baseUrl: process.env.BASE_CANVA_CONNECT_API_URL,
   });
 
   localClient.interceptors.response.use((res) => {

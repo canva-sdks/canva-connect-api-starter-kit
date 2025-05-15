@@ -1,5 +1,20 @@
 # Changelog
 
+## 2025-05-15
+
+### 🐞 Fixed
+
+- Updated stale getting started docs link.
+- Removed duplicate config files with API base URLs, making the environment variables in `.env` the source of truth.
+
+### 🔧 Changed
+
+- Refreshed the OpenAPI yml spec `openapi/spec.yml` to be based on the latest Connect API design.
+- Patch and minor version changes to package dependencies in the `ecommerce_shop` and `playground` demos.
+- Moved `webpack.config.cjs` to `webpack.config.ts` for type checking.
+- Updated file name casing to be consistent, and added an elint rule to enforce this
+- Updated `eslint`, `eslint-plugin-unicorn`, and `typescript-eslint`.
+
 ## 2024-12-19
 
 ### 🔧 Changed
@@ -34,6 +49,7 @@
 
 - Refreshed the OpenAPI yml spec `openapi/spec.yml` to be based on the latest Connect API design.
 - Changed the ecommerce_shop demo `.env` template format to now include `BASE_CANVA_CONNECT_AUTH_URL`. Older clones of this repo may encounter issues if the below is line is not added to their `demos/ecommerce_shop/.env` file:
+
   ```text
   BASE_CANVA_CONNECT_AUTH_URL=https://www.canva.com/api
   ```

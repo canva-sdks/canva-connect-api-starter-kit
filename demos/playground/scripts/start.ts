@@ -5,7 +5,7 @@ import { hideBin } from "yargs/helpers";
 import { AppRunner } from "../../common/scripts/app-runner";
 import { Context } from "../../common/scripts/context";
 import { validateEnvironmentVariables } from "../../common/scripts/env";
-import { buildConfig } from "../frontend/webpack.config.cjs";
+import { buildConfig } from "../frontend/webpack.config";
 import * as path from "path";
 
 const appRunner = new AppRunner();

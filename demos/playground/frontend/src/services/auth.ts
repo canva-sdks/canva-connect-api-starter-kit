@@ -1,5 +1,3 @@
-import { BACKEND_HOST } from "src/config";
-
 const endpoints = {
   AUTHORIZE: "/authorize",
   REVOKE: "/revoke",
@@ -9,7 +7,7 @@ const endpoints = {
 export const getCanvaAuthorization = async () => {
   return new Promise<string | undefined>((resolve, reject) => {
     try {
-      const url = new URL(endpoints.AUTHORIZE, BACKEND_HOST);
+      const url = new URL(endpoints.AUTHORIZE, process.env.BACKEND_URL);
       const windowFeatures = ["popup", "height=800", "width=800"];
       const authWindow = window.open(url, "", windowFeatures.join(","));
 
@@ -48,7 +46,7 @@ export const getCanvaAuthorization = async () => {
 };
 
 export const revoke = async () => {
-  const url = new URL(endpoints.REVOKE, BACKEND_HOST);
+  const url = new URL(endpoints.REVOKE, process.env.BACKEND_URL);
   const response = await fetch(url, { credentials: "include" });
 
   if (!response.ok) {
@@ -61,7 +59,7 @@ export const revoke = async () => {
 export const checkForAccessToken = async (): Promise<{
   token?: string;
 }> => {
-  const url = new URL(endpoints.TOKEN, BACKEND_HOST);
+  const url = new URL(endpoints.TOKEN, process.env.BACKEND_URL);
   const response = await fetch(url, { credentials: "include" });
 
   if (!response.ok) {

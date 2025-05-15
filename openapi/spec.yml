@@ -24,6 +24,7 @@ tags:
   - name: export
   - name: folder
   - name: oauth
+  - name: resize
   - name: user
 paths:
   /v1/apps/{appId}/jwks:
@@ -265,7 +266,7 @@ paths:
       description: |-
         <Warning>
 
-        Later this year, we'll be updating all brand template IDs. If your integration stores brand template IDs, you'll need to migrate to the new IDs. Once we implement this change, you'll have 6 months to update the IDs.
+        Soon, all brand template IDs will be updated to a new format. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. After we implement this change, you'll have 6 months to migrate before the old IDs are removed.
 
         </Warning>
 
@@ -313,6 +314,33 @@ paths:
               schema:
                 $ref: "#/components/schemas/CreateDesignAutofillJobResponse"
           description: OK
+        "400":
+          content:
+            application/json:
+              examples:
+                design_title_invalid:
+                  $ref: "#/components/examples/DesignTitleInvalidError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad Request
+        "403":
+          content:
+            application/json:
+              examples:
+                brand_template_forbidden:
+                  $ref: "#/components/examples/BrandTemplateForbiddenError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              examples:
+                brand_template_not_found:
+                  $ref: "#/components/examples/BrandTemplateNotFoundError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
         default:
           content:
             application/json:
@@ -363,6 +391,24 @@ paths:
               schema:
                 $ref: "#/components/schemas/GetDesignAutofillJobResponse"
           description: OK
+        "404":
+          content:
+            application/json:
+              examples:
+                design_autofill_job_not_found:
+                  $ref: "#/components/examples/DesignAutofillJobNotFoundError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
+        "403":
+          content:
+            application/json:
+              examples:
+                design_autofill_job_forbidden:
+                  $ref: "#/components/examples/DesignAutofillJobForbiddenError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Forbidden
         default:
           content:
             application/json:
@@ -380,7 +426,7 @@ paths:
       description: |-
         <Warning>
 
-        Later this year, we'll be updating all brand template IDs. If your integration stores brand template IDs, you'll need to migrate to the new IDs. Once we implement this change, you'll have 6 months to update the IDs.
+        Soon, all brand template IDs will be updated to a new format. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. After we implement this change, you'll have 6 months to migrate before the old IDs are removed.
 
         </Warning>
 
@@ -417,13 +463,9 @@ paths:
           schema:
             type: string
           style: form
-        - description: |-
-            Filter the list of brand templates based on the user's ownership of the brand templates.
-            This can be one of the following:
-
-            - `any`: (Default) Brand templates owned by and shared with the user.
-            - `owned`: Brand templates owned by the user.
-            - `shared`: Brand templates shared with the user.
+        - description:
+            Filter the list of brand templates based on the user's ownership
+            of the brand templates.
           explode: true
           in: query
           name: ownership
@@ -431,14 +473,7 @@ paths:
           schema:
             $ref: "#/components/schemas/OwnershipType"
           style: form
-        - description: |-
-            Sort the list of brand templates. This can be one of the following:
-
-            - `relevance`: (Default) Sort results using a relevance algorithm.
-            - `modified_descending`: Sort results by the date last modified in descending order.
-            - `modified_ascending`: Sort results by the date last modified in ascending order.
-            - `title_descending`: Sort results by title in descending order.
-            - `title_ascending`: Sort results by title in ascending order.
+        - description: Sort the list of brand templates.
           explode: true
           in: query
           name: sort_by
@@ -449,11 +484,6 @@ paths:
         - description: |-
             Filter the list of brand templates based on the brand templates' dataset definitions.
             Brand templates with dataset definitions are mainly used with the [Autofill APIs](https://www.canva.dev/docs/connect/api-reference/autofills/).
-            This can be one of the following:
-
-            - `any`: (Default) Brand templates with and without dataset definitions.
-            - `non_empty`: Brand templates with one or more data fields defined.
-            - `empty`: Brand templates with no data fields defined.
           explode: true
           in: query
           name: dataset
@@ -485,7 +515,7 @@ paths:
       description: |-
         <Warning>
 
-        Later this year, we'll be updating all brand template IDs. If your integration stores brand template IDs, you'll need to migrate to the new IDs. Once we implement this change, you'll have 6 months to update the IDs.
+        Soon, all brand template IDs will be updated to a new format. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. After we implement this change, you'll have 6 months to migrate before the old IDs are removed.
 
         </Warning>
 
@@ -531,7 +561,7 @@ paths:
       description: |-
         <Warning>
 
-        Later this year, we'll be updating all brand template IDs. If your integration stores brand template IDs, you'll need to migrate to the new IDs. Once we implement this change, you'll have 6 months to update the IDs.
+        Soon, all brand template IDs will be updated to a new format. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. After we implement this change, you'll have 6 months to migrate before the old IDs are removed.
 
         </Warning>
 
@@ -587,7 +617,14 @@ paths:
       x-rate-limit-per-client-user: 100
   /v1/comments:
     post:
+      deprecated: true
       description: |-
+        <Warning>
+
+        This API is deprecated, so you should use the [Create thread](https://www.canva.dev/docs/connect/api-reference/comments/create-thread/) API instead.
+
+        </Warning>
+
         <Warning>
 
         This API is currently provided as a preview. Be aware of the following:
@@ -630,11 +667,17 @@ paths:
       x-rate-limit-per-client-user: 20
   /v1/comments/{commentId}/replies:
     post:
+      deprecated: true
       description: |-
         <Warning>
 
-        This API is currently provided as a preview. Be aware of the following:
+        This API is deprecated, so you should use the [Create reply](https://www.canva.dev/docs/connect/api-reference/comments/create-reply/) API instead.
 
+        </Warning>
+
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
         - There might be unannounced breaking changes.
         - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
         - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
@@ -648,9 +691,9 @@ paths:
 
         For information on comments and how they're used in the Canva UI, see the
         [Canva Help Center](https://www.canva.com/help/comments/).
-      operationId: createReply
+      operationId: createReplyDeprecated
       parameters:
-        - description: The `id` of the comment.
+        - description: The ID of the comment.
           example: KeAZEAjijEb
           explode: false
           in: path
@@ -685,7 +728,149 @@ paths:
       tags:
         - comment
       x-rate-limit-per-client-user: 20
-  /v1/designs/{designId}/comments/{commentId}:
+  /v1/designs/{designId}/comments/{threadId}/replies:
+    get:
+      description: |-
+        <Warning>
+        This API is currently provided as a preview. Be aware of the following:
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+        </Warning>
+
+        Retrieves a list of replies for a comment or suggestion thread on a design.
+
+        For information on comments and how they're used in the Canva UI, see the
+        [Canva Help Center](https://www.canva.com/help/comments/).
+      operationId: listReplies
+      parameters:
+        - description: The design ID.
+          explode: false
+          in: path
+          name: designId
+          required: true
+          schema:
+            pattern: "^[a-zA-Z0-9_-]{1,50}$"
+            type: string
+          style: simple
+        - description: The ID of the thread.
+          example: KeAbiEAjZEj
+          explode: false
+          in: path
+          name: threadId
+          required: true
+          schema:
+            pattern: "^[a-zA-Z0-9_-]{1,50}$"
+            type: string
+          style: simple
+        - explode: true
+          in: query
+          name: limit
+          required: false
+          schema:
+            default: 50
+            description: The number of replies to return.
+            maximum: 100
+            minimum: 1
+            type: integer
+          style: form
+        - description: |-
+            If the success response contains a continuation token, the list contains more items you can list. You can use this token as a query parameter and retrieve more items from the list, for example `?continuation={continuation}`.
+
+            To retrieve all items, you might need to make multiple requests.
+          explode: true
+          in: query
+          name: continuation
+          required: false
+          schema:
+            type: string
+          style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListRepliesResponse"
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Error Response
+      security:
+        - oauthAuthCode:
+            - comment:read
+      tags:
+        - comment
+      x-rate-limit-per-client-user: 100
+    post:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Creates a reply to a comment or suggestion thread on a design.
+        To reply to an existing thread, you must provide the ID of the thread
+        which is returned when a thread is created, or from the `thread_id` value
+        of an existing reply in the thread. Each thread can
+        have a maximum of 100 replies created for it.
+
+        For information on comments and how they're used in the Canva UI, see the
+        [Canva Help Center](https://www.canva.com/help/comments/).
+      operationId: createReply
+      parameters:
+        - description: The design ID.
+          explode: false
+          in: path
+          name: designId
+          required: true
+          schema:
+            pattern: "^[a-zA-Z0-9_-]{1,50}$"
+            type: string
+          style: simple
+        - description: The ID of the thread.
+          example: KeAbiEAjZEj
+          explode: false
+          in: path
+          name: threadId
+          required: true
+          schema:
+            pattern: "^[a-zA-Z0-9_-]{1,50}$"
+            type: string
+          style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateReplyV2Request"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateReplyV2Response"
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Error Response
+      security:
+        - oauthAuthCode:
+            - comment:write
+      tags:
+        - comment
+      x-rate-limit-per-client-user: 20
+  /v1/designs/{designId}/comments/{threadId}:
     get:
       description: |-
         <Warning>
@@ -698,10 +883,11 @@ paths:
 
         </Warning>
 
-        Gets a comment.
+        Gets a comment or suggestion thread on a design.
+        To retrieve a reply to a comment thread, use the [Get reply](https://www.canva.dev/docs/connect/api-reference/comments/get-reply/) API.
         For information on comments and how they're used in the Canva UI, see the
         [Canva Help Center](https://www.canva.com/help/comments/).
-      operationId: getComment
+      operationId: getThread
       parameters:
         - description: The design ID.
           explode: false
@@ -712,11 +898,11 @@ paths:
             pattern: "^[a-zA-Z0-9_-]{1,50}$"
             type: string
           style: simple
-        - description: The `id` of the comment.
-          example: KeAZEAjijEb
+        - description: The ID of the thread.
+          example: KeAbiEAjZEj
           explode: false
           in: path
-          name: commentId
+          name: threadId
           required: true
           schema:
             pattern: "^[a-zA-Z0-9_-]{1,50}$"
@@ -727,7 +913,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetCommentResponse"
+                $ref: "#/components/schemas/GetThreadResponse"
           description: OK
         default:
           content:
@@ -738,6 +924,121 @@ paths:
       security:
         - oauthAuthCode:
             - comment:read
+      tags:
+        - comment
+      x-rate-limit-per-client-user: 100
+  /v1/designs/{designId}/comments/{threadId}/replies/{replyId}:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Gets a reply to a comment or suggestion thread on a design.
+        For information on comments and how they're used in the Canva UI, see the
+        [Canva Help Center](https://www.canva.com/help/comments/).
+      operationId: getReply
+      parameters:
+        - description: The design ID.
+          explode: false
+          in: path
+          name: designId
+          required: true
+          schema:
+            pattern: "^[a-zA-Z0-9_-]{1,50}$"
+            type: string
+          style: simple
+        - description: The ID of the thread.
+          example: KeAbiEAjZEj
+          explode: false
+          in: path
+          name: threadId
+          required: true
+          schema:
+            pattern: "^[a-zA-Z0-9_-]{1,50}$"
+            type: string
+          style: simple
+        - description: The ID of the reply.
+          example: KeAZEAjijEb
+          explode: false
+          in: path
+          name: replyId
+          required: true
+          schema:
+            pattern: "^[a-zA-Z0-9_-]{1,50}$"
+            type: string
+          style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetReplyResponse"
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Error Response
+      security:
+        - oauthAuthCode:
+            - comment:read
+      tags:
+        - comment
+      x-rate-limit-per-client-user: 100
+  /v1/designs/{designId}/comments:
+    post:
+      description: |-
+        <Warning>
+        This API is currently provided as a preview. Be aware of the following:
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+        </Warning>
+
+        Creates a new comment thread on a design.
+        For information on comments and how they're used in the Canva UI, see the
+        [Canva Help Center](https://www.canva.com/help/comments/).
+      operationId: createThread
+      parameters:
+        - description: The design ID.
+          explode: false
+          in: path
+          name: designId
+          required: true
+          schema:
+            pattern: "^[a-zA-Z0-9_-]{1,50}$"
+            type: string
+          style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateThreadRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateThreadResponse"
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Error Response
+      security:
+        - oauthAuthCode:
+            - comment:write
       tags:
         - comment
       x-rate-limit-per-client-user: 100
@@ -819,13 +1120,9 @@ paths:
           schema:
             type: string
           style: form
-        - description: |-
-            Filter the list of designs based on the user's ownership of the designs.
-            This can be one of the following:
-
-            - `owned`: Designs owned by the user.
-            - `shared`: Designs shared with the user.
-            - `any`: Designs owned by and shared with the user.
+        - description:
+            Filter the list of designs based on the user's ownership of the
+            designs.
           example: any
           explode: true
           in: query
@@ -834,15 +1131,7 @@ paths:
           schema:
             $ref: "#/components/schemas/OwnershipType"
           style: form
-        - description: |-
-            Sort the list of designs.
-            This can be one of the following:
-
-            - `relevance`: (Default) Sort results using a relevance algorithm.
-            - `modified_descending`: Sort results by the date last modified in descending order.
-            - `modified_ascending`: Sort results by the date last modified in ascending order.
-            - `title_descending`: Sort results by title in descending order.
-            - `title_ascending`: Sort results by title in ascending order.
+        - description: Sort the list of designs.
           example: relevance
           explode: true
           in: query
@@ -968,7 +1257,7 @@ paths:
             type: string
           style: simple
         - description: |
-            The page index to start the range of pages to return. Default is `1`.
+            The page index to start the range of pages to return.
 
             Pages are indexed using one-based numbering, so the first page in a design has the index value `1`.
           explode: true
@@ -984,7 +1273,7 @@ paths:
           style: form
         - description:
             "The number of pages to return, starting at the page index specified\
-            \ using the `offset` parameter. Default is `50` pages."
+            \ using the `offset` parameter."
           explode: true
           in: query
           name: limit
@@ -1161,11 +1450,120 @@ paths:
       tags:
         - design_import
       x-rate-limit-per-client-user: 120
+  /v1/url-imports:
+    post:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to import an external file from a URL as a new design in Canva.
+
+        Supported file types for imports are listed in [Design imports overview](https://www.canva.dev/docs/connect/api-reference/design-imports/#supported-file-types).
+
+        <Note>
+
+        For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of design import jobs created with this API using the [Get URL import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/get-url-import-job/).
+
+        </Note>
+      operationId: createUrlImportJob
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUrlImportJobRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                in_progress:
+                  $ref: "#/components/examples/InProgressDesignImportJobExample"
+                success:
+                  $ref: "#/components/examples/SuccessDesignImportJobExample"
+                failed:
+                  $ref: "#/components/examples/FailedDesignImportJobExample"
+              schema:
+                $ref: "#/components/schemas/CreateUrlImportJobResponse"
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Error Response
+      security:
+        - oauthAuthCode:
+            - design:content:write
+      tags:
+        - design_import
+      x-rate-limit-per-client-user: 20
+  /v1/url-imports/{jobId}:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Gets the result of a URL import job created using the [Create URL import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/create-url-import-job/).
+
+        You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+      operationId: getUrlImportJob
+      parameters:
+        - description: The ID of the URL import job.
+          example: f81b26fd-a33d-4c2d-9e8c-4a7aca798b17
+          explode: false
+          in: path
+          name: jobId
+          required: true
+          schema:
+            pattern: "^[a-zA-Z0-9_-]{1,50}$"
+            type: string
+          style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                in_progress:
+                  $ref: "#/components/examples/InProgressDesignImportJobExample"
+                success:
+                  $ref: "#/components/examples/SuccessDesignImportJobExample"
+                failed:
+                  $ref: "#/components/examples/FailedDesignImportJobExample"
+              schema:
+                $ref: "#/components/schemas/GetUrlImportJobResponse"
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Error Response
+      security:
+        - oauthAuthCode:
+            - design:content:write
+      tags:
+        - design_import
+      x-rate-limit-per-client-user: 120
   /v1/exports:
     post:
       description: |-
         Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to export a file from Canva. Once the exported file is generated, you can download
-        it using the link(s) provided.
+        it using the URL(s) provided. The download URLs are only valid for 24 hours.
 
         The request requires the design ID and the exported file format type.
 
@@ -1214,7 +1612,7 @@ paths:
         Gets the result of a design export job that was created using the [Create design export job API](https://www.canva.dev/docs/connect/api-reference/exports/create-design-export-job/).
 
         If the job is successful, the response includes an array
-        of download links for each page of the design.
+        of download URLs. Depending on the design type and export format, there is a download URL for each page in the design. The download URLs are only valid for 24 hours.
 
         You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
       operationId: getDesignExportJob
@@ -1415,19 +1813,7 @@ paths:
               $ref: "#/components/schemas/FolderItemType"
             type: array
           style: form
-        - description: |-
-            Sort the list of folder items.
-            This can be one of the following:
-
-            - `created_ascending`: Sort results by creation date, in ascending order.
-            - `created_descending`: Sort results by creation date, in descending order.
-            - `modified_ascending`: Sort results by the last modified date, in ascending order.
-            - `modified_descending`: (Default) Sort results by the last modified date, in descending
-            order.
-            - `title_ascending`: Sort results by title, in ascending order. The title is either the
-            `name` field for a folder or asset, or the `title` field for a design.
-            - `title_descending`: Sort results by title, in descending order. The title is either
-            the `name` field for a folder or asset, or the `title` field for a design.
+        - description: Sort the list of folder items.
           example: title_ascending
           explode: true
           in: query
@@ -1656,10 +2042,155 @@ paths:
         - basicAuth: []
       tags:
         - oauth
+  /v1/resizes:
+    post:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        <Note>
+
+        To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
+
+        </Note>
+
+        Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints)
+        to create a resized copy of a design. The new resized design is
+        added to the top level of the user's
+        [projects](https://www.canva.com/help/find-designs-and-folders/) (`root` folder).
+
+        To resize a design into a new design, you can either:
+
+          - Use a preset design type.
+          - Set height and width dimensions for a custom design.
+
+        NOTE: [Canva docs](https://www.canva.com/create/documents/) can't be resized, and other design types can't be resized to a Canva doc.
+
+        <Note>
+        For more information on the workflow for using asynchronous jobs,
+        see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+        You can check the status and get the results of resize jobs created with this API using the
+        [Get design resize job API](https://www.canva.dev/docs/connect/api-reference/resizes/get-design-resize-job/).
+        </Note>
+      operationId: createDesignResizeJob
+      requestBody:
+        content:
+          application/json:
+            example:
+              design_id: DAGirp_1ZUA
+              design_type:
+                type: custom
+                width: 1000
+                height: 1500
+            schema:
+              $ref: "#/components/schemas/CreateDesignResizeJobRequest"
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                in_progress:
+                  $ref: "#/components/examples/InProgressResizeJobExample"
+                success:
+                  $ref: "#/components/examples/SuccessResizeJobExample"
+                failed:
+                  $ref: "#/components/examples/FailedResizeJobExample"
+              schema:
+                $ref: "#/components/schemas/CreateDesignResizeJobResponse"
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Error Response
+      security:
+        - oauthAuthCode:
+            - design:content:read
+            - design:content:write
+      tags:
+        - resize
+      x-required-capabilities:
+        - resize
+      x-rate-limit-per-client-user: 20
+  /v1/resizes/{jobId}:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        <Note>
+
+        To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
+
+        </Note>
+
+        Gets the result of a design resize job that was created using the [Create design resize
+        job API](https://www.canva.dev/docs/connect/api-reference/resizes/create-design-resize-job/).
+
+        If the job is successful, the response includes a summary of the new resized design, including its metadata.
+
+        You might need to make multiple requests to this endpoint until you get a `success` or `failed` status.
+        For more information on the workflow for using asynchronous jobs,
+        see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+      operationId: getDesignResizeJob
+      parameters:
+        - description: The design resize job ID.
+          explode: false
+          in: path
+          name: jobId
+          required: true
+          schema:
+            pattern: "^[a-zA-Z0-9_-]{1,50}$"
+            type: string
+          style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                in_progress:
+                  $ref: "#/components/examples/InProgressResizeJobExample"
+                success:
+                  $ref: "#/components/examples/SuccessResizeJobExample"
+                failed:
+                  $ref: "#/components/examples/FailedResizeJobExample"
+              schema:
+                $ref: "#/components/schemas/GetDesignResizeJobResponse"
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Error Response
+      security:
+        - oauthAuthCode:
+            - design:content:read
+            - design:content:write
+      tags:
+        - resize
+      x-required-capabilities:
+        - resize
+      x-rate-limit-per-client-user: 120
   /v1/users/me:
     get:
       description: |-
-        Returns the User ID, Team ID, and display name of the user
+        Returns the User ID and Team ID of the user
         account associated with the provided access token.
       operationId: usersMe
       responses:
@@ -1677,6 +2208,40 @@ paths:
           description: Error Response
       security:
         - oauthAuthCode: []
+      tags:
+        - user
+      x-rate-limit-per-client-user: 10
+  /v1/users/me/capabilities:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Lists the API capabilities for the user account associated with the provided access token. For more information, see [Capabilities](https://www.canva.dev/docs/connect/capabilities/).
+      operationId: getUserCapabilities
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetUserCapabilitiesResponse"
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Error Response
+      security:
+        - oauthAuthCode:
+            - profile:read
       tags:
         - user
       x-rate-limit-per-client-user: 10
@@ -1773,6 +2338,39 @@ components:
           error:
             code: autofill_error
             message: Error autofilling design from brand template
+    BrandTemplateNotFoundError:
+      summary:
+        A brand template with the ID specified in the request could not be
+        found.
+      value:
+        code: not_found
+        message: "Brand template with id '{brandTemplateId}' not found"
+    BrandTemplateForbiddenError:
+      summary: |-
+        The user does not have permission to access the brand template with the ID
+        specified in the request.
+      value:
+        code: permission_denied
+        message: "Not allowed to access brand template with id '{brandTemplateId}'"
+    DesignTitleInvalidError:
+      summary: The design title specified in the request is not valid.
+      value:
+        code: bad_request_params
+        message: Design title invalid
+    DesignAutofillJobNotFoundError:
+      summary:
+        A design autofill job with the ID specified in the request could not
+        be found.
+      value:
+        code: not_found
+        message: "Job {jobId} not found"
+    DesignAutofillJobForbiddenError:
+      summary: |-
+        The user does not have permission to access the design autofill job with the ID
+        specified in the request.
+      value:
+        code: permission_denied
+        message: Calling user was not the creator of the autofill job
     InProgressDesignImportJobExample:
       summary: In progress job
       value:
@@ -1897,6 +2495,39 @@ components:
           id: Oi2RJILTrKk0KRhRUZozX
           display_name: Acme Corporation
           external: false
+    InProgressResizeJobExample:
+      summary: In progress job
+      value:
+        job:
+          id: 450a76e7-f96f-43ae-9c37-0e1ce492ac72
+          status: in_progress
+    SuccessResizeJobExample:
+      summary: Successfully completed job
+      value:
+        job:
+          id: 450a76e7-f96f-43ae-9c37-0e1ce492ac72
+          status: success
+          result:
+            design:
+              id: DAGirp_1ZUA
+              title: My summer holiday
+              thumbnail:
+                url: https://document-export.canva.com/Vczz9/zF9vzVtdADc/2/thumbnail/0001.png?<query-string>
+              urls:
+                edit_url: https://www.canva.com/design/DAGhRehVa2c/0L_1s4UXSpZhls8EtPaRKw/edit
+                view_url: https://www.canva.com/design/DAGhRehVa2c/0L_1s4UXSpZhls8EtPaRKw/view
+              created_at: "1742856750,"
+              updated_at: "1742856752,"
+              page_count: 5
+    FailedResizeJobExample:
+      summary: Failed job
+      value:
+        job:
+          id: 450a76e7-f96f-43ae-9c37-0e1ce492ac72
+          status: failed
+          error:
+            code: design_resize_error
+            message: Failed to resize the design
   parameters:
     brandTemplateId:
       description: The brand template ID.
@@ -1909,11 +2540,33 @@ components:
         type: string
       style: simple
     commentId:
-      description: The `id` of the comment.
+      description: The ID of the comment.
       example: KeAZEAjijEb
       explode: false
       in: path
       name: commentId
+      required: true
+      schema:
+        pattern: "^[a-zA-Z0-9_-]{1,50}$"
+        type: string
+      style: simple
+    threadId:
+      description: The ID of the thread.
+      example: KeAbiEAjZEj
+      explode: false
+      in: path
+      name: threadId
+      required: true
+      schema:
+        pattern: "^[a-zA-Z0-9_-]{1,50}$"
+        type: string
+      style: simple
+    replyId:
+      description: The ID of the reply.
+      example: KeAZEAjijEb
+      explode: false
+      in: path
+      name: replyId
       required: true
       schema:
         pattern: "^[a-zA-Z0-9_-]{1,50}$"
@@ -2029,7 +2682,6 @@ components:
           description: |-
             The name of the asset. This is shown in the Canva UI.
             When this field is undefined or empty, nothing is updated.
-            Maximum length 50 characters.
           example: My Awesome Upload
           maxLength: 50
           type: string
@@ -2037,8 +2689,6 @@ components:
           description: |-
             The replacement tags for the asset.
             When this field is undefined, nothing is updated.
-            Maximum length 50 tags. Each tag
-            has a maximum length of 50 characters.
           example:
             - image
             - holiday
@@ -2285,6 +2935,7 @@ components:
       enum:
         - file_too_big
         - import_failed
+        - fetch_failed
       example: file_too_big
       type: string
     AssetUploadMetadata:
@@ -2314,7 +2965,7 @@ components:
           type: string
         title:
           description: |-
-            Title to use for the autofilled design. Must be less than 256 characters.
+            Title to use for the autofilled design.
 
             If no design title is provided, the autofilled design will have the same title as the brand template.
           maxLength: 255
@@ -2553,11 +3204,16 @@ components:
         - message
       type: object
     DatasetFilter:
+      default: any
       enum:
         - any
         - non_empty
         - empty
       type: string
+      x-enum-descriptions:
+        - Brand templates with and without dataset definitions.
+        - Brand templates with one or more data fields defined.
+        - Brand templates with no data fields defined.
     ListBrandTemplatesResponse:
       properties:
         continuation:
@@ -2713,6 +3369,23 @@ components:
       required:
         - type
       type: object
+    Capability:
+      description: |-
+        Some APIs are annotated with required capabilities. These endpoints require the user to
+        possess the required capabilities in order to be called successfully.
+      enum:
+        - autofill
+        - brand_template
+        - resize
+      type: string
+      x-enum-descriptions:
+        - "Capability required to call autofill APIs Users that are members of a [Canva\
+          \ Enterprise](https://www.canva.com/enterprise/) organization have this capability."
+        - "Capability required to use brand template APIs. Users that are members of\
+          \ a [Canva Enterprise](https://www.canva.com/enterprise/) organization have\
+          \ this capability."
+        - Capability required to create design resize jobs. Users on a Canva plan with
+          premium features (such as Canva Pro) have this capability.
     CreateCommentRequest:
       properties:
         attached_to:
@@ -2752,12 +3425,32 @@ components:
         - attached_to
         - message
       type: object
+    CreateReplyV2Request:
+      properties:
+        message_plaintext:
+          description: |-
+            The comment message of the reply in plaintext. This is the reply comment shown in the Canva UI.
+
+            You can also mention users in your message by specifying their User ID and Team ID
+            using the format `[user_id:team_id]`.
+          example: Thanks!
+          type: string
+      required:
+        - message_plaintext
+      type: object
     CreateCommentResponse:
       properties:
         comment:
           $ref: "#/components/schemas/ParentComment"
       required:
         - comment
+      type: object
+    CreateThreadResponse:
+      properties:
+        thread:
+          $ref: "#/components/schemas/Thread"
+      required:
+        - thread
       type: object
     CreateReplyResponse:
       properties:
@@ -2766,16 +3459,58 @@ components:
       required:
         - comment
       type: object
-    GetCommentResponse:
-      description: Successful response from a `getComment` request.
+    CreateThreadRequest:
+      properties:
+        message_plaintext:
+          description: |-
+            The comment message in plaintext. This is the comment body shown in the Canva UI.
+
+            You can also mention users in your message by specifying their User ID and Team ID
+            using the format `[user_id:team_id]`. If the `assignee_id` parameter is specified, you
+            must mention the assignee in the message.
+          example: "Great work [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!"
+          type: string
+        assignee_id:
+          description: |-
+            Lets you assign the comment to a Canva user using their User ID. You _must_ mention the
+            assigned user in the `message`.
+          example: oUnPjZ2k2yuhftbWF7873o
+          type: string
+      required:
+        - message_plaintext
+      type: object
+    CreateReplyV2Response:
+      properties:
+        reply:
+          $ref: "#/components/schemas/Reply"
+      required:
+        - reply
+      type: object
+    GetThreadResponse:
+      description: |-
+        Successful response from a `getThread` request.
+
+        The `comment` property is deprecated.
+        For details of a comment thread, please use the `thread` property.
       properties:
         comment:
           $ref: "#/components/schemas/Comment"
+        thread:
+          $ref: "#/components/schemas/Thread"
+      type: object
+    GetReplyResponse:
+      description: Successful response from a `getReply` request.
+      properties:
+        reply:
+          $ref: "#/components/schemas/Reply"
       required:
-        - comment
+        - reply
       type: object
     Comment:
-      description: "The comment object, which contains metadata about the comment."
+      deprecated: true
+      description: |-
+        The comment object, which contains metadata about the comment.
+        Deprecated in favor of the new `thread` object.
       discriminator:
         mapping:
           parent: "#/components/schemas/ParentComment"
@@ -2786,6 +3521,7 @@ components:
         - $ref: "#/components/schemas/ReplyComment"
       type: object
     ParentComment:
+      deprecated: true
       description: |-
         Data about the comment, including the message, author, and
         the object (such as a design) the comment is attached to.
@@ -2828,6 +3564,7 @@ components:
         mentions:
           additionalProperties:
             $ref: "#/components/schemas/TeamUser"
+          deprecated: true
           description: The Canva users mentioned in the comment.
           example:
             oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP:
@@ -2847,6 +3584,7 @@ components:
         - type
       type: object
     ReplyComment:
+      deprecated: true
       description: |-
         Data about the reply comment, including the message, author, and
         the object (such as a design) the comment is attached to.
@@ -2886,6 +3624,7 @@ components:
         mentions:
           additionalProperties:
             $ref: "#/components/schemas/TeamUser"
+          deprecated: true
           description: The Canva users mentioned in the comment.
           example:
             oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP:
@@ -2908,6 +3647,7 @@ components:
         - type
       type: object
     CommentObject:
+      deprecated: true
       description:
         Identifying information about the object (such as a design) that
         the comment is attached to.
@@ -2922,6 +3662,7 @@ components:
         - $ref: "#/components/schemas/DesignCommentObject"
       type: object
     DesignCommentObject:
+      deprecated: true
       description: If the comment is attached to a Canva Design.
       properties:
         type:
@@ -2965,11 +3706,16 @@ components:
         - design_id
         - type
       type: object
-    CommentEvent:
-      description: Basic details about the comment.
+    CommentEventDeprecated:
+      deprecated: true
+      description: |-
+        Basic details about the comment.
+
+        The `comment` property is deprecated.
+        For details of the comment event, use the `comment_event` property instead.
       properties:
         type:
-          $ref: "#/components/schemas/CommentEventType"
+          $ref: "#/components/schemas/CommentEventTypeEnum"
         data:
           $ref: "#/components/schemas/Comment"
       required:
@@ -2979,6 +3725,7 @@ components:
     Mentions:
       additionalProperties:
         $ref: "#/components/schemas/TeamUser"
+      deprecated: true
       description: The Canva users mentioned in the comment.
       example:
         oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP:
@@ -2986,7 +3733,8 @@ components:
           team_id: oBpVhLW22VrqtwKgaayRbP
           display_name: John Doe
       type: object
-    CommentEventType:
+    CommentEventTypeEnum:
+      deprecated: true
       description: The type of comment event.
       enum:
         - comment
@@ -2995,11 +3743,184 @@ components:
         - assign
         - resolve
       type: string
+    CommentEvent:
+      description:
+        "The type of comment event, including additional type-specific\
+        \ properties."
+      discriminator:
+        mapping:
+          new: "#/components/schemas/NewCommentEvent"
+          assigned: "#/components/schemas/AssignedCommentEvent"
+          resolved: "#/components/schemas/ResolvedCommentEvent"
+          reply: "#/components/schemas/ReplyCommentEvent"
+          mention: "#/components/schemas/MentionCommentEvent"
+        propertyName: type
+      oneOf:
+        - $ref: "#/components/schemas/NewCommentEvent"
+        - $ref: "#/components/schemas/AssignedCommentEvent"
+        - $ref: "#/components/schemas/ResolvedCommentEvent"
+        - $ref: "#/components/schemas/ReplyCommentEvent"
+        - $ref: "#/components/schemas/MentionCommentEvent"
+      type: object
+    NewCommentEvent:
+      description: Event type for a new comment thread.
+      properties:
+        type:
+          enum:
+            - new
+          type: string
+        comment_url:
+          description: "A URL to the design, focused on the comment thread."
+          example: https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA
+          type: string
+        comment:
+          $ref: "#/components/schemas/Thread"
+      required:
+        - comment
+        - comment_url
+        - type
+      type: object
+    AssignedCommentEvent:
+      description: Event type for a comment thread that has been assigned.
+      properties:
+        type:
+          enum:
+            - assigned
+          type: string
+        comment_url:
+          description: "A URL to the design, focused on the comment thread."
+          example: https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA
+          type: string
+        comment:
+          $ref: "#/components/schemas/Thread"
+      required:
+        - comment
+        - comment_url
+        - type
+      type: object
+    ResolvedCommentEvent:
+      description: Event type for a comment thread that has been resolved.
+      properties:
+        type:
+          enum:
+            - resolved
+          type: string
+        comment_url:
+          description: "A URL to the design, focused on the comment thread."
+          example: https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA
+          type: string
+        comment:
+          $ref: "#/components/schemas/Thread"
+      required:
+        - comment
+        - comment_url
+        - type
+      type: object
+    ReplyCommentEvent:
+      description: Event type for a reply to a comment thread.
+      properties:
+        type:
+          enum:
+            - reply
+          type: string
+        reply_url:
+          description: "A URL to the design, focused on the comment reply."
+          example: https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA
+          type: string
+        reply:
+          $ref: "#/components/schemas/Reply"
+      required:
+        - reply
+        - reply_url
+        - type
+      type: object
+    MentionCommentEvent:
+      description: Event type for a mention in a comment thread or reply.
+      properties:
+        type:
+          enum:
+            - mention
+          type: string
+        content:
+          $ref: "#/components/schemas/MentionEventContent"
+      required:
+        - content
+        - type
+      type: object
+    MentionEventContent:
+      description:
+        "The type of mention event content, along with additional type-specific\
+        \ properties."
+      discriminator:
+        mapping:
+          thread: "#/components/schemas/ThreadMentionEventContent"
+          reply: "#/components/schemas/ReplyMentionEventContent"
+        propertyName: type
+      oneOf:
+        - $ref: "#/components/schemas/ThreadMentionEventContent"
+        - $ref: "#/components/schemas/ReplyMentionEventContent"
+      type: object
+    ThreadMentionEventContent:
+      description: Content for a mention in a comment thread.
+      properties:
+        type:
+          enum:
+            - thread
+          type: string
+        comment_url:
+          description: "A URL to the design, focused on the comment thread."
+          example: https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA
+          type: string
+        comment:
+          $ref: "#/components/schemas/Thread"
+      required:
+        - comment
+        - comment_url
+        - type
+      type: object
+    ReplyMentionEventContent:
+      description: Content for a mention in a comment reply.
+      properties:
+        type:
+          enum:
+            - reply
+          type: string
+        reply_url:
+          description: "A URL to the design, focused on the comment reply."
+          example: https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA
+          type: string
+        reply:
+          $ref: "#/components/schemas/Reply"
+      required:
+        - reply
+        - reply_url
+        - type
+      type: object
+    ListRepliesResponse:
+      description: Successful response from a `listReplies` request.
+      properties:
+        continuation:
+          description: |-
+            If the success response contains a continuation token, the list contains more items
+            you can list. You can use this token as a query parameter and retrieve more items
+            from the list, for example `?continuation={continuation}`.
+
+            To retrieve all items, you might need to make multiple requests.
+          example: RkFGMgXlsVTDbMd:MR3L0QjiaUzycIAjx0yMyuNiV0OildoiOwL0x32G4NjNu4FwtAQNxowUQNMMYN
+          type: string
+        items:
+          items:
+            $ref: "#/components/schemas/Reply"
+          type: array
+      required:
+        - items
+      type: object
     Thread:
       description: |-
         A discussion thread on a design.
 
         The `type` of the thread can be found in the `thread_type` object, along with additional type-specific properties.
+        The `author` of the thread might be missing if that user account no longer exists.
       properties:
         id:
           description: |-
@@ -3031,7 +3952,6 @@ components:
           format: int64
           type: integer
       required:
-        - author
         - created_at
         - design_id
         - id
@@ -3058,29 +3978,27 @@ components:
           enum:
             - comment
           type: string
-        message:
-          description: |-
-            The comment's message.
-            Any user mentions are shown in the format `[user_id:team_id]`.
-          example: "Great work [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!"
-          type: string
+        content:
+          $ref: "#/components/schemas/CommentContent"
         mentions:
           additionalProperties:
-            $ref: "#/components/schemas/TeamUser"
-          description: The Canva users mentioned in the comment.
+            $ref: "#/components/schemas/UserMention"
+          description: The Canva users mentioned in the comment thread or reply.
           example:
             oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP:
-              user_id: oUnPjZ2k2yuhftbWF7873o
-              team_id: oBpVhLW22VrqtwKgaayRbP
-              display_name: John Doe
+              tag: oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP
+              user:
+                user_id: oUnPjZ2k2yuhftbWF7873o
+                team_id: oBpVhLW22VrqtwKgaayRbP
+                display_name: John Doe
           type: object
         assignee:
           $ref: "#/components/schemas/User"
         resolver:
           $ref: "#/components/schemas/User"
       required:
+        - content
         - mentions
-        - message
         - type
       type: object
     SuggestionThreadType:
@@ -3090,105 +4008,85 @@ components:
           enum:
             - suggestion
           type: string
-        content:
-          $ref: "#/components/schemas/SuggestionContent"
+        suggested_edits:
+          items:
+            $ref: "#/components/schemas/SuggestedEdit"
+          minItems: 1
+          type: array
         status:
           $ref: "#/components/schemas/SuggestionStatus"
       required:
-        - content
         - status
+        - suggested_edits
         - type
       type: object
-    SuggestionContent:
-      description: The suggestion's content.
+    SuggestedEdit:
+      description:
+        "The type of the suggested edit, along with additional type-specific\
+        \ properties."
       discriminator:
         mapping:
-          add: "#/components/schemas/AddSuggestionContent"
-          delete: "#/components/schemas/DeleteSuggestionContent"
-          replace: "#/components/schemas/ReplaceSuggestionContent"
-          format: "#/components/schemas/FormatSuggestionContent"
+          add: "#/components/schemas/AddSuggestedEdit"
+          delete: "#/components/schemas/DeleteSuggestedEdit"
+          format: "#/components/schemas/FormatSuggestedEdit"
         propertyName: type
       oneOf:
-        - $ref: "#/components/schemas/AddSuggestionContent"
-        - $ref: "#/components/schemas/DeleteSuggestionContent"
-        - $ref: "#/components/schemas/ReplaceSuggestionContent"
-        - $ref: "#/components/schemas/FormatSuggestionContent"
+        - $ref: "#/components/schemas/AddSuggestedEdit"
+        - $ref: "#/components/schemas/DeleteSuggestedEdit"
+        - $ref: "#/components/schemas/FormatSuggestedEdit"
       type: object
-    AddSuggestionContent:
+    AddSuggestedEdit:
       description: A suggestion to add some text.
       properties:
         type:
           enum:
             - add
           type: string
-        add:
+        text:
           example: fantastic
           type: string
       required:
-        - add
+        - text
         - type
       type: object
-    DeleteSuggestionContent:
+    DeleteSuggestedEdit:
       description: A suggestion to delete some text.
       properties:
         type:
           enum:
             - delete
           type: string
-        delete:
+        text:
           example: just
           type: string
       required:
-        - delete
+        - text
         - type
       type: object
-    ReplaceSuggestionContent:
-      description: A suggestion to replace some text.
-      properties:
-        type:
-          enum:
-            - replace
-          type: string
-        add:
-          example: fantastic
-          type: string
-        delete:
-          example: awesome
-          type: string
-      required:
-        - add
-        - delete
-        - type
-      type: object
-    FormatSuggestionContent:
+    FormatSuggestedEdit:
       description: A suggestion to format some text.
       properties:
         type:
           enum:
             - format
           type: string
-        formats:
-          items:
-            $ref: "#/components/schemas/SuggestionFormat"
-          minItems: 1
-          type: array
+        format:
+          $ref: "#/components/schemas/SuggestionFormat"
       required:
-        - formats
+        - format
         - type
       type: object
     SuggestionStatus:
-      description: |-
-        The current status of the suggestion.
-        This can be one of the following:
-
-        - `open`: A suggestion was made, but it hasn't been accepted or rejected yet.
-        - `accepted`: A suggestion was accepted and applied to the design.
-        - `rejected`: A suggestion was rejected and not applied to the design.
+      description: The current status of the suggestion.
       enum:
         - open
         - accepted
         - rejected
       type: string
+      x-enum-descriptions:
+        - "A suggestion was made, but it hasn't been accepted or rejected yet."
+        - A suggestion was accepted and applied to the design.
+        - A suggestion was rejected and not applied to the design.
     SuggestionFormat:
       description: The suggested format change.
       enum:
@@ -3197,6 +4095,7 @@ components:
         - font_weight
         - font_style
         - color
+        - background_color
         - decoration
         - strikethrough
         - link
@@ -3208,10 +4107,15 @@ components:
         - list_level
         - margin_inline_start
         - text_indent
+        - font_size_modifier
+        - vertical_align
       example: font_style
       type: string
     Reply:
-      description: A reply to a thread.
+      description: |-
+        A reply to a thread.
+
+        The `author` of the reply might be missing if that user account no longer exists.
       properties:
         id:
           description: The ID of the reply.
@@ -3229,21 +4133,19 @@ components:
           type: string
         author:
           $ref: "#/components/schemas/User"
-        message:
-          description: |-
-            The reply's message.
-            Any user mentions are shown in the format `[user_id:team_id]`
-          example: Thanks!
-          type: string
+        content:
+          $ref: "#/components/schemas/CommentContent"
         mentions:
           additionalProperties:
-            $ref: "#/components/schemas/TeamUser"
-          description: The Canva users mentioned in the comment.
+            $ref: "#/components/schemas/UserMention"
+          description: The Canva users mentioned in the comment thread or reply.
           example:
             oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP:
-              user_id: oUnPjZ2k2yuhftbWF7873o
-              team_id: oBpVhLW22VrqtwKgaayRbP
-              display_name: John Doe
+              tag: oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP
+              user:
+                user_id: oUnPjZ2k2yuhftbWF7873o
+                team_id: oBpVhLW22VrqtwKgaayRbP
+                display_name: John Doe
           type: object
         created_at:
           description: |-
@@ -3260,14 +4162,31 @@ components:
           format: int64
           type: integer
       required:
-        - author
+        - content
         - created_at
         - design_id
         - id
         - mentions
-        - message
         - thread_id
         - updated_at
+      type: object
+    CommentContent:
+      description: The content of a comment thread or reply.
+      properties:
+        plaintext:
+          description: |-
+            The content in plaintext.
+            Any user mention tags are shown in the format `[user_id:team_id]`.
+          example: "Great work [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!"
+          type: string
+        markdown:
+          description: |-
+            The content in markdown.
+            Any user mention tags are shown in the format `[user_id:team_id]`
+          example: "*_Great work_* [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!"
+          type: string
+      required:
+        - plaintext
       type: object
     SuggestionEventType:
       description:
@@ -3377,6 +4296,37 @@ components:
         - reply
         - reply_url
         - type
+      type: object
+    UserMentions:
+      additionalProperties:
+        $ref: "#/components/schemas/UserMention"
+      description: The Canva users mentioned in the comment thread or reply.
+      example:
+        oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP:
+          tag: oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP
+          user:
+            user_id: oUnPjZ2k2yuhftbWF7873o
+            team_id: oBpVhLW22VrqtwKgaayRbP
+            display_name: John Doe
+      type: object
+    UserMention:
+      description:
+        Information about the user mentioned in a comment thread or reply.
+        Each user mention is keyed using the user's user ID and team ID separated
+        by a colon (`user_id:team_id`).
+      properties:
+        tag:
+          description:
+            The mention tag for the user mentioned in the comment thread
+            or reply content. This has the format of the user's user ID and team ID
+            separated by a colon (`user_id:team_id`).
+          example: oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP
+          type: string
+        user:
+          $ref: "#/components/schemas/TeamUser"
+      required:
+        - tag
+        - user
       type: object
     GetSigningPublicKeysResponse:
       properties:
@@ -3488,7 +4438,7 @@ components:
           description: |-
             Rows of data.
 
-            The first row usually contains column headers. Maximum of 100 rows.
+            The first row usually contains column headers.
           items:
             $ref: "#/components/schemas/DataTableRow"
           maxItems: 100
@@ -3503,7 +4453,7 @@ components:
           description: |-
             Cells of data in row.
 
-            All rows must have the same number of cells. Maximum of 20 cells per row.
+            All rows must have the same number of cells.
           items:
             $ref: "#/components/schemas/DataTableCell"
           maxItems: 20
@@ -3580,6 +4530,7 @@ components:
         - type
       type: object
     SortByType:
+      default: relevance
       enum:
         - relevance
         - modified_descending
@@ -3587,12 +4538,23 @@ components:
         - title_descending
         - title_ascending
       type: string
+      x-enum-descriptions:
+        - Sort results using a relevance algorithm.
+        - Sort results by the date last modified in descending order.
+        - Sort results by the date last modified in ascending order.
+        - Sort results by title in descending order.
+        - Sort results by title in ascending order
     OwnershipType:
+      default: any
       enum:
         - any
         - owned
         - shared
       type: string
+      x-enum-descriptions:
+        - Owned by and shared with the user.
+        - Owned by the user.
+        - Shared with the user.
     GetListDesignResponse:
       properties:
         continuation:
@@ -3629,7 +4591,7 @@ components:
           example: Msd59349ff
           type: string
         title:
-          description: The name of the design. Must be less than 256 characters.
+          description: The name of the design.
           example: My Holiday Presentation
           maxLength: 255
           minLength: 1
@@ -3728,17 +4690,17 @@ components:
       properties:
         edit_url:
           description: |-
-            A temporary editing URL for the design.
+            A temporary editing URL for the design. This URL is only accessible to the user that made the API request, and is designed to support [return navigation](https://www.canva.dev/docs/connect/return-navigation-guide/) workflows.
 
             NOTE: This is not a permanent URL, it is only valid for 30 days.
-          example: "https://www.canva.com/api/design/{token}/edit"
+          example: https://www.canva.com/api/design/eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiZXhwaXJ5IjoxNzQyMDk5NDAzMDc5fQ..GKLx2hrJa3wSSDKQ.hk3HA59qJyxehR-ejzt2DThBW0cbRdMBz7Fb5uCpwD-4o485pCf4kcXt_ypUYX0qMHVeZ131YvfwGPIhbk-C245D8c12IIJSDbZUZTS7WiCOJZQ.sNz3mPSQxsETBvl_-upMYA/edit
           type: string
         view_url:
           description: |
-            A temporary viewing URL for the design.
+            A temporary viewing URL for the design. This URL is only accessible to the user that made the API request, and is designed to support [return navigation](https://www.canva.dev/docs/connect/return-navigation-guide/) workflows.
 
             NOTE: This is not a permanent URL, it is only valid for 30 days.
-          example: "https://www.canva.com/api/design/{token}/view"
+          example: https://www.canva.com/api/design/eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiZXhwaXJ5IjoxNzQyMDk5NDAzMDc5fQ..GKLx2hrJa3wSSDKQ.hk3HA59qJyxehR-ejzt2DThBW0cbRdMBz7Fb5uCpwD-4o485pCf4kcXt_ypUYX0qMHVeZ131YvfwGPIhbk-C245D8c12IIJSDbZUZTS7WiCOJZQ.sNz3mPSQxsETBvl_-upMYA/view
           type: string
       required:
         - edit_url
@@ -3918,6 +4880,47 @@ components:
       required:
         - job
       type: object
+    CreateUrlImportJobRequest:
+      properties:
+        title:
+          description: A title for the design.
+          example: My Awesome Design
+          maxLength: 255
+          minLength: 1
+          type: string
+        url:
+          description:
+            The URL of the file to import. This URL must be accessible
+            from the internet and be publicly available.
+          maxLength: 2048
+          minLength: 1
+          type: string
+        mime_type:
+          description:
+            "The MIME type of the file being imported. If not provided,\
+            \ Canva attempts to automatically detect the type of the file."
+          example: application/vnd.apple.keynote
+          maxLength: 100
+          minLength: 1
+          type: string
+      required:
+        - title
+        - url
+      type: object
+    CreateUrlImportJobResponse:
+      properties:
+        job:
+          $ref: "#/components/schemas/DesignImportJob"
+      required:
+        - job
+      type: object
+    GetUrlImportJobResponse:
+      properties:
+        job:
+          $ref: "#/components/schemas/DesignImportJob"
+      required:
+        - job
+      type: object
     DesignTypeInput:
       description: The desired design type.
       discriminator:
@@ -3943,17 +4946,19 @@ components:
         - type
       type: object
     PresetDesignTypeName:
-      description: |-
-        The name of the design type. This can be one of the following:
-
-        - `doc`: A [Canva doc](https://www.canva.com/docs/); a document for Canva's online text editor.
-        - `whiteboard`: A [whiteboard](https://www.canva.com/online-whiteboard/); a design which gives you infinite space to collaborate.
-        - `presentation`: A [presentation](https://www.canva.com/presentations/); lets you create and collaborate for presenting to an audience.
+      description: The name of the design type.
       enum:
         - doc
         - whiteboard
         - presentation
       type: string
+      x-enum-descriptions:
+        - "A [Canva doc](https://www.canva.com/docs/); a document for Canva's online\
+          \ text editor."
+        - "A [whiteboard](https://www.canva.com/online-whiteboard/); a design which\
+          \ gives you infinite space to collaborate."
+        - "A [presentation](https://www.canva.com/presentations/); lets you create and\
+          \ collaborate for presenting to an audience."
     CustomDesignTypeInput:
       description: Provide the width and height to define a custom design type.
       properties:
@@ -3962,16 +4967,16 @@ components:
             - custom
           type: string
         width:
-          description:
-            "The width of the design (in pixels). Minimum 40px, maximum\
-            \ 8000px."
+          description: "The width of the design, in pixels."
           example: 320
+          maximum: 8000
+          minimum: 40
           type: integer
         height:
-          description:
-            "The height of the design (in pixels). Minimum 40px, maximum\
-            \ 8000px."
+          description: "The height of the design, in pixels."
           example: 200
+          maximum: 8000
+          minimum: 40
           type: integer
       required:
         - height
@@ -4047,12 +5052,15 @@ components:
         - offset_too_large
         - page_not_found
         - design_or_comment_not_found
+        - design_or_thread_not_found
         - design_type_not_found
         - team_not_found
         - comment_not_found
         - too_many_comments
         - too_many_replies
         - message_too_long
+        - thread_not_found
+        - reply_not_found
         - design_not_fillable
         - autofill_data_invalid
         - feature_not_available
@@ -4101,9 +5109,7 @@ components:
         - $ref: "#/components/schemas/Mp4ExportFormat"
       type: object
     PdfExportFormat:
-      description:
-        Export the design as a PDF. Providing a paper size is optional.
-        The default paper size is A4.
+      description: Export the design as a PDF. Providing a paper size is optional.
       properties:
         type:
           enum:
@@ -4143,10 +5149,11 @@ components:
           $ref: "#/components/schemas/ExportQuality"
         height:
           description: |-
-            Specify the height in pixels of the exported image. If only one of height or width is
-            specified, then the image will be scaled to match that dimension, respecting the design's
-            aspect ratio. If no width or height is specified, the image will be exported using the
-            dimensions of the design.
+            Specify the height in pixels of the exported image. Note the following behavior:
+
+            - If no height or width is specified, the image is exported using the dimensions of the design.
+            - If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+            - If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
           example: 400
           format: int32
           maximum: 25000
@@ -4154,10 +5161,11 @@ components:
           type: integer
         width:
           description: |-
-            Specify the width in pixels of the exported image. If only one of height or width is
-            specified, then the image will be scaled to match that dimension, respecting the design's
-            aspect ratio. If no width or height is specified, the image will be exported using the
-            dimensions of the design.
+            Specify the width in pixels of the exported image. Note the following behavior:
+
+            - If no width or height is specified, the image is exported using the dimensions of the design.
+            - If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+            - If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
           example: 400
           format: int32
           maximum: 25000
@@ -4196,19 +5204,20 @@ components:
           description:
             "For the `jpg` type, the `quality` of the exported JPEG determines\
             \ how compressed the exported file should be. A _low_ `quality` value\
-            \ (minimum `1`) will create a file with a smaller file size, but the resulting\
-            \ file will have pixelated artifacts when compared to a file created with\
-            \ a _high_ `quality` value (maximum `100`)."
+            \ will create a file with a smaller file size, but the resulting file\
+            \ will have pixelated artifacts when compared to a file created with a\
+            \ _high_ `quality` value."
           example: 80
           maximum: 100
           minimum: 1
           type: integer
         height:
           description: |-
-            Specify the height in pixels of the exported image. If only one of height or width is
-            specified, then the image will be scaled to match that dimension, respecting the design's
-            aspect ratio. If no width or height is specified, the image will be exported using the
-            dimensions of the design.
+            Specify the height in pixels of the exported image. Note the following behavior:
+
+            - If no height or width is specified, the image is exported using the dimensions of the design.
+            - If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+            - If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
           example: 400
           format: int32
           maximum: 25000
@@ -4216,10 +5225,11 @@ components:
           type: integer
         width:
           description: |-
-            Specify the width in pixels of the exported image. If only one of height or width is
-            specified, then the image will be scaled to match that dimension, respecting the design's
-            aspect ratio. If no width or height is specified, the image will be exported using the
-            dimensions of the design.
+            Specify the width in pixels of the exported image. Note the following behavior:
+
+            - If no width or height is specified, the image is exported using the dimensions of the design.
+            - If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+            - If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
           example: 400
           format: int32
           maximum: 25000
@@ -4258,10 +5268,11 @@ components:
           $ref: "#/components/schemas/ExportQuality"
         height:
           description: |-
-            Specify the height in pixels of the exported image. If only one of height or width is
-            specified, then the image will be scaled to match that dimension, respecting the design's
-            aspect ratio. If no width or height is specified, the image will be exported using the
-            dimensions of the design.
+            Specify the height in pixels of the exported image. Note the following behavior:
+
+            - If no height or width is specified, the image is exported using the dimensions of the design.
+            - If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+            - If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
           example: 400
           format: int32
           maximum: 25000
@@ -4269,10 +5280,11 @@ components:
           type: integer
         width:
           description: |-
-            Specify the width in pixels of the exported image. If only one of height or width is
-            specified, then the image will be scaled to match that dimension, respecting the design's
-            aspect ratio. If no width or height is specified, the image will be exported using the
-            dimensions of the design.
+            Specify the width in pixels of the exported image. Note the following behavior:
+
+            - If no width or height is specified, the image is exported using the dimensions of the design.
+            - If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+            - If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
           example: 400
           format: int32
           maximum: 25000
@@ -4281,8 +5293,14 @@ components:
         lossless:
           default: true
           description: |-
-            If set to `true` (Default), the PNG is exported without compression.
+            If set to `true` (default), the PNG is exported without compression.
             If set to `false`, the PNG is compressed using a lossy compression algorithm. Lossy PNG compression is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `false`, the export operation will fail.
+          type: boolean
+        transparent_background:
+          default: false
+          description: |-
+            If set to `true`, the PNG is exported with a transparent background.
+            This option is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `true`, the export operation will fail.
           type: boolean
         as_single_image:
           default: false
@@ -4384,8 +5402,9 @@ components:
           $ref: "#/components/schemas/DesignExportStatus"
         urls:
           description: |-
-            When the export job is completed, also returns a list of urls for the exported
-            resources. The list is sorted by page order.
+            Download URL(s) for the completed export job. These URLs expire after 24 hours.
+
+            Depending on the design type and export format, there is a download URL for each page in the design. The list is sorted by page order.
           example:
             - https://export-download.canva-dev.com/...
           items:
@@ -4398,6 +5417,7 @@ components:
         - status
       type: object
     ExportPageSize:
+      default: a4
       description:
         The paper size of the export PDF file. The `size` attribute is
         only supported for Documents (Canva Docs).
@@ -4419,10 +5439,11 @@ components:
       type: string
     ExportHeight:
       description: |-
-        Specify the height in pixels of the exported image. If only one of height or width is
-        specified, then the image will be scaled to match that dimension, respecting the design's
-        aspect ratio. If no width or height is specified, the image will be exported using the
-        dimensions of the design.
+        Specify the height in pixels of the exported image. Note the following behavior:
+
+        - If no height or width is specified, the image is exported using the dimensions of the design.
+        - If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+        - If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
       example: 400
       format: int32
       maximum: 25000
@@ -4430,10 +5451,11 @@ components:
       type: integer
     ExportWidth:
       description: |-
-        Specify the width in pixels of the exported image. If only one of height or width is
-        specified, then the image will be scaled to match that dimension, respecting the design's
-        aspect ratio. If no width or height is specified, the image will be exported using the
-        dimensions of the design.
+        Specify the width in pixels of the exported image. Note the following behavior:
+
+        - If no width or height is specified, the image is exported using the dimensions of the design.
+        - If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+        - If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
       example: 400
       format: int32
       maximum: 25000
@@ -4506,26 +5528,38 @@ components:
       type: object
     ExportErrorCode:
       description: |-
-        If the export failed, this specifies the reason why it failed. This can be one of the following:
+        If the export failed, this specifies the reason why it failed.
 
         - `license_required`: The design contains [premium elements](https://www.canva.com/help/premium-elements/) that haven't been purchased. You can either buy the elements or upgrade to a Canva plan (such as Canva Pro) that has premium features, then try again. Alternatively, you can set `export_quality` to `regular` to export your document in regular quality.
+        - `approval_required`: The design requires [reviewer approval](https://www.canva.com/en_au/help/design-approval/) before it can be exported.
         - `internal_failure`: The service encountered an error when exporting your design.
       enum:
         - license_required
+        - approval_required
         - internal_failure
       type: string
+      x-enum-descriptions:
+        - "The design contains [premium elements](https://www.canva.com/help/premium-elements/)\
+          \ that haven't been purchased. You can either buy the elements or upgrade\
+          \ to a Canva plan (such as Canva Pro) that has premium features, then try\
+          \ again. Alternatively, you can set `export_quality` to `regular` to export\
+          \ your document in regular quality."
+        - "The design requires [reviewer approval](https://www.canva.com/en_au/help/design-approval/)\
+          \ before it can be exported."
+        - The service encountered an error when exporting your design.
     ExportQuality:
       default: regular
-      description: |-
-        Specifies the export quality of the design. This can be one of the following:
-        - `regular`: Regular quality export. This is the default.
-        - `pro`: Premium quality export.
+      description: Specifies the export quality of the design.
+      enum:
+        - regular
+        - pro
+      type: string
+      x-enum-descriptions:
+        - Regular quality export.
+        - |-
+          Premium quality export.
 
           NOTE: A `pro` export might fail if the design contains [premium elements](https://www.canva.com/help/premium-elements/) and the calling user either hasn't purchased the elements or isn't on a Canva plan (such as Canva Pro) that has premium features.
-      enum:
-        - pro
-        - regular
-      type: string
     FolderItemSortBy:
       default: modified_descending
       enum:
@@ -4536,6 +5570,15 @@ components:
         - title_ascending
         - title_descending
       type: string
+      x-enum-descriptions:
+        - "Sort results by creation date, in ascending order."
+        - "Sort results by creation date, in descending order."
+        - "Sort results by the last modified date, in ascending order."
+        - "Sort results by the last modified date, in descending order."
+        - "Sort results by title, in ascending order. The title is either the `name`\
+          \ field for a folder or asset, or the `title` field for a design."
+        - "Sort results by title, in descending order. The title is either the `name`\
+          \ field for a folder or asset, or the `title` field for a design."
     FolderItemType:
       enum:
         - design
@@ -4554,7 +5597,7 @@ components:
       description: Body parameters for creating a new folder.
       properties:
         name:
-          description: The name of the folder. Must be less than 256 characters.
+          description: The name of the folder.
           example: My awesome holiday
           maxLength: 255
           minLength: 1
@@ -5057,6 +6100,90 @@ components:
         NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
       example: cnvcaAbcdefg12345_hijklm6789
       type: string
+    CreateDesignResizeJobRequest:
+      description: |-
+        Body parameters for starting a resize job for a design.
+        It must include a design ID, and one of the supported design type.
+      properties:
+        design_id:
+          description: The design ID.
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
+          type: string
+        design_type:
+          $ref: "#/components/schemas/DesignTypeInput"
+      required:
+        - design_id
+        - design_type
+      type: object
+    CreateDesignResizeJobResponse:
+      properties:
+        job:
+          $ref: "#/components/schemas/DesignResizeJob"
+      required:
+        - job
+      type: object
+    GetDesignResizeJobResponse:
+      properties:
+        job:
+          $ref: "#/components/schemas/DesignResizeJob"
+      required:
+        - job
+      type: object
+    DesignResizeJob:
+      description: Details about the design resize job.
+      properties:
+        id:
+          description: The design resize job ID.
+          example: bbd8dfcd-ead1-4871-81d5-962bfec82274
+          type: string
+        status:
+          $ref: "#/components/schemas/DesignResizeStatus"
+        result:
+          $ref: "#/components/schemas/DesignResizeJobResult"
+        error:
+          $ref: "#/components/schemas/DesignResizeError"
+      required:
+        - id
+        - status
+      type: object
+    DesignResizeJobResult:
+      description: |-
+        Design has been created and saved to user's root
+        ([projects](https://www.canva.com/help/find-designs-and-folders/)) folder.
+      properties:
+        design:
+          $ref: "#/components/schemas/DesignSummary"
+      required:
+        - design
+      type: object
+    DesignResizeStatus:
+      description: Status of the design resize job.
+      enum:
+        - in_progress
+        - success
+        - failed
+      example: success
+      type: string
+    DesignResizeErrorCode:
+      enum:
+        - thumbnail_generation_error
+        - design_resize_error
+        - create_design_error
+      type: string
+    DesignResizeError:
+      description:
+        "If the design resize job fails, this object provides details about\
+        \ the error."
+      properties:
+        code:
+          $ref: "#/components/schemas/DesignResizeErrorCode"
+        message:
+          description: A human-readable description of what went wrong.
+          type: string
+      required:
+        - code
+        - message
+      type: object
     Team:
       description: |-
         Metadata for the Canva Team, consisting of the Team ID,
@@ -5176,6 +6303,13 @@ components:
       required:
         - profile
       type: object
+    GetUserCapabilitiesResponse:
+      properties:
+        capabilities:
+          items:
+            $ref: "#/components/schemas/Capability"
+          type: array
+      type: object
     Notification:
       properties:
         id:
@@ -5293,14 +6427,19 @@ components:
         design:
           $ref: "#/components/schemas/DesignSummary"
         comment_url:
-          description: "A URL to the design, focused on the new comment."
+          deprecated: true
+          description: |-
+            A URL to the design, focused on the new comment.
+
+            The `comment_url` property is deprecated.
+            For details of the comment event, use the `comment_event` property instead.
           example: https://www.canva.com/design/3WCduQdjayTcPVM/z128cqanFu7E3/edit?ui=OdllGgZ4Snnq3MD8uI10bfA
           type: string
         comment:
+          $ref: "#/components/schemas/CommentEventDeprecated"
+        comment_event:
           $ref: "#/components/schemas/CommentEvent"
       required:
-        - comment
-        - comment_url
         - design
         - receiving_team_user
         - triggering_user
@@ -5378,7 +6517,7 @@ components:
     DesignApprovalResponseNotificationContent:
       description:
         The notification content for when someone approves a design or
-        gives feeback.
+        gives feedback.
       properties:
         type:
           enum:

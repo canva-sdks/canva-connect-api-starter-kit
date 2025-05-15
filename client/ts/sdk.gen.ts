@@ -43,12 +43,24 @@ import type {
   CreateCommentData,
   CreateCommentError,
   CreateCommentResponse2,
+  CreateReplyDeprecatedData,
+  CreateReplyDeprecatedError,
+  CreateReplyDeprecatedResponse,
+  ListRepliesData,
+  ListRepliesError,
+  ListRepliesResponse2,
   CreateReplyData,
   CreateReplyError,
   CreateReplyResponse2,
-  GetCommentData,
-  GetCommentError,
-  GetCommentResponse2,
+  GetThreadData,
+  GetThreadError,
+  GetThreadResponse2,
+  GetReplyData,
+  GetReplyError,
+  GetReplyResponse2,
+  CreateThreadData,
+  CreateThreadError,
+  CreateThreadResponse2,
   GetSigningPublicKeysData,
   GetSigningPublicKeysError,
   GetSigningPublicKeysResponse2,
@@ -73,6 +85,12 @@ import type {
   GetDesignImportJobData,
   GetDesignImportJobError,
   GetDesignImportJobResponse2,
+  CreateUrlImportJobData,
+  CreateUrlImportJobError,
+  CreateUrlImportJobResponse2,
+  GetUrlImportJobData,
+  GetUrlImportJobError,
+  GetUrlImportJobResponse2,
   CreateDesignExportJobData,
   CreateDesignExportJobError,
   CreateDesignExportJobResponse2,
@@ -106,9 +124,18 @@ import type {
   RevokeTokensData,
   RevokeTokensError,
   RevokeTokensResponse2,
+  CreateDesignResizeJobData,
+  CreateDesignResizeJobError,
+  CreateDesignResizeJobResponse2,
+  GetDesignResizeJobData,
+  GetDesignResizeJobError,
+  GetDesignResizeJobResponse2,
   UsersMeData,
   UsersMeError,
   UsersMeResponse2,
+  GetUserCapabilitiesData,
+  GetUserCapabilitiesError,
+  GetUserCapabilitiesResponse2,
   GetUserProfileData,
   GetUserProfileError,
   GetUserProfileResponse,
@@ -244,7 +271,7 @@ export class AutofillService {
   /**
    * <Warning>
    *
-   * Later this year, we'll be updating all brand template IDs. If your integration stores brand template IDs, you'll need to migrate to the new IDs. Once we implement this change, you'll have 6 months to update the IDs.
+   * Soon, all brand template IDs will be updated to a new format. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. After we implement this change, you'll have 6 months to migrate before the old IDs are removed.
    *
    * </Warning>
    *
@@ -320,7 +347,7 @@ export class BrandTemplateService {
   /**
    * <Warning>
    *
-   * Later this year, we'll be updating all brand template IDs. If your integration stores brand template IDs, you'll need to migrate to the new IDs. Once we implement this change, you'll have 6 months to update the IDs.
+   * Soon, all brand template IDs will be updated to a new format. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. After we implement this change, you'll have 6 months to migrate before the old IDs are removed.
    *
    * </Warning>
    *
@@ -348,7 +375,7 @@ export class BrandTemplateService {
   /**
    * <Warning>
    *
-   * Later this year, we'll be updating all brand template IDs. If your integration stores brand template IDs, you'll need to migrate to the new IDs. Once we implement this change, you'll have 6 months to update the IDs.
+   * Soon, all brand template IDs will be updated to a new format. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. After we implement this change, you'll have 6 months to migrate before the old IDs are removed.
    *
    * </Warning>
    *
@@ -376,7 +403,7 @@ export class BrandTemplateService {
   /**
    * <Warning>
    *
-   * Later this year, we'll be updating all brand template IDs. If your integration stores brand template IDs, you'll need to migrate to the new IDs. Once we implement this change, you'll have 6 months to update the IDs.
+   * Soon, all brand template IDs will be updated to a new format. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. After we implement this change, you'll have 6 months to migrate before the old IDs are removed.
    *
    * </Warning>
    *
@@ -417,6 +444,13 @@ export class BrandTemplateService {
 
 export class CommentService {
   /**
+   * @deprecated
+   * <Warning>
+   *
+   * This API is deprecated, so you should use the [Create thread](https://www.canva.dev/docs/connect/api-reference/comments/create-thread/) API instead.
+   *
+   * </Warning>
+   *
    * <Warning>
    *
    * This API is currently provided as a preview. Be aware of the following:
@@ -450,6 +484,74 @@ export class CommentService {
   }
 
   /**
+   * @deprecated
+   * <Warning>
+   *
+   * This API is deprecated, so you should use the [Create reply](https://www.canva.dev/docs/connect/api-reference/comments/create-reply/) API instead.
+   *
+   * </Warning>
+   *
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Creates a reply to a comment in a design.
+   * To reply to an existing thread of comments, you can use either the `id` of the parent
+   * (original) comment, or the `thread_id` of a comment in the thread. Each comment can
+   * have a maximum of 100 replies created for it.
+   *
+   * For information on comments and how they're used in the Canva UI, see the
+   * [Canva Help Center](https://www.canva.com/help/comments/).
+   */
+  public static createReplyDeprecated<ThrowOnError extends boolean = false>(
+    options: Options<CreateReplyDeprecatedData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).post<
+      CreateReplyDeprecatedResponse,
+      CreateReplyDeprecatedError,
+      ThrowOnError
+    >({
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+      url: "/v1/comments/{commentId}/replies",
+    });
+  }
+
+  /**
+   * <Warning>
+   * This API is currently provided as a preview. Be aware of the following:
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * </Warning>
+   *
+   * Retrieves a list of replies for a comment or suggestion thread on a design.
+   *
+   * For information on comments and how they're used in the Canva UI, see the
+   * [Canva Help Center](https://www.canva.com/help/comments/).
+   */
+  public static listReplies<ThrowOnError extends boolean = false>(
+    options: Options<ListRepliesData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).get<
+      ListRepliesResponse2,
+      ListRepliesError,
+      ThrowOnError
+    >({
+      ...options,
+      url: "/v1/designs/{designId}/comments/{threadId}/replies",
+    });
+  }
+
+  /**
    * <Warning>
    *
    * This API is currently provided as a preview. Be aware of the following:
@@ -460,9 +562,10 @@ export class CommentService {
    *
    * </Warning>
    *
-   * Creates a reply to a comment in a design.
-   * To reply to an existing thread of comments, you can use either the `id` of the parent
-   * (original) comment, or the `thread_id` of a comment in the thread. Each comment can
+   * Creates a reply to a comment or suggestion thread on a design.
+   * To reply to an existing thread, you must provide the ID of the thread
+   * which is returned when a thread is created, or from the `thread_id` value
+   * of an existing reply in the thread. Each thread can
    * have a maximum of 100 replies created for it.
    *
    * For information on comments and how they're used in the Canva UI, see the
@@ -481,7 +584,7 @@ export class CommentService {
         "Content-Type": "application/json",
         ...options?.headers,
       },
-      url: "/v1/comments/{commentId}/replies",
+      url: "/v1/designs/{designId}/comments/{threadId}/replies",
     });
   }
 
@@ -496,20 +599,78 @@ export class CommentService {
    *
    * </Warning>
    *
-   * Gets a comment.
+   * Gets a comment or suggestion thread on a design.
+   * To retrieve a reply to a comment thread, use the [Get reply](https://www.canva.dev/docs/connect/api-reference/comments/get-reply/) API.
    * For information on comments and how they're used in the Canva UI, see the
    * [Canva Help Center](https://www.canva.com/help/comments/).
    */
-  public static getComment<ThrowOnError extends boolean = false>(
-    options: Options<GetCommentData, ThrowOnError>,
+  public static getThread<ThrowOnError extends boolean = false>(
+    options: Options<GetThreadData, ThrowOnError>,
   ) {
     return (options?.client ?? client).get<
-      GetCommentResponse2,
-      GetCommentError,
+      GetThreadResponse2,
+      GetThreadError,
       ThrowOnError
     >({
       ...options,
-      url: "/v1/designs/{designId}/comments/{commentId}",
+      url: "/v1/designs/{designId}/comments/{threadId}",
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Gets a reply to a comment or suggestion thread on a design.
+   * For information on comments and how they're used in the Canva UI, see the
+   * [Canva Help Center](https://www.canva.com/help/comments/).
+   */
+  public static getReply<ThrowOnError extends boolean = false>(
+    options: Options<GetReplyData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).get<
+      GetReplyResponse2,
+      GetReplyError,
+      ThrowOnError
+    >({
+      ...options,
+      url: "/v1/designs/{designId}/comments/{threadId}/replies/{replyId}",
+    });
+  }
+
+  /**
+   * <Warning>
+   * This API is currently provided as a preview. Be aware of the following:
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * </Warning>
+   *
+   * Creates a new comment thread on a design.
+   * For information on comments and how they're used in the Canva UI, see the
+   * [Canva Help Center](https://www.canva.com/help/comments/).
+   */
+  public static createThread<ThrowOnError extends boolean = false>(
+    options: Options<CreateThreadData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).post<
+      CreateThreadResponse2,
+      CreateThreadError,
+      ThrowOnError
+    >({
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+      url: "/v1/designs/{designId}/comments",
     });
   }
 }
@@ -721,12 +882,78 @@ export class DesignImportService {
       url: "/v1/imports/{jobId}",
     });
   }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to import an external file from a URL as a new design in Canva.
+   *
+   * Supported file types for imports are listed in [Design imports overview](https://www.canva.dev/docs/connect/api-reference/design-imports/#supported-file-types).
+   *
+   * <Note>
+   *
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of design import jobs created with this API using the [Get URL import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/get-url-import-job/).
+   *
+   * </Note>
+   */
+  public static createUrlImportJob<ThrowOnError extends boolean = false>(
+    options: Options<CreateUrlImportJobData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).post<
+      CreateUrlImportJobResponse2,
+      CreateUrlImportJobError,
+      ThrowOnError
+    >({
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+      url: "/v1/url-imports",
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Gets the result of a URL import job created using the [Create URL import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/create-url-import-job/).
+   *
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   */
+  public static getUrlImportJob<ThrowOnError extends boolean = false>(
+    options: Options<GetUrlImportJobData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).get<
+      GetUrlImportJobResponse2,
+      GetUrlImportJobError,
+      ThrowOnError
+    >({
+      ...options,
+      url: "/v1/url-imports/{jobId}",
+    });
+  }
 }
 
 export class ExportService {
   /**
    * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to export a file from Canva. Once the exported file is generated, you can download
-   * it using the link(s) provided.
+   * it using the URL(s) provided. The download URLs are only valid for 24 hours.
    *
    * The request requires the design ID and the exported file format type.
    *
@@ -759,7 +986,7 @@ export class ExportService {
    * Gets the result of a design export job that was created using the [Create design export job API](https://www.canva.dev/docs/connect/api-reference/exports/create-design-export-job/).
    *
    * If the job is successful, the response includes an array
-   * of download links for each page of the design.
+   * of download URLs. Depending on the design type and export format, there is a download URL for each page in the design. The download URLs are only valid for 24 hours.
    *
    * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
    */
@@ -1030,9 +1257,103 @@ export class OauthService {
   }
 }
 
+export class ResizeService {
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * <Note>
+   *
+   * To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
+   *
+   * </Note>
+   *
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints)
+   * to create a resized copy of a design. The new resized design is
+   * added to the top level of the user's
+   * [projects](https://www.canva.com/help/find-designs-and-folders/) (`root` folder).
+   *
+   * To resize a design into a new design, you can either:
+   *
+   * - Use a preset design type.
+   * - Set height and width dimensions for a custom design.
+   *
+   * NOTE: [Canva docs](https://www.canva.com/create/documents/) can't be resized, and other design types can't be resized to a Canva doc.
+   *
+   * <Note>
+   * For more information on the workflow for using asynchronous jobs,
+   * see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   * You can check the status and get the results of resize jobs created with this API using the
+   * [Get design resize job API](https://www.canva.dev/docs/connect/api-reference/resizes/get-design-resize-job/).
+   * </Note>
+   */
+  public static createDesignResizeJob<ThrowOnError extends boolean = false>(
+    options?: Options<CreateDesignResizeJobData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).post<
+      CreateDesignResizeJobResponse2,
+      CreateDesignResizeJobError,
+      ThrowOnError
+    >({
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+      url: "/v1/resizes",
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * <Note>
+   *
+   * To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
+   *
+   * </Note>
+   *
+   * Gets the result of a design resize job that was created using the [Create design resize
+   * job API](https://www.canva.dev/docs/connect/api-reference/resizes/create-design-resize-job/).
+   *
+   * If the job is successful, the response includes a summary of the new resized design, including its metadata.
+   *
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status.
+   * For more information on the workflow for using asynchronous jobs,
+   * see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   */
+  public static getDesignResizeJob<ThrowOnError extends boolean = false>(
+    options: Options<GetDesignResizeJobData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).get<
+      GetDesignResizeJobResponse2,
+      GetDesignResizeJobError,
+      ThrowOnError
+    >({
+      ...options,
+      url: "/v1/resizes/{jobId}",
+    });
+  }
+}
+
 export class UserService {
   /**
-   * Returns the User ID, Team ID, and display name of the user
+   * Returns the User ID and Team ID of the user
    * account associated with the provided access token.
    */
   public static usersMe<ThrowOnError extends boolean = false>(
@@ -1045,6 +1366,32 @@ export class UserService {
     >({
       ...options,
       url: "/v1/users/me",
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Lists the API capabilities for the user account associated with the provided access token. For more information, see [Capabilities](https://www.canva.dev/docs/connect/capabilities/).
+   */
+  public static getUserCapabilities<ThrowOnError extends boolean = false>(
+    options?: Options<GetUserCapabilitiesData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).get<
+      GetUserCapabilitiesResponse2,
+      GetUserCapabilitiesError,
+      ThrowOnError
+    >({
+      ...options,
+      url: "/v1/users/me/capabilities",
     });
   }
 

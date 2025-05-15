@@ -65,14 +65,11 @@ export type UpdateAssetRequest = {
   /**
    * The name of the asset. This is shown in the Canva UI.
    * When this field is undefined or empty, nothing is updated.
-   * Maximum length 50 characters.
    */
   name?: string;
   /**
    * The replacement tags for the asset.
    * When this field is undefined, nothing is updated.
-   * Maximum length 50 tags. Each tag
-   * has a maximum length of 50 characters.
    */
   tags?: Array<string>;
 };
@@ -267,7 +264,10 @@ export type AssetUploadError = {
  * A short string indicating why the upload failed. This field can be used to handle errors
  * programmatically.
  */
-export type AssetUploadErrorCode = "file_too_big" | "import_failed";
+export type AssetUploadErrorCode =
+  | "file_too_big"
+  | "import_failed"
+  | "fetch_failed";
 
 /**
  * A short string indicating why the upload failed. This field can be used to handle errors
@@ -276,6 +276,7 @@ export type AssetUploadErrorCode = "file_too_big" | "import_failed";
 export const AssetUploadErrorCode = {
   FILE_TOO_BIG: "file_too_big",
   IMPORT_FAILED: "import_failed",
+  FETCH_FAILED: "fetch_failed",
 } as const;
 
 /**
@@ -301,7 +302,7 @@ export type CreateDesignAutofillJobRequest = {
    */
   brand_template_id: string;
   /**
-   * Title to use for the autofilled design. Must be less than 256 characters.
+   * Title to use for the autofilled design.
    *
    * If no design title is provided, the autofilled design will have the same title as the brand template.
    */
@@ -442,8 +443,17 @@ export type AutofillError = {
 export type DatasetFilter = "any" | "non_empty" | "empty";
 
 export const DatasetFilter = {
+  /**
+   * Brand templates with and without dataset definitions.
+   */
   ANY: "any",
+  /**
+   * Brand templates with one or more data fields defined.
+   */
   NON_EMPTY: "non_empty",
+  /**
+   * Brand templates with no data fields defined.
+   */
   EMPTY: "empty",
 } as const;
 
@@ -561,6 +571,31 @@ export type ChartDataField = {
   type: "chart";
 };
 
+/**
+ * Some APIs are annotated with required capabilities. These endpoints require the user to
+ * possess the required capabilities in order to be called successfully.
+ */
+export type Capability = "autofill" | "brand_template" | "resize";
+
+/**
+ * Some APIs are annotated with required capabilities. These endpoints require the user to
+ * possess the required capabilities in order to be called successfully.
+ */
+export const Capability = {
+  /**
+   * Capability required to call autofill APIs Users that are members of a [Canva Enterprise](https://www.canva.com/enterprise/) organization have this capability.
+   */
+  AUTOFILL: "autofill",
+  /**
+   * Capability required to use brand template APIs. Users that are members of a [Canva Enterprise](https://www.canva.com/enterprise/) organization have this capability.
+   */
+  BRAND_TEMPLATE: "brand_template",
+  /**
+   * Capability required to create design resize jobs. Users on a Canva plan with premium features (such as Canva Pro) have this capability.
+   */
+  RESIZE: "resize",
+} as const;
+
 export type CreateCommentRequest = {
   attached_to: CommentObjectInput;
   /**
@@ -589,23 +624,70 @@ export type CreateReplyRequest = {
   message: string;
 };
 
+export type CreateReplyV2Request = {
+  /**
+   * The comment message of the reply in plaintext. This is the reply comment shown in the Canva UI.
+   *
+   * You can also mention users in your message by specifying their User ID and Team ID
+   * using the format `[user_id:team_id]`.
+   */
+  message_plaintext: string;
+};
+
 export type CreateCommentResponse = {
   comment: ParentComment;
+};
+
+export type CreateThreadResponse = {
+  thread: Thread;
 };
 
 export type CreateReplyResponse = {
   comment: ReplyComment;
 };
 
+export type CreateThreadRequest = {
+  /**
+   * The comment message in plaintext. This is the comment body shown in the Canva UI.
+   *
+   * You can also mention users in your message by specifying their User ID and Team ID
+   * using the format `[user_id:team_id]`. If the `assignee_id` parameter is specified, you
+   * must mention the assignee in the message.
+   */
+  message_plaintext: string;
+  /**
+   * Lets you assign the comment to a Canva user using their User ID. You _must_ mention the
+   * assigned user in the `message`.
+   */
+  assignee_id?: string;
+};
+
+export type CreateReplyV2Response = {
+  reply: Reply;
+};
+
 /**
- * Successful response from a `getComment` request.
+ * Successful response from a `getThread` request.
+ *
+ * The `comment` property is deprecated.
+ * For details of a comment thread, please use the `thread` property.
  */
-export type GetCommentResponse = {
-  comment: Comment;
+export type GetThreadResponse = {
+  comment?: Comment;
+  thread?: Thread;
+};
+
+/**
+ * Successful response from a `getReply` request.
+ */
+export type GetReplyResponse = {
+  reply: Reply;
 };
 
 /**
  * The comment object, which contains metadata about the comment.
+ * Deprecated in favor of the new `thread` object.
+ * @deprecated
  */
 export type Comment =
   | ({
@@ -618,6 +700,7 @@ export type Comment =
 /**
  * Data about the comment, including the message, author, and
  * the object (such as a design) the comment is attached to.
+ * @deprecated
  */
 export type ParentComment = {
   type: "parent";
@@ -646,6 +729,7 @@ export type ParentComment = {
   updated_at?: number;
   /**
    * The Canva users mentioned in the comment.
+   * @deprecated
    */
   mentions: {
     [key: string]: TeamUser;
@@ -657,6 +741,7 @@ export type ParentComment = {
 /**
  * Data about the reply comment, including the message, author, and
  * the object (such as a design) the comment is attached to.
+ * @deprecated
  */
 export type ReplyComment = {
   type: "reply";
@@ -683,6 +768,7 @@ export type ReplyComment = {
   updated_at?: number;
   /**
    * The Canva users mentioned in the comment.
+   * @deprecated
    */
   mentions: {
     [key: string]: TeamUser;
@@ -696,6 +782,7 @@ export type ReplyComment = {
 
 /**
  * Identifying information about the object (such as a design) that the comment is attached to.
+ * @deprecated
  */
 export type CommentObject = {
   type?: "design";
@@ -703,6 +790,7 @@ export type CommentObject = {
 
 /**
  * If the comment is attached to a Canva Design.
+ * @deprecated
  */
 export type DesignCommentObject = {
   type: "design";
@@ -733,14 +821,19 @@ export type DesignCommentObjectInput = {
 
 /**
  * Basic details about the comment.
+ *
+ * The `comment` property is deprecated.
+ * For details of the comment event, use the `comment_event` property instead.
+ * @deprecated
  */
-export type CommentEvent = {
-  type: CommentEventType;
+export type CommentEventDeprecated = {
+  type: CommentEventTypeEnum;
   data: Comment;
 };
 
 /**
  * The Canva users mentioned in the comment.
+ * @deprecated
  */
 export type Mentions = {
   [key: string]: TeamUser;
@@ -748,8 +841,9 @@ export type Mentions = {
 
 /**
  * The type of comment event.
+ * @deprecated
  */
-export type CommentEventType =
+export type CommentEventTypeEnum =
   | "comment"
   | "reply"
   | "mention"
@@ -758,8 +852,9 @@ export type CommentEventType =
 
 /**
  * The type of comment event.
+ * @deprecated
  */
-export const CommentEventType = {
+export const CommentEventTypeEnum = {
   COMMENT: "comment",
   REPLY: "reply",
   MENTION: "mention",
@@ -768,9 +863,136 @@ export const CommentEventType = {
 } as const;
 
 /**
+ * The type of comment event, including additional type-specific properties.
+ */
+export type CommentEvent =
+  | ({
+      type?: "new";
+    } & NewCommentEvent)
+  | ({
+      type?: "assigned";
+    } & AssignedCommentEvent)
+  | ({
+      type?: "resolved";
+    } & ResolvedCommentEvent)
+  | ({
+      type?: "reply";
+    } & ReplyCommentEvent)
+  | ({
+      type?: "mention";
+    } & MentionCommentEvent);
+
+/**
+ * Event type for a new comment thread.
+ */
+export type NewCommentEvent = {
+  type: "new";
+  /**
+   * A URL to the design, focused on the comment thread.
+   */
+  comment_url: string;
+  comment: Thread;
+};
+
+/**
+ * Event type for a comment thread that has been assigned.
+ */
+export type AssignedCommentEvent = {
+  type: "assigned";
+  /**
+   * A URL to the design, focused on the comment thread.
+   */
+  comment_url: string;
+  comment: Thread;
+};
+
+/**
+ * Event type for a comment thread that has been resolved.
+ */
+export type ResolvedCommentEvent = {
+  type: "resolved";
+  /**
+   * A URL to the design, focused on the comment thread.
+   */
+  comment_url: string;
+  comment: Thread;
+};
+
+/**
+ * Event type for a reply to a comment thread.
+ */
+export type ReplyCommentEvent = {
+  type: "reply";
+  /**
+   * A URL to the design, focused on the comment reply.
+   */
+  reply_url: string;
+  reply: Reply;
+};
+
+/**
+ * Event type for a mention in a comment thread or reply.
+ */
+export type MentionCommentEvent = {
+  type: "mention";
+  content: MentionEventContent;
+};
+
+/**
+ * The type of mention event content, along with additional type-specific properties.
+ */
+export type MentionEventContent =
+  | ({
+      type?: "thread";
+    } & ThreadMentionEventContent)
+  | ({
+      type?: "reply";
+    } & ReplyMentionEventContent);
+
+/**
+ * Content for a mention in a comment thread.
+ */
+export type ThreadMentionEventContent = {
+  type: "thread";
+  /**
+   * A URL to the design, focused on the comment thread.
+   */
+  comment_url: string;
+  comment: Thread;
+};
+
+/**
+ * Content for a mention in a comment reply.
+ */
+export type ReplyMentionEventContent = {
+  type: "reply";
+  /**
+   * A URL to the design, focused on the comment reply.
+   */
+  reply_url: string;
+  reply: Reply;
+};
+
+/**
+ * Successful response from a `listReplies` request.
+ */
+export type ListRepliesResponse = {
+  /**
+   * If the success response contains a continuation token, the list contains more items
+   * you can list. You can use this token as a query parameter and retrieve more items
+   * from the list, for example `?continuation={continuation}`.
+   *
+   * To retrieve all items, you might need to make multiple requests.
+   */
+  continuation?: string;
+  items: Array<Reply>;
+};
+
+/**
  * A discussion thread on a design.
  *
  * The `type` of the thread can be found in the `thread_type` object, along with additional type-specific properties.
+ * The `author` of the thread might be missing if that user account no longer exists.
  */
 export type Thread = {
   /**
@@ -784,7 +1006,7 @@ export type Thread = {
    */
   design_id: string;
   thread_type: ThreadType;
-  author: User;
+  author?: User;
   /**
    * When the thread was created, as a Unix timestamp
    * (in seconds since the Unix Epoch).
@@ -813,16 +1035,12 @@ export type ThreadType =
  */
 export type CommentThreadType = {
   type: "comment";
+  content: CommentContent;
   /**
-   * The comment's message.
-   * Any user mentions are shown in the format `[user_id:team_id]`.
-   */
-  message: string;
-  /**
-   * The Canva users mentioned in the comment.
+   * The Canva users mentioned in the comment thread or reply.
    */
   mentions: {
-    [key: string]: TeamUser;
+    [key: string]: UserMention;
   };
   assignee?: User;
   resolver?: User;
@@ -833,81 +1051,68 @@ export type CommentThreadType = {
  */
 export type SuggestionThreadType = {
   type: "suggestion";
-  content: SuggestionContent;
+  suggested_edits: Array<SuggestedEdit>;
   status: SuggestionStatus;
 };
 
 /**
- * The suggestion's content.
+ * The type of the suggested edit, along with additional type-specific properties.
  */
-export type SuggestionContent =
+export type SuggestedEdit =
   | ({
       type?: "add";
-    } & AddSuggestionContent)
+    } & AddSuggestedEdit)
   | ({
       type?: "delete";
-    } & DeleteSuggestionContent)
-  | ({
-      type?: "replace";
-    } & ReplaceSuggestionContent)
+    } & DeleteSuggestedEdit)
   | ({
       type?: "format";
-    } & FormatSuggestionContent);
+    } & FormatSuggestedEdit);
 
 /**
  * A suggestion to add some text.
  */
-export type AddSuggestionContent = {
+export type AddSuggestedEdit = {
   type: "add";
-  add: string;
+  text: string;
 };
 
 /**
  * A suggestion to delete some text.
  */
-export type DeleteSuggestionContent = {
+export type DeleteSuggestedEdit = {
   type: "delete";
-  delete: string;
-};
-
-/**
- * A suggestion to replace some text.
- */
-export type ReplaceSuggestionContent = {
-  type: "replace";
-  add: string;
-  delete: string;
+  text: string;
 };
 
 /**
  * A suggestion to format some text.
  */
-export type FormatSuggestionContent = {
+export type FormatSuggestedEdit = {
   type: "format";
-  formats: Array<SuggestionFormat>;
+  format: SuggestionFormat;
 };
 
 /**
  * The current status of the suggestion.
- * This can be one of the following:
- *
- * - `open`: A suggestion was made, but it hasn't been accepted or rejected yet.
- * - `accepted`: A suggestion was accepted and applied to the design.
- * - `rejected`: A suggestion was rejected and not applied to the design.
  */
 export type SuggestionStatus = "open" | "accepted" | "rejected";
 
 /**
  * The current status of the suggestion.
- * This can be one of the following:
- *
- * - `open`: A suggestion was made, but it hasn't been accepted or rejected yet.
- * - `accepted`: A suggestion was accepted and applied to the design.
- * - `rejected`: A suggestion was rejected and not applied to the design.
  */
 export const SuggestionStatus = {
+  /**
+   * A suggestion was made, but it hasn't been accepted or rejected yet.
+   */
   OPEN: "open",
+  /**
+   * A suggestion was accepted and applied to the design.
+   */
   ACCEPTED: "accepted",
+  /**
+   * A suggestion was rejected and not applied to the design.
+   */
   REJECTED: "rejected",
 } as const;
 
@@ -920,6 +1125,7 @@ export type SuggestionFormat =
   | "font_weight"
   | "font_style"
   | "color"
+  | "background_color"
   | "decoration"
   | "strikethrough"
   | "link"
@@ -930,7 +1136,9 @@ export type SuggestionFormat =
   | "list_marker"
   | "list_level"
   | "margin_inline_start"
-  | "text_indent";
+  | "text_indent"
+  | "font_size_modifier"
+  | "vertical_align";
 
 /**
  * The suggested format change.
@@ -941,6 +1149,7 @@ export const SuggestionFormat = {
   FONT_WEIGHT: "font_weight",
   FONT_STYLE: "font_style",
   COLOR: "color",
+  BACKGROUND_COLOR: "background_color",
   DECORATION: "decoration",
   STRIKETHROUGH: "strikethrough",
   LINK: "link",
@@ -952,10 +1161,14 @@ export const SuggestionFormat = {
   LIST_LEVEL: "list_level",
   MARGIN_INLINE_START: "margin_inline_start",
   TEXT_INDENT: "text_indent",
+  FONT_SIZE_MODIFIER: "font_size_modifier",
+  VERTICAL_ALIGN: "vertical_align",
 } as const;
 
 /**
  * A reply to a thread.
+ *
+ * The `author` of the reply might be missing if that user account no longer exists.
  */
 export type Reply = {
   /**
@@ -970,17 +1183,13 @@ export type Reply = {
    * The ID of the thread this reply is in.
    */
   thread_id: string;
-  author: User;
+  author?: User;
+  content: CommentContent;
   /**
-   * The reply's message.
-   * Any user mentions are shown in the format `[user_id:team_id]`
-   */
-  message: string;
-  /**
-   * The Canva users mentioned in the comment.
+   * The Canva users mentioned in the comment thread or reply.
    */
   mentions: {
-    [key: string]: TeamUser;
+    [key: string]: UserMention;
   };
   /**
    * When the reply was created, as a Unix timestamp
@@ -992,6 +1201,22 @@ export type Reply = {
    * (in seconds since the Unix Epoch).
    */
   updated_at: number;
+};
+
+/**
+ * The content of a comment thread or reply.
+ */
+export type CommentContent = {
+  /**
+   * The content in plaintext.
+   * Any user mention tags are shown in the format `[user_id:team_id]`.
+   */
+  plaintext: string;
+  /**
+   * The content in markdown.
+   * Any user mention tags are shown in the format `[user_id:team_id]`
+   */
+  markdown?: string;
 };
 
 /**
@@ -1074,6 +1299,24 @@ export type MentionSuggestionEventType = {
   reply: Reply;
 };
 
+/**
+ * The Canva users mentioned in the comment thread or reply.
+ */
+export type UserMentions = {
+  [key: string]: UserMention;
+};
+
+/**
+ * Information about the user mentioned in a comment thread or reply. Each user mention is keyed using the user's user ID and team ID separated by a colon (`user_id:team_id`).
+ */
+export type UserMention = {
+  /**
+   * The mention tag for the user mentioned in the comment thread or reply content. This has the format of the user's user ID and team ID separated by a colon (`user_id:team_id`).
+   */
+  tag: string;
+  user: TeamUser;
+};
+
 export type GetSigningPublicKeysResponse = {
   /**
    * A Json Web Key Set (JWKS) with public keys used for signing webhooks. You can use this JWKS
@@ -1132,7 +1375,7 @@ export type DataTable = {
   /**
    * Rows of data.
    *
-   * The first row usually contains column headers. Maximum of 100 rows.
+   * The first row usually contains column headers.
    */
   rows: Array<DataTableRow>;
 };
@@ -1144,7 +1387,7 @@ export type DataTableRow = {
   /**
    * Cells of data in row.
    *
-   * All rows must have the same number of cells. Maximum of 20 cells per row.
+   * All rows must have the same number of cells.
    */
   cells: Array<DataTableCell>;
 };
@@ -1208,18 +1451,42 @@ export type SortByType =
   | "title_ascending";
 
 export const SortByType = {
+  /**
+   * Sort results using a relevance algorithm.
+   */
   RELEVANCE: "relevance",
+  /**
+   * Sort results by the date last modified in descending order.
+   */
   MODIFIED_DESCENDING: "modified_descending",
+  /**
+   * Sort results by the date last modified in ascending order.
+   */
   MODIFIED_ASCENDING: "modified_ascending",
+  /**
+   * Sort results by title in descending order.
+   */
   TITLE_DESCENDING: "title_descending",
+  /**
+   * Sort results by title in ascending order
+   */
   TITLE_ASCENDING: "title_ascending",
 } as const;
 
 export type OwnershipType = "any" | "owned" | "shared";
 
 export const OwnershipType = {
+  /**
+   * Owned by and shared with the user.
+   */
   ANY: "any",
+  /**
+   * Owned by the user.
+   */
   OWNED: "owned",
+  /**
+   * Shared with the user.
+   */
   SHARED: "shared",
 } as const;
 
@@ -1252,7 +1519,7 @@ export type CreateDesignRequest = {
    */
   asset_id?: string;
   /**
-   * The name of the design. Must be less than 256 characters.
+   * The name of the design.
    */
   title?: string;
 };
@@ -1329,13 +1596,13 @@ export type PageIndex = number;
  */
 export type DesignLinks = {
   /**
-   * A temporary editing URL for the design.
+   * A temporary editing URL for the design. This URL is only accessible to the user that made the API request, and is designed to support [return navigation](https://www.canva.dev/docs/connect/return-navigation-guide/) workflows.
    *
    * NOTE: This is not a permanent URL, it is only valid for 30 days.
    */
   edit_url: string;
   /**
-   * A temporary viewing URL for the design.
+   * A temporary viewing URL for the design. This URL is only accessible to the user that made the API request, and is designed to support [return navigation](https://www.canva.dev/docs/connect/return-navigation-guide/) workflows.
    *
    * NOTE: This is not a permanent URL, it is only valid for 30 days.
    *
@@ -1488,6 +1755,29 @@ export type GetDesignImportJobResponse = {
   job: DesignImportJob;
 };
 
+export type CreateUrlImportJobRequest = {
+  /**
+   * A title for the design.
+   */
+  title: string;
+  /**
+   * The URL of the file to import. This URL must be accessible from the internet and be publicly available.
+   */
+  url: string;
+  /**
+   * The MIME type of the file being imported. If not provided, Canva attempts to automatically detect the type of the file.
+   */
+  mime_type?: string;
+};
+
+export type CreateUrlImportJobResponse = {
+  job: DesignImportJob;
+};
+
+export type GetUrlImportJobResponse = {
+  job: DesignImportJob;
+};
+
 /**
  * The desired design type.
  */
@@ -1508,24 +1798,25 @@ export type PresetDesignTypeInput = {
 };
 
 /**
- * The name of the design type. This can be one of the following:
- *
- * - `doc`: A [Canva doc](https://www.canva.com/docs/); a document for Canva's online text editor.
- * - `whiteboard`: A [whiteboard](https://www.canva.com/online-whiteboard/); a design which gives you infinite space to collaborate.
- * - `presentation`: A [presentation](https://www.canva.com/presentations/); lets you create and collaborate for presenting to an audience.
+ * The name of the design type.
  */
 export type PresetDesignTypeName = "doc" | "whiteboard" | "presentation";
 
 /**
- * The name of the design type. This can be one of the following:
- *
- * - `doc`: A [Canva doc](https://www.canva.com/docs/); a document for Canva's online text editor.
- * - `whiteboard`: A [whiteboard](https://www.canva.com/online-whiteboard/); a design which gives you infinite space to collaborate.
- * - `presentation`: A [presentation](https://www.canva.com/presentations/); lets you create and collaborate for presenting to an audience.
+ * The name of the design type.
  */
 export const PresetDesignTypeName = {
+  /**
+   * A [Canva doc](https://www.canva.com/docs/); a document for Canva's online text editor.
+   */
   DOC: "doc",
+  /**
+   * A [whiteboard](https://www.canva.com/online-whiteboard/); a design which gives you infinite space to collaborate.
+   */
   WHITEBOARD: "whiteboard",
+  /**
+   * A [presentation](https://www.canva.com/presentations/); lets you create and collaborate for presenting to an audience.
+   */
   PRESENTATION: "presentation",
 } as const;
 
@@ -1535,11 +1826,11 @@ export const PresetDesignTypeName = {
 export type CustomDesignTypeInput = {
   type: "custom";
   /**
-   * The width of the design (in pixels). Minimum 40px, maximum 8000px.
+   * The width of the design, in pixels.
    */
   width: number;
   /**
-   * The height of the design (in pixels). Minimum 40px, maximum 8000px.
+   * The height of the design, in pixels.
    */
   height: number;
 };
@@ -1608,12 +1899,15 @@ export type ErrorCode =
   | "offset_too_large"
   | "page_not_found"
   | "design_or_comment_not_found"
+  | "design_or_thread_not_found"
   | "design_type_not_found"
   | "team_not_found"
   | "comment_not_found"
   | "too_many_comments"
   | "too_many_replies"
   | "message_too_long"
+  | "thread_not_found"
+  | "reply_not_found"
   | "design_not_fillable"
   | "autofill_data_invalid"
   | "feature_not_available"
@@ -1667,12 +1961,15 @@ export const ErrorCode = {
   OFFSET_TOO_LARGE: "offset_too_large",
   PAGE_NOT_FOUND: "page_not_found",
   DESIGN_OR_COMMENT_NOT_FOUND: "design_or_comment_not_found",
+  DESIGN_OR_THREAD_NOT_FOUND: "design_or_thread_not_found",
   DESIGN_TYPE_NOT_FOUND: "design_type_not_found",
   TEAM_NOT_FOUND: "team_not_found",
   COMMENT_NOT_FOUND: "comment_not_found",
   TOO_MANY_COMMENTS: "too_many_comments",
   TOO_MANY_REPLIES: "too_many_replies",
   MESSAGE_TOO_LONG: "message_too_long",
+  THREAD_NOT_FOUND: "thread_not_found",
+  REPLY_NOT_FOUND: "reply_not_found",
   DESIGN_NOT_FILLABLE: "design_not_fillable",
   AUTOFILL_DATA_INVALID: "autofill_data_invalid",
   FEATURE_NOT_AVAILABLE: "feature_not_available",
@@ -1715,7 +2012,7 @@ export type ExportFormat =
     } & Mp4ExportFormat);
 
 /**
- * Export the design as a PDF. Providing a paper size is optional. The default paper size is A4.
+ * Export the design as a PDF. Providing a paper size is optional.
  */
 export type PdfExportFormat = {
   type: "pdf";
@@ -1738,17 +2035,19 @@ export type GifExportFormat = {
   type: "gif";
   export_quality?: ExportQuality;
   /**
-   * Specify the height in pixels of the exported image. If only one of height or width is
-   * specified, then the image will be scaled to match that dimension, respecting the design's
-   * aspect ratio. If no width or height is specified, the image will be exported using the
-   * dimensions of the design.
+   * Specify the height in pixels of the exported image. Note the following behavior:
+   *
+   * - If no height or width is specified, the image is exported using the dimensions of the design.
+   * - If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+   * - If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
    */
   height?: number;
   /**
-   * Specify the width in pixels of the exported image. If only one of height or width is
-   * specified, then the image will be scaled to match that dimension, respecting the design's
-   * aspect ratio. If no width or height is specified, the image will be exported using the
-   * dimensions of the design.
+   * Specify the width in pixels of the exported image. Note the following behavior:
+   *
+   * - If no width or height is specified, the image is exported using the dimensions of the design.
+   * - If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+   * - If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
    */
   width?: number;
   /**
@@ -1769,21 +2068,23 @@ export type JpgExportFormat = {
   type: "jpg";
   export_quality?: ExportQuality;
   /**
-   * For the `jpg` type, the `quality` of the exported JPEG determines how compressed the exported file should be. A _low_ `quality` value (minimum `1`) will create a file with a smaller file size, but the resulting file will have pixelated artifacts when compared to a file created with a _high_ `quality` value (maximum `100`).
+   * For the `jpg` type, the `quality` of the exported JPEG determines how compressed the exported file should be. A _low_ `quality` value will create a file with a smaller file size, but the resulting file will have pixelated artifacts when compared to a file created with a _high_ `quality` value.
    */
   quality: number;
   /**
-   * Specify the height in pixels of the exported image. If only one of height or width is
-   * specified, then the image will be scaled to match that dimension, respecting the design's
-   * aspect ratio. If no width or height is specified, the image will be exported using the
-   * dimensions of the design.
+   * Specify the height in pixels of the exported image. Note the following behavior:
+   *
+   * - If no height or width is specified, the image is exported using the dimensions of the design.
+   * - If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+   * - If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
    */
   height?: number;
   /**
-   * Specify the width in pixels of the exported image. If only one of height or width is
-   * specified, then the image will be scaled to match that dimension, respecting the design's
-   * aspect ratio. If no width or height is specified, the image will be exported using the
-   * dimensions of the design.
+   * Specify the width in pixels of the exported image. Note the following behavior:
+   *
+   * - If no width or height is specified, the image is exported using the dimensions of the design.
+   * - If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+   * - If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
    */
   width?: number;
   /**
@@ -1805,24 +2106,31 @@ export type PngExportFormat = {
   type: "png";
   export_quality?: ExportQuality;
   /**
-   * Specify the height in pixels of the exported image. If only one of height or width is
-   * specified, then the image will be scaled to match that dimension, respecting the design's
-   * aspect ratio. If no width or height is specified, the image will be exported using the
-   * dimensions of the design.
+   * Specify the height in pixels of the exported image. Note the following behavior:
+   *
+   * - If no height or width is specified, the image is exported using the dimensions of the design.
+   * - If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+   * - If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
    */
   height?: number;
   /**
-   * Specify the width in pixels of the exported image. If only one of height or width is
-   * specified, then the image will be scaled to match that dimension, respecting the design's
-   * aspect ratio. If no width or height is specified, the image will be exported using the
-   * dimensions of the design.
+   * Specify the width in pixels of the exported image. Note the following behavior:
+   *
+   * - If no width or height is specified, the image is exported using the dimensions of the design.
+   * - If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+   * - If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
    */
   width?: number;
   /**
-   * If set to `true` (Default), the PNG is exported without compression.
+   * If set to `true` (default), the PNG is exported without compression.
    * If set to `false`, the PNG is compressed using a lossy compression algorithm. Lossy PNG compression is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `false`, the export operation will fail.
    */
   lossless?: boolean;
+  /**
+   * If set to `true`, the PNG is exported with a transparent background.
+   * This option is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `true`, the export operation will fail.
+   */
+  transparent_background?: boolean;
   /**
    * When `true`, multi-page designs are merged into a single image.
    * When `false` (default), each page is exported as a separate image.
@@ -1882,8 +2190,9 @@ export type ExportJob = {
   id: string;
   status: DesignExportStatus;
   /**
-   * When the export job is completed, also returns a list of urls for the exported
-   * resources. The list is sorted by page order.
+   * Download URL(s) for the completed export job. These URLs expire after 24 hours.
+   *
+   * Depending on the design type and export format, there is a download URL for each page in the design. The list is sorted by page order.
    */
   urls?: Array<string>;
   error?: ExportError;
@@ -1921,18 +2230,20 @@ export const DesignExportStatus = {
 } as const;
 
 /**
- * Specify the height in pixels of the exported image. If only one of height or width is
- * specified, then the image will be scaled to match that dimension, respecting the design's
- * aspect ratio. If no width or height is specified, the image will be exported using the
- * dimensions of the design.
+ * Specify the height in pixels of the exported image. Note the following behavior:
+ *
+ * - If no height or width is specified, the image is exported using the dimensions of the design.
+ * - If only one of height or width is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+ * - If both the height and width are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
  */
 export type ExportHeight = number;
 
 /**
- * Specify the width in pixels of the exported image. If only one of height or width is
- * specified, then the image will be scaled to match that dimension, respecting the design's
- * aspect ratio. If no width or height is specified, the image will be exported using the
- * dimensions of the design.
+ * Specify the width in pixels of the exported image. Note the following behavior:
+ *
+ * - If no width or height is specified, the image is exported using the dimensions of the design.
+ * - If only one of width or height is specified, then the image is scaled to match that dimension, respecting the design's aspect ratio.
+ * - If both the width and height are specified, but the values don't match the design's aspect ratio, the export defaults to the larger dimension.
  */
 export type ExportWidth = number;
 
@@ -2025,43 +2336,58 @@ export type ExportError = {
 };
 
 /**
- * If the export failed, this specifies the reason why it failed. This can be one of the following:
+ * If the export failed, this specifies the reason why it failed.
  *
  * - `license_required`: The design contains [premium elements](https://www.canva.com/help/premium-elements/) that haven't been purchased. You can either buy the elements or upgrade to a Canva plan (such as Canva Pro) that has premium features, then try again. Alternatively, you can set `export_quality` to `regular` to export your document in regular quality.
+ * - `approval_required`: The design requires [reviewer approval](https://www.canva.com/en_au/help/design-approval/) before it can be exported.
  * - `internal_failure`: The service encountered an error when exporting your design.
  */
-export type ExportErrorCode = "license_required" | "internal_failure";
+export type ExportErrorCode =
+  | "license_required"
+  | "approval_required"
+  | "internal_failure";
 
 /**
- * If the export failed, this specifies the reason why it failed. This can be one of the following:
+ * If the export failed, this specifies the reason why it failed.
  *
  * - `license_required`: The design contains [premium elements](https://www.canva.com/help/premium-elements/) that haven't been purchased. You can either buy the elements or upgrade to a Canva plan (such as Canva Pro) that has premium features, then try again. Alternatively, you can set `export_quality` to `regular` to export your document in regular quality.
+ * - `approval_required`: The design requires [reviewer approval](https://www.canva.com/en_au/help/design-approval/) before it can be exported.
  * - `internal_failure`: The service encountered an error when exporting your design.
  */
 export const ExportErrorCode = {
+  /**
+   * The design contains [premium elements](https://www.canva.com/help/premium-elements/) that haven't been purchased. You can either buy the elements or upgrade to a Canva plan (such as Canva Pro) that has premium features, then try again. Alternatively, you can set `export_quality` to `regular` to export your document in regular quality.
+   */
   LICENSE_REQUIRED: "license_required",
+  /**
+   * The design requires [reviewer approval](https://www.canva.com/en_au/help/design-approval/) before it can be exported.
+   */
+  APPROVAL_REQUIRED: "approval_required",
+  /**
+   * The service encountered an error when exporting your design.
+   */
   INTERNAL_FAILURE: "internal_failure",
 } as const;
 
 /**
- * Specifies the export quality of the design. This can be one of the following:
- * - `regular`: Regular quality export. This is the default.
- * - `pro`: Premium quality export.
- *
- * NOTE: A `pro` export might fail if the design contains [premium elements](https://www.canva.com/help/premium-elements/) and the calling user either hasn't purchased the elements or isn't on a Canva plan (such as Canva Pro) that has premium features.
+ * Specifies the export quality of the design.
  */
-export type ExportQuality = "pro" | "regular";
+export type ExportQuality = "regular" | "pro";
 
 /**
- * Specifies the export quality of the design. This can be one of the following:
- * - `regular`: Regular quality export. This is the default.
- * - `pro`: Premium quality export.
- *
- * NOTE: A `pro` export might fail if the design contains [premium elements](https://www.canva.com/help/premium-elements/) and the calling user either hasn't purchased the elements or isn't on a Canva plan (such as Canva Pro) that has premium features.
+ * Specifies the export quality of the design.
  */
 export const ExportQuality = {
-  PRO: "pro",
+  /**
+   * Regular quality export.
+   */
   REGULAR: "regular",
+  /**
+   * Premium quality export.
+   *
+   * NOTE: A `pro` export might fail if the design contains [premium elements](https://www.canva.com/help/premium-elements/) and the calling user either hasn't purchased the elements or isn't on a Canva plan (such as Canva Pro) that has premium features.
+   */
+  PRO: "pro",
 } as const;
 
 export type FolderItemSortBy =
@@ -2073,11 +2399,29 @@ export type FolderItemSortBy =
   | "title_descending";
 
 export const FolderItemSortBy = {
+  /**
+   * Sort results by creation date, in ascending order.
+   */
   CREATED_ASCENDING: "created_ascending",
+  /**
+   * Sort results by creation date, in descending order.
+   */
   CREATED_DESCENDING: "created_descending",
+  /**
+   * Sort results by the last modified date, in ascending order.
+   */
   MODIFIED_ASCENDING: "modified_ascending",
+  /**
+   * Sort results by the last modified date, in descending order.
+   */
   MODIFIED_DESCENDING: "modified_descending",
+  /**
+   * Sort results by title, in ascending order. The title is either the `name` field for a folder or asset, or the `title` field for a design.
+   */
   TITLE_ASCENDING: "title_ascending",
+  /**
+   * Sort results by title, in descending order. The title is either the `name` field for a folder or asset, or the `title` field for a design.
+   */
   TITLE_DESCENDING: "title_descending",
 } as const;
 
@@ -2101,7 +2445,7 @@ export type GetFolderResponse = {
  */
 export type CreateFolderRequest = {
   /**
-   * The name of the folder. Must be less than 256 characters.
+   * The name of the folder.
    */
   name: string;
   /**
@@ -2515,6 +2859,83 @@ export type client_id = string;
 export type client_secret = string;
 
 /**
+ * Body parameters for starting a resize job for a design.
+ * It must include a design ID, and one of the supported design type.
+ */
+export type CreateDesignResizeJobRequest = {
+  /**
+   * The design ID.
+   */
+  design_id: string;
+  design_type: DesignTypeInput;
+};
+
+export type CreateDesignResizeJobResponse = {
+  job: DesignResizeJob;
+};
+
+export type GetDesignResizeJobResponse = {
+  job: DesignResizeJob;
+};
+
+/**
+ * Details about the design resize job.
+ */
+export type DesignResizeJob = {
+  /**
+   * The design resize job ID.
+   */
+  id: string;
+  status: DesignResizeStatus;
+  result?: DesignResizeJobResult;
+  error?: DesignResizeError;
+};
+
+/**
+ * Design has been created and saved to user's root
+ * ([projects](https://www.canva.com/help/find-designs-and-folders/)) folder.
+ */
+export type DesignResizeJobResult = {
+  design: DesignSummary;
+};
+
+/**
+ * Status of the design resize job.
+ */
+export type DesignResizeStatus = "in_progress" | "success" | "failed";
+
+/**
+ * Status of the design resize job.
+ */
+export const DesignResizeStatus = {
+  IN_PROGRESS: "in_progress",
+  SUCCESS: "success",
+  FAILED: "failed",
+} as const;
+
+export type DesignResizeErrorCode =
+  | "thumbnail_generation_error"
+  | "design_resize_error"
+  | "create_design_error";
+
+export const DesignResizeErrorCode = {
+  THUMBNAIL_GENERATION_ERROR: "thumbnail_generation_error",
+  DESIGN_RESIZE_ERROR: "design_resize_error",
+  CREATE_DESIGN_ERROR: "create_design_error",
+} as const;
+
+/**
+ * If the design resize job fails, this object provides details about the error.
+ */
+export type DesignResizeError = {
+  code: DesignResizeErrorCode;
+  /**
+   * A human-readable description of what went wrong.
+   */
+  message: string;
+};
+
+/**
  * Metadata for the Canva Team, consisting of the Team ID,
  * display name, and whether it's an external Canva Team.
  */
@@ -2620,6 +3041,10 @@ export type UserProfileResponse = {
   profile: UserProfile;
 };
 
+export type GetUserCapabilitiesResponse = {
+  capabilities?: Array<Capability>;
+};
+
 export type Notification = {
   /**
    * The unique identifier for the notification.
@@ -2707,9 +3132,14 @@ export type CommentNotificationContent = {
   design: DesignSummary;
   /**
    * A URL to the design, focused on the new comment.
+   *
+   * The `comment_url` property is deprecated.
+   * For details of the comment event, use the `comment_event` property instead.
+   * @deprecated
    */
-  comment_url: string;
-  comment: CommentEvent;
+  comment_url?: string;
+  comment?: CommentEventDeprecated;
+  comment_event?: CommentEvent;
 };
 
 /**
@@ -2747,7 +3177,7 @@ export type DesignApprovalRequestedNotificationContent = {
 };
 
 /**
- * The notification content for when someone approves a design or gives feeback.
+ * The notification content for when someone approves a design or gives feedback.
  */
 export type DesignApprovalResponseNotificationContent = {
   type: "design_approval_response";
@@ -2865,9 +3295,19 @@ export type ApprovalResponseAction = {
 export type brandTemplateId = string;
 
 /**
- * The `id` of the comment.
+ * The ID of the comment.
  */
 export type commentId = string;
+
+/**
+ * The ID of the thread.
+ */
+export type threadId = string;
+
+/**
+ * The ID of the reply.
+ */
+export type replyId = string;
 
 /**
  * The design ID.
@@ -3079,6 +3519,18 @@ export type CreateDesignAutofillJobData = {
 
 export type CreateDesignAutofillJobErrors = {
   /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
    * Error Response
    */
   default: Error;
@@ -3110,6 +3562,14 @@ export type GetDesignAutofillJobData = {
 };
 
 export type GetDesignAutofillJobErrors = {
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
   /**
    * Error Response
    */
@@ -3148,31 +3608,15 @@ export type ListBrandTemplatesData = {
     continuation?: string;
     /**
      * Filter the list of brand templates based on the user's ownership of the brand templates.
-     * This can be one of the following:
-     *
-     * - `any`: (Default) Brand templates owned by and shared with the user.
-     * - `owned`: Brand templates owned by the user.
-     * - `shared`: Brand templates shared with the user.
      */
     ownership?: OwnershipType;
     /**
-     * Sort the list of brand templates. This can be one of the following:
-     *
-     * - `relevance`: (Default) Sort results using a relevance algorithm.
-     * - `modified_descending`: Sort results by the date last modified in descending order.
-     * - `modified_ascending`: Sort results by the date last modified in ascending order.
-     * - `title_descending`: Sort results by title in descending order.
-     * - `title_ascending`: Sort results by title in ascending order.
+     * Sort the list of brand templates.
      */
     sort_by?: SortByType;
     /**
      * Filter the list of brand templates based on the brand templates' dataset definitions.
      * Brand templates with dataset definitions are mainly used with the [Autofill APIs](https://www.canva.dev/docs/connect/api-reference/autofills/).
-     * This can be one of the following:
-     *
-     * - `any`: (Default) Brand templates with and without dataset definitions.
-     * - `non_empty`: Brand templates with one or more data fields defined.
-     * - `empty`: Brand templates with no data fields defined.
      */
     dataset?: DatasetFilter;
   };
@@ -3287,16 +3731,98 @@ export type CreateCommentResponses = {
 export type CreateCommentResponse2 =
   CreateCommentResponses[keyof CreateCommentResponses];
 
-export type CreateReplyData = {
+export type CreateReplyDeprecatedData = {
   body: CreateReplyRequest;
   path: {
     /**
-     * The `id` of the comment.
+     * The ID of the comment.
      */
     commentId: string;
   };
   query?: never;
   url: "/v1/comments/{commentId}/replies";
+};
+
+export type CreateReplyDeprecatedErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type CreateReplyDeprecatedError =
+  CreateReplyDeprecatedErrors[keyof CreateReplyDeprecatedErrors];
+
+export type CreateReplyDeprecatedResponses = {
+  /**
+   * OK
+   */
+  200: CreateReplyResponse;
+};
+
+export type CreateReplyDeprecatedResponse =
+  CreateReplyDeprecatedResponses[keyof CreateReplyDeprecatedResponses];
+
+export type ListRepliesData = {
+  body?: never;
+  path: {
+    /**
+     * The design ID.
+     */
+    designId: string;
+    /**
+     * The ID of the thread.
+     */
+    threadId: string;
+  };
+  query?: {
+    /**
+     * The number of replies to return.
+     */
+    limit?: number;
+    /**
+     * If the success response contains a continuation token, the list contains more items you can list. You can use this token as a query parameter and retrieve more items from the list, for example `?continuation={continuation}`.
+     *
+     * To retrieve all items, you might need to make multiple requests.
+     */
+    continuation?: string;
+  };
+  url: "/v1/designs/{designId}/comments/{threadId}/replies";
+};
+
+export type ListRepliesErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type ListRepliesError = ListRepliesErrors[keyof ListRepliesErrors];
+
+export type ListRepliesResponses = {
+  /**
+   * OK
+   */
+  200: ListRepliesResponse;
+};
+
+export type ListRepliesResponse2 =
+  ListRepliesResponses[keyof ListRepliesResponses];
+
+export type CreateReplyData = {
+  body: CreateReplyV2Request;
+  path: {
+    /**
+     * The design ID.
+     */
+    designId: string;
+    /**
+     * The ID of the thread.
+     */
+    threadId: string;
+  };
+  query?: never;
+  url: "/v1/designs/{designId}/comments/{threadId}/replies";
 };
 
 export type CreateReplyErrors = {
@@ -3312,13 +3838,13 @@ export type CreateReplyResponses = {
   /**
    * OK
    */
-  200: CreateReplyResponse;
+  200: CreateReplyV2Response;
 };
 
 export type CreateReplyResponse2 =
   CreateReplyResponses[keyof CreateReplyResponses];
 
-export type GetCommentData = {
+export type GetThreadData = {
   body?: never;
   path: {
     /**
@@ -3326,32 +3852,100 @@ export type GetCommentData = {
      */
     designId: string;
     /**
-     * The `id` of the comment.
+     * The ID of the thread.
      */
-    commentId: string;
+    threadId: string;
   };
   query?: never;
-  url: "/v1/designs/{designId}/comments/{commentId}";
+  url: "/v1/designs/{designId}/comments/{threadId}";
 };
 
-export type GetCommentErrors = {
+export type GetThreadErrors = {
   /**
    * Error Response
    */
   default: Error;
 };
 
-export type GetCommentError = GetCommentErrors[keyof GetCommentErrors];
+export type GetThreadError = GetThreadErrors[keyof GetThreadErrors];
 
-export type GetCommentResponses = {
+export type GetThreadResponses = {
   /**
    * OK
    */
-  200: GetCommentResponse;
+  200: GetThreadResponse;
 };
 
-export type GetCommentResponse2 =
-  GetCommentResponses[keyof GetCommentResponses];
+export type GetThreadResponse2 = GetThreadResponses[keyof GetThreadResponses];
+
+export type GetReplyData = {
+  body?: never;
+  path: {
+    /**
+     * The design ID.
+     */
+    designId: string;
+    /**
+     * The ID of the thread.
+     */
+    threadId: string;
+    /**
+     * The ID of the reply.
+     */
+    replyId: string;
+  };
+  query?: never;
+  url: "/v1/designs/{designId}/comments/{threadId}/replies/{replyId}";
+};
+
+export type GetReplyErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type GetReplyError = GetReplyErrors[keyof GetReplyErrors];
+
+export type GetReplyResponses = {
+  /**
+   * OK
+   */
+  200: GetReplyResponse;
+};
+
+export type GetReplyResponse2 = GetReplyResponses[keyof GetReplyResponses];
+
+export type CreateThreadData = {
+  body: CreateThreadRequest;
+  path: {
+    /**
+     * The design ID.
+     */
+    designId: string;
+  };
+  query?: never;
+  url: "/v1/designs/{designId}/comments";
+};
+
+export type CreateThreadErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type CreateThreadError = CreateThreadErrors[keyof CreateThreadErrors];
+
+export type CreateThreadResponses = {
+  /**
+   * OK
+   */
+  200: CreateThreadResponse;
+};
+
+export type CreateThreadResponse2 =
+  CreateThreadResponses[keyof CreateThreadResponses];
 
 export type GetSigningPublicKeysData = {
   body?: never;
@@ -3397,22 +3991,10 @@ export type ListDesignsData = {
     continuation?: string;
     /**
      * Filter the list of designs based on the user's ownership of the designs.
-     * This can be one of the following:
-     *
-     * - `owned`: Designs owned by the user.
-     * - `shared`: Designs shared with the user.
-     * - `any`: Designs owned by and shared with the user.
      */
     ownership?: OwnershipType;
     /**
      * Sort the list of designs.
-     * This can be one of the following:
-     *
-     * - `relevance`: (Default) Sort results using a relevance algorithm.
-     * - `modified_descending`: Sort results by the date last modified in descending order.
-     * - `modified_ascending`: Sort results by the date last modified in ascending order.
-     * - `title_descending`: Sort results by title in descending order.
-     * - `title_ascending`: Sort results by title in ascending order.
      */
     sort_by?: SortByType;
   };
@@ -3502,14 +4084,14 @@ export type GetDesignPagesData = {
   };
   query?: {
     /**
-     * The page index to start the range of pages to return. Default is `1`.
+     * The page index to start the range of pages to return.
      *
      * Pages are indexed using one-based numbering, so the first page in a design has the index value `1`.
      *
      */
     offset?: number;
     /**
-     * The number of pages to return, starting at the page index specified using the `offset` parameter. Default is `50` pages.
+     * The number of pages to return, starting at the page index specified using the `offset` parameter.
      */
     limit?: number;
   };
@@ -3632,6 +4214,63 @@ export type GetDesignImportJobResponses = {
 
 export type GetDesignImportJobResponse2 =
   GetDesignImportJobResponses[keyof GetDesignImportJobResponses];
+
+export type CreateUrlImportJobData = {
+  body: CreateUrlImportJobRequest;
+  url: "/v1/url-imports";
+};
+
+export type CreateUrlImportJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type CreateUrlImportJobError =
+  CreateUrlImportJobErrors[keyof CreateUrlImportJobErrors];
+
+export type CreateUrlImportJobResponses = {
+  /**
+   * OK
+   */
+  200: CreateUrlImportJobResponse;
+};
+
+export type CreateUrlImportJobResponse2 =
+  CreateUrlImportJobResponses[keyof CreateUrlImportJobResponses];
+
+export type GetUrlImportJobData = {
+  body?: never;
+  path: {
+    /**
+     * The ID of the URL import job.
+     */
+    jobId: string;
+  };
+  query?: never;
+  url: "/v1/url-imports/{jobId}";
+};
+
+export type GetUrlImportJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type GetUrlImportJobError =
+  GetUrlImportJobErrors[keyof GetUrlImportJobErrors];
+
+export type GetUrlImportJobResponses = {
+  /**
+   * OK
+   */
+  200: GetUrlImportJobResponse;
+};
+
+export type GetUrlImportJobResponse2 =
+  GetUrlImportJobResponses[keyof GetUrlImportJobResponses];
 
 export type CreateDesignExportJobData = {
   body?: CreateDesignExportJobRequest;
@@ -3808,17 +4447,6 @@ export type ListFolderItemsData = {
     item_types?: Array<FolderItemType>;
     /**
      * Sort the list of folder items.
-     * This can be one of the following:
-     *
-     * - `created_ascending`: Sort results by creation date, in ascending order.
-     * - `created_descending`: Sort results by creation date, in descending order.
-     * - `modified_ascending`: Sort results by the last modified date, in ascending order.
-     * - `modified_descending`: (Default) Sort results by the last modified date, in descending
-     * order.
-     * - `title_ascending`: Sort results by title, in ascending order. The title is either the
-     * `name` field for a folder or asset, or the `title` field for a design.
-     * - `title_descending`: Sort results by title, in descending order. The title is either
-     * the `name` field for a folder or asset, or the `title` field for a design.
      */
     sort_by?: FolderItemSortBy;
   };
@@ -3968,6 +4596,63 @@ export type RevokeTokensResponses = {
 export type RevokeTokensResponse2 =
   RevokeTokensResponses[keyof RevokeTokensResponses];
 
+export type CreateDesignResizeJobData = {
+  body?: CreateDesignResizeJobRequest;
+  url: "/v1/resizes";
+};
+
+export type CreateDesignResizeJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type CreateDesignResizeJobError =
+  CreateDesignResizeJobErrors[keyof CreateDesignResizeJobErrors];
+
+export type CreateDesignResizeJobResponses = {
+  /**
+   * OK
+   */
+  200: CreateDesignResizeJobResponse;
+};
+
+export type CreateDesignResizeJobResponse2 =
+  CreateDesignResizeJobResponses[keyof CreateDesignResizeJobResponses];
+
+export type GetDesignResizeJobData = {
+  body?: never;
+  path: {
+    /**
+     * The design resize job ID.
+     */
+    jobId: string;
+  };
+  query?: never;
+  url: "/v1/resizes/{jobId}";
+};
+
+export type GetDesignResizeJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type GetDesignResizeJobError =
+  GetDesignResizeJobErrors[keyof GetDesignResizeJobErrors];
+
+export type GetDesignResizeJobResponses = {
+  /**
+   * OK
+   */
+  200: GetDesignResizeJobResponse;
+};
+
+export type GetDesignResizeJobResponse2 =
+  GetDesignResizeJobResponses[keyof GetDesignResizeJobResponses];
+
 export type UsersMeData = {
   body?: never;
   url: "/v1/users/me";
@@ -3990,6 +4675,31 @@ export type UsersMeResponses = {
 };
 
 export type UsersMeResponse2 = UsersMeResponses[keyof UsersMeResponses];
+
+export type GetUserCapabilitiesData = {
+  body?: never;
+  url: "/v1/users/me/capabilities";
+};
+
+export type GetUserCapabilitiesErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type GetUserCapabilitiesError =
+  GetUserCapabilitiesErrors[keyof GetUserCapabilitiesErrors];
+
+export type GetUserCapabilitiesResponses = {
+  /**
+   * OK
+   */
+  200: GetUserCapabilitiesResponse;
+};
+
+export type GetUserCapabilitiesResponse2 =
+  GetUserCapabilitiesResponses[keyof GetUserCapabilitiesResponses];
 
 export type GetUserProfileData = {
   body?: never;

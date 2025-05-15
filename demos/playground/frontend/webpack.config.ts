@@ -1,10 +1,15 @@
-const path = require("path");
-const TerserPlugin = require("terser-webpack-plugin");
-const { optimize } = require("webpack");
+import * as path from "path";
+import * as TerserPlugin from "terser-webpack-plugin";
+import type { Configuration } from "webpack";
+import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
+import { DefinePlugin, optimize } from "webpack";
+import * as cssnano from "cssnano";
 
-function buildConfig({
+export function buildConfig({
   appEntry = path.join(__dirname, "src", "index.tsx"),
-} = {}) {
+}: {
+  appEntry?: string;
+} = {}): Configuration & DevServerConfiguration {
   return {
     mode: "development",
     context: path.resolve(__dirname, "./"),
@@ -51,7 +56,7 @@ function buildConfig({
               loader: "postcss-loader",
               options: {
                 postcssOptions: {
-                  plugins: [require("cssnano")({ preset: "default" })],
+                  plugins: [cssnano({ preset: "default" })],
                 },
               },
             },
@@ -93,7 +98,7 @@ function buildConfig({
               loader: "postcss-loader",
               options: {
                 postcssOptions: {
-                  plugins: [require("cssnano")({ preset: "default" })],
+                  plugins: [cssnano({ preset: "default" })],
                 },
               },
             },
@@ -119,7 +124,17 @@ function buildConfig({
       path: path.resolve(__dirname, "dist"),
       clean: true,
     },
-    plugins: [new optimize.LimitChunkCountPlugin({ maxChunks: 1 })],
+    plugins: [
+      new optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
+      // Expose the base URLs the frontend needs to make requests to the backend
+      // do not expose all of process.env, only the ones needed by the frontend
+      new DefinePlugin({
+        "process.env": JSON.stringify({
+          BACKEND_URL: process.env.BACKEND_URL,
+          BASE_CANVA_CONNECT_API_URL: process.env.BASE_CANVA_CONNECT_API_URL,
+        }),
+      }),
+    ],
     devtool: "source-map",
     devServer: {
       port: 3000,
@@ -134,6 +149,4 @@ function buildConfig({
   };
 }
 
-module.exports = () => buildConfig();
-
-module.exports.buildConfig = buildConfig;
+export default buildConfig;

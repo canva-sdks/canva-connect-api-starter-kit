@@ -1,4 +1,3 @@
-import { BACKEND_HOST } from "src/config";
 import type {
   DownloadExportedDesignRequest,
   DownloadExportedDesignResponse,
@@ -18,7 +17,7 @@ export const getProducts = async (): Promise<GetProductsResponse> => {
 };
 
 export async function fetchData<T>(endpoint: string): Promise<T> {
-  const url = new URL(endpoint, BACKEND_HOST);
+  const url = new URL(endpoint, process.env.BACKEND_URL);
   const response = await fetch(url, { credentials: "include" });
 
   if (response.ok) {
@@ -55,7 +54,7 @@ const postPutData = async (
   body: Record<string, any>,
   method: "POST" | "PUT" = "POST",
 ) => {
-  const url = new URL(endpoint, BACKEND_HOST);
+  const url = new URL(endpoint, process.env.BACKEND_URL);
 
   try {
     const response = await fetch(url, {

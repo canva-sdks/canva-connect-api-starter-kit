@@ -15,7 +15,7 @@ This repo contains our openAPI specifications, as well as a demo ecommerce web a
 
 The Canva Connect API doesn't maintain nor publish client SDKs, however, we have made our [OpenAPI spec](./openapi/spec.yml) publicly available, so you can use it with your favorite code generation library, such as [openapi-generator](https://github.com/OpenAPITools/openapi-generator) to generate client SDKs in your language of choice!
 
-To demonstrate this, we're using [openapi-ts](https://www.npmjs.com/package/@hey-api/openapi-ts) to generate TypeScript SDKs in [client/ts](./client//ts/) which is used in our demo app.
+To demonstrate this, we're using [openapi-ts](https://www.npmjs.com/package/@hey-api/openapi-ts) to generate TypeScript SDKs in [client/ts](./client/ts/) which is used in our demo app.
 
 ## Demos: E-commerce Shop
 
@@ -63,7 +63,7 @@ cd demos/ecommerce_shop
 
 2. Add your integration settings to the `demos/ecommerce_shop/.env` file.
 
-- `DATABASE_ENCRYPTION_KEY`: This will encrypt and decrypt the tokens stored in the JSON database. A key is automatically get generated for you after running `npm install`, and will already be set in `.env`. If not, run `npm run generate:db-key` from the `demos/ecommerce_shop` directory.
+- `DATABASE_ENCRYPTION_KEY`: This will encrypt and decrypt the tokens stored in the JSON database. A key is automatically generated for you after running `npm install`, and will already be set in `.env`. If not, run `npm run generate:db-key` from the `demos/ecommerce_shop` directory.
 - `CANVA_CLIENT_ID`: This is the `Client ID` from the prerequisites.
 - `CANVA_CLIENT_SECRET`: This is the `client secret` you generated in the prerequisites.
 
@@ -113,7 +113,7 @@ cd demos/playground
 
 2. Add your integration settings to the `demos/playground/.env` file.
 
-- `DATABASE_ENCRYPTION_KEY`: This will encrypt and decrypt the tokens stored in the JSON database. A key is automatically get generated for you after running `npm install`, and will aready be set in `.env`.
+- `DATABASE_ENCRYPTION_KEY`: This will encrypt and decrypt the tokens stored in the JSON database. A key is automatically generated for you after running `npm install`, and will already be set in `.env`.
 - `CANVA_CLIENT_ID`: This is the `Client ID` from the prerequisites.
 - `CANVA_CLIENT_SECRET`: This is the `client secret` you generated in the prerequisites.
 

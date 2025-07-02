@@ -12,7 +12,7 @@
 - Refreshed the OpenAPI yml spec `openapi/spec.yml` to be based on the latest Connect API design.
 - Patch and minor version changes to package dependencies in the `ecommerce_shop` and `playground` demos.
 - Moved `webpack.config.cjs` to `webpack.config.ts` for type checking.
-- Updated file name casing to be consistent, and added an elint rule to enforce this
+- Updated file name casing to be consistent, and added an eslint rule to enforce this
 - Updated `eslint`, `eslint-plugin-unicorn`, and `typescript-eslint`.
 
 ## 2024-12-19
@@ -21,7 +21,7 @@
 
 - Both demo projects now take advantage of the CORS support for the Connect API and make most requests directly from the frontend code
 - Updated HeyAPI to version 0.5, and TypeScript to version 5.5
-- Dependencies are now pinned to exact versions to reduce accidental incompatabilities
+- Dependencies are now pinned to exact versions to reduce accidental incompatibilities
 - Refreshed the OpenAPI yml spec `openapi/spec.yml` to be based on the latest Connect API design
 
 ## 2024-09-23

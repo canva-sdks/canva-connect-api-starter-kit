@@ -6,6 +6,4 @@ Welcome to the **Connect API Playground** demo! 🔑
 
 A lightweight demo that handles Connect API authentication, providing a simple starting point for exploring and testing the Connect API endpoints.
 
-For **setup instructions** refer to the steps in the main README:
-
-<https://github.com/canva-sdks/canva-connect-api-starter-kit/blob/main/README.md#demos-connect-api-playground>
+[See the main README for Connect API Playground demo instructions](../../README.md#demos-connect-api-playground)

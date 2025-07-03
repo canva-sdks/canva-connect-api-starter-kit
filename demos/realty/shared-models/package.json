@@ -1,0 +1,14 @@
+{
+  "name": "@realty-demo/shared-models",
+  "version": "1.0.0",
+  "description": "Shared TypeScript models for the Realty Demo",
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "Canva Pty Ltd.",
+  "license": "SEE LICENSE IN LICENSE.md in root directory",
+  "private": true,
+  "devDependencies": {
+    "typescript": "5.5.4"
+  }
+}

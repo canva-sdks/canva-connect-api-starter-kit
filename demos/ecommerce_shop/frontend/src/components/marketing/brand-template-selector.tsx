@@ -56,12 +56,30 @@ export const BrandTemplateSelector = ({
         <Grid item={true} xs={12}>
           <Grid container={true} spacing={2}>
             <Grid item={true} xs={12} sm={7} md={9}>
-              <Typography variant="h5">Select brand template</Typography>
+              <Typography variant="h5">Select Brand Template</Typography>
             </Grid>
             <Grid item={true} xs={12} sm={5} md={3}>
-              <DeveloperNote info="Brand templates are only available to Canva Enterprise users." />
+              <DeveloperNote info="Brand Templates are only available to Canva Enterprise users." />
             </Grid>
           </Grid>
+        </Grid>
+        <Grid item={true} xs={12}>
+          <Paper
+            variant="outlined"
+            sx={{ padding: 2, bgcolor: "background.default" }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              Need sample Brand Templates? Install them from{" "}
+              <Link
+                href="https://www.canva.com/design/DAGGkcb61HQ/OJhMIQrmz2daIoxo8u3T2g/view"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                this Brand Template deck
+              </Link>
+              .
+            </Typography>
+          </Paper>
         </Grid>
         {!brandTemplates.length ? (
           <EmptyState onClose={onClose} />
@@ -119,17 +137,10 @@ const EmptyState = ({ onClose }: { onClose: () => void }) => (
       gap={3}
     >
       <Stack spacing={2}>
-        <Typography variant="h6">Don’t see any brand templates?</Typography>
+        <Typography variant="h6">Don’t see any Brand Templates?</Typography>
         <Typography variant="body1">
-          Follow the instructions{" "}
-          <Link
-            href="https://www.canva.com/design/DAGGkcb61HQ/OJhMIQrmz2daIoxo8u3T2g/view"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </Link>{" "}
-          to install sample templates to your brand folder.
+          Check the help section above for instructions on installing sample
+          templates.
         </Typography>
         <Box>
           <DemoButton

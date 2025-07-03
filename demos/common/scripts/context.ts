@@ -1,16 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 
-type CliArgs = {
-  example?: string;
-  ngrok?: boolean;
-};
-
 export class Context {
-  constructor(
-    private readonly args: CliArgs,
-    private readonly rootDir: string,
-  ) {}
+  constructor(private readonly rootDir: string) {}
 
   get srcDir() {
     const src = path.join(this.rootDir, "frontend", "src");
@@ -30,10 +22,6 @@ export class Context {
     }
 
     return index;
-  }
-
-  get ngrokEnabled() {
-    return !!this.args.ngrok;
   }
 
   get frontendUrl(): string {

@@ -12,7 +12,12 @@
     "demos/playground",
     "demos/playground/frontend",
     "demos/playground/backend",
-    "client"
+    "demos/realty",
+    "demos/realty/frontend",
+    "demos/realty/backend",
+    "demos/realty/shared-models",
+    "client",
+    "examples"
   ],
   "engines": {
     "node": ">=20.14.0"
@@ -21,6 +26,7 @@
   "scripts": {
     "generate": "cd client && npm run generate",
     "demo:ecommerce": "cd demos/ecommerce_shop && npm start",
-    "demo:playground": "cd demos/playground && npm start"
+    "demo:playground": "cd demos/playground && npm start",
+    "demo:realty": "cd demos/realty && npm start"
   }
 }

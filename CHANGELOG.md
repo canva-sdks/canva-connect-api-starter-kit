@@ -1,5 +1,24 @@
 # Changelog
 
+## 2025-07-04
+
+### 🧰 Added
+
+- Added a new real estate integration demo in `demos/realty`.
+
+### 🐞 Fixed
+
+- Several typos in the documentation.
+
+### 🔧 Changed
+
+- Upgraded `webpack-dev-server` to version `5.2.2` from `5.2.0`.
+- Updated Brand Template selector components to display Brand Templates download link more prominently.
+
+### 🗑️ Removed
+
+- Removed the `--ngrok` flag which is not required, but could potentially cause issues if certain environment variables are set.
+
 ## 2025-05-15
 
 ### 🐞 Fixed
@@ -12,7 +31,7 @@
 - Refreshed the OpenAPI yml spec `openapi/spec.yml` to be based on the latest Connect API design.
 - Patch and minor version changes to package dependencies in the `ecommerce_shop` and `playground` demos.
 - Moved `webpack.config.cjs` to `webpack.config.ts` for type checking.
-- Updated file name casing to be consistent, and added an elint rule to enforce this
+- Updated file name casing to be consistent, and added an eslint rule to enforce this
 - Updated `eslint`, `eslint-plugin-unicorn`, and `typescript-eslint`.
 
 ## 2024-12-19
@@ -21,7 +40,7 @@
 
 - Both demo projects now take advantage of the CORS support for the Connect API and make most requests directly from the frontend code
 - Updated HeyAPI to version 0.5, and TypeScript to version 5.5
-- Dependencies are now pinned to exact versions to reduce accidental incompatabilities
+- Dependencies are now pinned to exact versions to reduce accidental incompatibilities
 - Refreshed the OpenAPI yml spec `openapi/spec.yml` to be based on the latest Connect API design
 
 ## 2024-09-23

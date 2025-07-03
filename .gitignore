@@ -10,3 +10,9 @@ dist
 openapi-ts-error-*.log
 **/*/db.json
 **/public/exports
+.venv
+.ruff_cache
+.pytest_cache
+__pycache__
+database.db
+.claude

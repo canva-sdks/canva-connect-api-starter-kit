@@ -1,0 +1,46 @@
+{
+  "name": "realty-demo-frontend",
+  "description": "Web app for the Realty Commercial platform",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config ./webpack.config.ts --mode production",
+    "lint:types": "tsc",
+    "lint": "eslint . --config ../eslint.config.js",
+    "lint:fix": "eslint . --config ../eslint.config.js --fix",
+    "format": "prettier './**/*.{css,ts,tsx}' --no-config --write",
+    "format:check": "prettier './**/*.{css,ts,tsx}' --no-config --check --ignore-path",
+    "format:file": "prettier $1 --no-config --write"
+  },
+  "author": "Canva Pty Ltd.",
+  "license": "SEE LICENSE IN LICENSE.md in root directory",
+  "private": true,
+  "dependencies": {
+    "@canva/connect-api-ts": "file:../../../client/ts",
+    "@realty-demo/shared-models": "file:../shared-models/src",
+    "@emotion/react": "11.14.0",
+    "@emotion/styled": "11.14.0",
+    "@fontsource/roboto": "5.1.1",
+    "@mui/icons-material": "5.15.15",
+    "@mui/material": "5.15.15",
+    "axios": "^1.7.7",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "6.28.0"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "8.1.0",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@types/webpack": "5.28.5",
+    "@types/webpack-dev-server": "4.7.1",
+    "css-loader": "7.1.2",
+    "cssnano": "7.0.6",
+    "postcss-loader": "8.1.1",
+    "prettier": "3.4.2",
+    "style-loader": "4.0.0",
+    "terser-webpack-plugin": "5.3.11",
+    "ts-loader": "9.5.2",
+    "typescript": "5.5.4",
+    "webpack-dev-server": "5.2.0"
+  }
+}

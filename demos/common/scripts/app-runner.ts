@@ -1,7 +1,6 @@
 import { Context } from "./context";
 import * as chalk from "chalk";
 import * as Table from "cli-table3";
-import * as ngrok from "@ngrok/ngrok";
 import * as webpack from "webpack";
 import * as WebpackDevServer from "webpack-dev-server";
 import * as nodemon from "nodemon";
@@ -53,31 +52,7 @@ export class AppRunner {
       });
     });
 
-    if (ctx.ngrokEnabled) {
-      console.log(
-        warnChalk("Warning:"),
-        `ngrok exposes a local port via a public URL. Be mindful of what's exposed and shut down the server when it's not in use.\n`,
-      );
-    }
-
-    let url = ctx.backendUrl;
-    if (ctx.ngrokEnabled) {
-      try {
-        const ngrokListener = await ngrok.forward({
-          addr: ctx.backendPort,
-          // requires an `NGROK_AUTHTOKEN` env var to be set
-          authtoken_from_env: true,
-        });
-        url = ngrokListener.url() ?? url;
-      } catch (err) {
-        console.log(
-          errorChalk("Error:"),
-          `Unable to start ngrok server: ${err}`,
-        );
-      }
-    }
-
-    table.push(["Base URL (Backend)", linkChalk(url)]);
+    table.push(["Base URL (Backend)", linkChalk(ctx.backendUrl)]);
   };
 
   private readonly runWebpackDevServer = async (

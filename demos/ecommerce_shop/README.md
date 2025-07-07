@@ -10,6 +10,8 @@ A lightweight e-commerce shop demo that showcases how to integrate with the Canv
 - Creating individual designs in custom sizes from existing products.
 - Create multiple designs at once by adding products to your Canva Brand Templates.
 
-For **setup instructions** refer to the steps in the main README:
+## Brand Templates Setup
 
-<https://github.com/canva-sdks/canva-connect-api-starter-kit/blob/main/README.md#demos-e-commerce-shop>
+To get started with Brand Templates, you can install sample templates from [this Brand Template deck](https://www.canva.com/design/DAGGkcb61HQ/OJhMIQrmz2daIoxo8u3T2g/view).
+
+[See the main README for e-commerce shop demo instructions](../../README.md#demos-e-commerce-shop)

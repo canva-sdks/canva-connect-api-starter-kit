@@ -5,6 +5,7 @@
 ### 🔧 Changed
 
 - Updated the logo to match our Brix&Hart mock brand in `demos/realty`.
+- Updated dependencies across all demos
 
 ## 2025-07-07
 
@@ -20,7 +21,6 @@
 
 - Upgraded `webpack-dev-server` to version `5.2.2` from `5.2.0`.
 - Updated Brand Template selector components to display Brand Templates download link more prominently.
-- Updated dependencies across all demos and examples
 
 ### 🗑️ Removed
 

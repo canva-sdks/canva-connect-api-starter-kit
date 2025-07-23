@@ -25,24 +25,24 @@
   "dependencies": {
     "@hey-api/client-fetch": "0.5.0",
     "cookie-parser": "1.4.7",
-    "jose": "5.9.6"
+    "jose": "5.10.0"
   },
   "devDependencies": {
-    "@eslint/js": "9.23.0",
-    "@types/cookie-parser": "1.4.8",
-    "@types/node": "20.10.0",
+    "@eslint/js": "9.30.0",
+    "@types/cookie-parser": "1.4.9",
+    "@types/node": "20.19.2",
     "@types/yargs": "17.0.33",
-    "@typescript-eslint/eslint-plugin": "8.27.0",
-    "@typescript-eslint/parser": "8.27.0",
-    "eslint": "9.23.0",
+    "@typescript-eslint/eslint-plugin": "8.35.1",
+    "@typescript-eslint/parser": "8.35.1",
+    "eslint": "9.30.0",
     "eslint-plugin-jest": "28.11.0",
-    "eslint-plugin-react": "7.37.4",
-    "eslint-plugin-react-hooks": "4.6.2",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "5.2.0",
     "eslint-plugin-unicorn": "57.0.0",
-    "prettier": "3.4.2",
+    "prettier": "3.6.2",
     "ts-node": "10.9.2",
-    "typescript": "5.5.4",
-    "typescript-eslint": "8.27.0",
+    "typescript": "5.8.2",
+    "typescript-eslint": "8.35.1",
     "yargs": "17.7.2"
   }
 }

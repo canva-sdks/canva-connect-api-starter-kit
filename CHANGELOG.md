@@ -1,5 +1,11 @@
 # Changelog
 
+## 2025-07-23
+
+### 🔧 Changed
+
+- Updated the logo to match our Brix&Hart mock brand in `demos/realty`.
+
 ## 2025-07-07
 
 ### 🧰 Added
@@ -14,6 +20,7 @@
 
 - Upgraded `webpack-dev-server` to version `5.2.2` from `5.2.0`.
 - Updated Brand Template selector components to display Brand Templates download link more prominently.
+- Updated dependencies across all demos and examples
 
 ### 🗑️ Removed
 
@@ -67,7 +74,7 @@
 ### 🔧 Changed
 
 - Refreshed the OpenAPI yml spec `openapi/spec.yml` to be based on the latest Connect API design.
-- Changed the ecommerce_shop demo `.env` template format to now include `BASE_CANVA_CONNECT_AUTH_URL`. Older clones of this repo may encounter issues if the below is line is not added to their `demos/ecommerce_shop/.env` file:
+- Changed the ecommerce_shop demo `.env` template format to now include `BASE_CANVA_CONNECT_AUTH_URL`. Older clones of this repo may encounter issues if the below line is not added to their `demos/ecommerce_shop/.env` file:
 
   ```text
   BASE_CANVA_CONNECT_AUTH_URL=https://www.canva.com/api

@@ -111,8 +111,8 @@ export const SideBar = (): JSX.Element => {
         mt={1}
       >
         <img
-          src="/logo.svg"
-          alt="Realty Commercial Logo"
+          src="/brix-and-hart-logo.svg"
+          alt="Brix & Hart Logo"
           style={{ width: 140, height: 55, paddingLeft: 16 }}
         />
       </Box>

@@ -154,7 +154,7 @@ router.get(endpoints.AUTHORIZE, async (req, res) => {
   const url = getAuthorizationUrl(globals.redirectUri, state, codeChallenge);
   const cookieConfiguration: CookieOptions = {
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 20, // 20 minutes
+    maxAge: 1000 * 60 * 20, // 20 minutes
     sameSite: "lax", // since we will be redirecting back from Canva, we need the cookies to be sent with every request to our domain
     secure: process.env.NODE_ENV === "production",
     signed: true,

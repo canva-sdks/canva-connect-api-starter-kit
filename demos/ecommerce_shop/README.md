@@ -8,7 +8,7 @@ A lightweight e-commerce shop demo that showcases how to integrate with the Canv
 
 - Editing product images in Canva and displaying the updated designs back in the shop.
 - Creating individual designs in custom sizes from existing products.
-- Create multiple designs at once by adding products to your Canva Brand Templates.
+- Creating multiple designs at once by adding products to your Canva Brand Templates.
 
 ## Brand Templates Setup
 

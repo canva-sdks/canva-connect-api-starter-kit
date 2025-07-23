@@ -9,7 +9,7 @@ describe("crypto", () => {
   it("A random string, once base-64 encoded, can be decoded to the same value", () => {
     const rando = new Uint8Array(16);
     crypto.getRandomValues(rando);
-    const encoded = encodeBase64(rando);
+    const encoded = encodeBase64(rando.buffer);
     const decoded = decodeBase64(encoded);
     expect(decoded).toEqual(rando);
   });

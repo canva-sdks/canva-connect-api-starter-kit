@@ -17,15 +17,15 @@
   "dependencies": {
     "@canva/connect-api-ts": "file:../../../client/ts",
     "@emotion/react": "11.14.0",
-    "@emotion/styled": "11.14.0",
-    "@fontsource/roboto": "5.1.1",
+    "@emotion/styled": "11.14.1",
+    "@fontsource/roboto": "5.2.6",
     "@mui/icons-material": "5.15.15",
     "@mui/material": "5.15.15",
     "@mui/x-charts": "7.23.6",
     "canvas-confetti": "1.9.3",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-router-dom": "6.28.0"
+    "react-router-dom": "7.6.3"
   },
   "devDependencies": {
     "@svgr/webpack": "8.1.0",
@@ -33,13 +33,13 @@
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
     "css-loader": "7.1.2",
-    "cssnano": "7.0.6",
+    "cssnano": "7.0.7",
     "postcss-loader": "8.1.1",
-    "prettier": "3.4.2",
+    "prettier": "3.6.2",
     "style-loader": "4.0.0",
-    "terser-webpack-plugin": "5.3.11",
+    "terser-webpack-plugin": "5.3.14",
     "ts-loader": "9.5.2",
-    "typescript": "5.5.4",
+    "typescript": "5.8.2",
     "url-loader": "4.1.1",
     "webpack-dev-server": "5.2.2"
   }

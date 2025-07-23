@@ -60,7 +60,7 @@ export async function encrypt(text: string): Promise<EncryptedData> {
   // We need to store the initialization vector for decryption, but it's not considered
   // a "secret" so we can store it in plaintext.
   return {
-    iv: encodeBase64(iv),
+    iv: encodeBase64(iv.buffer),
     encryptedData: encodeBase64(encrypted),
   };
 }

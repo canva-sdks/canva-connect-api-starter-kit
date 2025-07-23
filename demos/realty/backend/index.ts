@@ -143,5 +143,5 @@ app.set(
 app.set("view engine", "pug");
 
 app.listen(port, () => {
-  console.log(`Realty Commercial backend listening on port ${port}`);
+  console.log(`Brix & Hart backend listening on port ${port}`);
 });

@@ -2,7 +2,7 @@
 
 Welcome to the **Connect API starter kit** for Canva's developers platform. 🎉
 
-This repo contains our openAPI specifications, as well as a demo ecommerce web application built with the Connect API. The complete documentation for the platform is at [canva.dev/docs/connect](https://www.canva.dev/docs/connect/).
+This repo contains our OpenAPI specifications, as well as a demo ecommerce web application built with the Connect API. The complete documentation for the platform is at [canva.dev/docs/connect](https://www.canva.dev/docs/connect/).
 
 ## Requirements
 

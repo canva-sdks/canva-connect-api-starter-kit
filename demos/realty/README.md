@@ -1,6 +1,6 @@
 # Demos: Real Estate
 
-Welcome to the **Realty Real Estate** demo! 🏠
+Welcome to the **Brix & Hart Real Estate** demo! 🏠
 
 A comprehensive real estate platform demo that showcases how to integrate with the Canva API. The demo demonstrates:
 

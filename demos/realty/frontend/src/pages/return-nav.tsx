@@ -40,7 +40,7 @@ export type CorrelationState = {
 
 const STEPS = [
   {
-    label: "Kick off return to Realty Commercial.",
+    label: "Kick off return to Brix & Hart.",
     description:
       "Starting return processing, reading query parameters, parsing correlation state.",
   },

@@ -32,7 +32,7 @@ export const ConnectButton = ({
         setIsAuthorized(true);
         const { profile } = await getUser();
         addAlert({
-          title: "The Canva for Realty Commercial integration is now connected",
+          title: "The Brix & Hart integration is now connected",
           body: `You're currently logged in as ${profile.display_name}.`,
           variant: "success",
           hideAfterMs: 5000,

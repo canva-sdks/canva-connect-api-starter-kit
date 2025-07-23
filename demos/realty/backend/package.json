@@ -1,7 +1,7 @@
 {
   "name": "realty-demo-backend",
   "version": "1.0.0",
-  "description": "Backend server for the Realty Commercial platform",
+  "description": "Backend server for the Brix & Hart platform",
   "scripts": {
     "lint:types": "tsc",
     "lint": "eslint .",
@@ -17,19 +17,19 @@
     "@canva/connect-api-ts": "file:../../../client/ts",
     "@realty-demo/shared-models": "file:../shared-models/src",
     "cors": "2.8.5",
-    "dotenv": "16.4.7",
+    "dotenv": "16.6.0",
     "express": "4.21.2",
-    "multer": "^1.4.5-lts.1",
-    "open": "10.1.0",
+    "multer": "2.0.1",
+    "open": "10.1.2",
     "pug": "3.0.3",
     "uuid": "11.1.0"
   },
   "devDependencies": {
-    "@types/cors": "2.8.17",
+    "@types/cors": "2.8.19",
     "@types/express": "4.17.21",
-    "@types/multer": "1.4.12",
+    "@types/multer": "2.0.0",
     "@types/uuid": "10.0.0",
-    "prettier": "3.4.2",
-    "typescript": "5.5.4"
+    "prettier": "3.6.2",
+    "typescript": "5.8.2"
   }
 }

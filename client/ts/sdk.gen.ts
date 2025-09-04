@@ -25,6 +25,12 @@ import type {
   GetAssetUploadJobData,
   GetAssetUploadJobError,
   GetAssetUploadJobResponse2,
+  CreateUrlAssetUploadJobData,
+  CreateUrlAssetUploadJobError,
+  CreateUrlAssetUploadJobResponse2,
+  GetUrlAssetUploadJobData,
+  GetUrlAssetUploadJobError,
+  GetUrlAssetUploadJobResponse2,
   CreateDesignAutofillJobData,
   CreateDesignAutofillJobError,
   CreateDesignAutofillJobResponse2,
@@ -263,6 +269,72 @@ export class AssetService {
     >({
       ...options,
       url: "/v1/asset-uploads/{jobId}",
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to upload an asset from a URL to the user's content library. Supported file types for assets are listed in the [Assets API overview](https://www.canva.dev/docs/connect/api-reference/assets/).
+   *
+   * <Note>
+   * Uploading a video asset from a URL is limited to a maximum 100MB file size. For importing larger video files, use the [Create asset upload job API](https://www.canva.dev/docs/connect/api-reference/assets/create-asset-upload-job/).
+   * </Note>
+   *
+   * <Note>
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of asset upload jobs created with this API using the [Get asset upload job via URL API](https://www.canva.dev/docs/connect/api-reference/assets/get-url-asset-upload-job/).
+   * </Note>
+   */
+  public static createUrlAssetUploadJob<ThrowOnError extends boolean = false>(
+    options: Options<CreateUrlAssetUploadJobData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).post<
+      CreateUrlAssetUploadJobResponse2,
+      CreateUrlAssetUploadJobError,
+      ThrowOnError
+    >({
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+      url: "/v1/url-asset-uploads",
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Get the result of an asset upload job that was created using the [Create asset upload job via URL API](https://www.canva.dev/docs/connect/api-reference/assets/create-url-asset-upload-job/).
+   *
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   */
+  public static getUrlAssetUploadJob<ThrowOnError extends boolean = false>(
+    options: Options<GetUrlAssetUploadJobData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).get<
+      GetUrlAssetUploadJobResponse2,
+      GetUrlAssetUploadJobError,
+      ThrowOnError
+    >({
+      ...options,
+      url: "/v1/url-asset-uploads/{jobId}",
     });
   }
 }
@@ -742,6 +814,8 @@ export class DesignService {
    * - Set height and width dimensions for a custom design.
    *
    * Additionally, you can also provide the `asset_id` of an asset in the user's [projects](https://www.canva.com/help/find-designs-and-folders/) to add to the new design. Currently, this only supports image assets. To list the assets in a folder in the user's projects, use the [List folder items API](https://www.canva.dev/docs/connect/api-reference/folders/list-folder-items/).
+   *
+   * NOTE: Blank designs created with this API are automatically deleted if they're not edited within 7 days. These blank designs bypass the user's Canva trash and are permanently deleted.
    */
   public static createDesign<ThrowOnError extends boolean = false>(
     options?: Options<CreateDesignData, ThrowOnError>,
@@ -884,16 +958,6 @@ export class DesignImportService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to import an external file from a URL as a new design in Canva.
    *
    * Supported file types for imports are listed in [Design imports overview](https://www.canva.dev/docs/connect/api-reference/design-imports/#supported-file-types).
@@ -922,16 +986,6 @@ export class DesignImportService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Gets the result of a URL import job created using the [Create URL import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/create-url-import-job/).
    *
    * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
@@ -1115,9 +1169,13 @@ export class FolderService {
   }
 
   /**
-   * Creates a folder in either the top level of a Canva user's
-   * [projects](https://www.canva.com/help/find-designs-and-folders/) (using the ID `root`), or
-   * another folder (using the parent folder's ID). When a folder is successfully created, the
+   * Creates a folder in one of the following locations:
+   *
+   * - The top level of a Canva user's [projects](https://www.canva.com/help/find-designs-and-folders/) (using the ID `root`),
+   * - The user's Uploads folder (using the ID `uploads`),
+   * - Another folder (using the parent folder's ID).
+   *
+   * When a folder is successfully created, the
    * endpoint returns its folder ID, along with other information.
    */
   public static createFolder<ThrowOnError extends boolean = false>(
@@ -1259,16 +1317,6 @@ export class OauthService {
 
 export class ResizeService {
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * <Note>
    *
    * To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
@@ -1285,7 +1333,12 @@ export class ResizeService {
    * - Use a preset design type.
    * - Set height and width dimensions for a custom design.
    *
-   * NOTE: [Canva docs](https://www.canva.com/create/documents/) can't be resized, and other design types can't be resized to a Canva doc.
+   * Note the following behaviors and restrictions when resizing designs:
+   * - Designs can be resized to a maximum area of 25,000,000 pixels squared.
+   * - Resizing designs using the Connect API always creates a new design. In-place resizing is currently not available in the Connect API, but can be done in the Canva UI.
+   * - Resizing a multi-page design results in all pages of the design being resized. Resizing a section of a design is only available in the Canva UI.
+   * - [Canva docs](https://www.canva.com/create/documents/) can't be resized, and other design types can't be resized to a Canva doc.
+   * - Canva Code designs can't be resized, and other design types can't be resized to a Canva Code design.
    *
    * <Note>
    * For more information on the workflow for using asynchronous jobs,
@@ -1312,16 +1365,6 @@ export class ResizeService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * <Note>
    *
    * To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
@@ -1370,16 +1413,6 @@ export class UserService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Lists the API capabilities for the user account associated with the provided access token. For more information, see [Capabilities](https://www.canva.dev/docs/connect/capabilities/).
    */
   public static getUserCapabilities<ThrowOnError extends boolean = false>(

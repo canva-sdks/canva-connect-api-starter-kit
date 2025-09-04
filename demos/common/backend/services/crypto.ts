@@ -6,9 +6,9 @@ export type EncryptedData = {
 };
 
 // exported for testing only
-export function decodeBase64(text: string): Uint8Array {
+export function decodeBase64(text: string): Uint8Array<ArrayBuffer> {
   const buffer = Buffer.from(text, "base64");
-  return Uint8Array.from(buffer);
+  return new Uint8Array(buffer);
 }
 
 // exported for testing only
@@ -90,10 +90,13 @@ export async function decrypt(token: EncryptedData): Promise<string> {
   );
   // To decrypt, we need to supply the name of the encryption algorithm (AES-GCM here),
   // the initialization vector that was used to encrypt the data, and the key itself.
+  const iv = decodeBase64(token.iv);
+  const encryptedData = decodeBase64(token.encryptedData);
+
   const decrypted = await crypto.subtle.decrypt(
-    { name: ENCRYPTION_ALGORITHM, iv: decodeBase64(token.iv) },
+    { name: ENCRYPTION_ALGORITHM, iv },
     key,
-    decodeBase64(token.encryptedData),
+    encryptedData,
   );
   return new TextDecoder("utf-8").decode(decrypted);
 }

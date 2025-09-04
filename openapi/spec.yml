@@ -8,7 +8,7 @@ info:
     name: ©2023 All Rights Reserved
   termsOfService: https://www.canva.com/trust/legal/
   title: Canva Connect API
-  version: latest
+  version: 2024-06-18
 servers:
   - description: Canva Connect API
     url: https://api.canva.com/rest
@@ -34,7 +34,7 @@ paths:
         verify JWTs sent to app backends.
       operationId: getAppJwks
       parameters:
-        - description: The app id
+        - description: The app ID.
           explode: false
           in: path
           name: appId
@@ -248,6 +248,114 @@ paths:
                   $ref: "#/components/examples/FailedAssetUploadJobExample"
               schema:
                 $ref: "#/components/schemas/GetAssetUploadJobResponse"
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Error Response
+      security:
+        - oauthAuthCode:
+            - asset:read
+      tags:
+        - asset
+      x-rate-limit-per-client-user: 180
+  /v1/url-asset-uploads:
+    post:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to upload an asset from a URL to the user's content library. Supported file types for assets are listed in the [Assets API overview](https://www.canva.dev/docs/connect/api-reference/assets/).
+
+        <Note>
+         Uploading a video asset from a URL is limited to a maximum 100MB file size. For importing larger video files, use the [Create asset upload job API](https://www.canva.dev/docs/connect/api-reference/assets/create-asset-upload-job/).
+        </Note>
+
+        <Note>
+        For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of asset upload jobs created with this API using the [Get asset upload job via URL API](https://www.canva.dev/docs/connect/api-reference/assets/get-url-asset-upload-job/).
+        </Note>
+      operationId: createUrlAssetUploadJob
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUrlAssetUploadJobRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                in_progress:
+                  $ref: "#/components/examples/InProgressAssetUploadJobExample"
+                success:
+                  $ref: "#/components/examples/SuccessAssetUploadJobExample"
+                failed:
+                  $ref: "#/components/examples/FailedAssetUploadJobExample"
+              schema:
+                $ref: "#/components/schemas/CreateUrlAssetUploadJobResponse"
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Error Response
+      security:
+        - oauthAuthCode:
+            - asset:write
+      tags:
+        - asset
+      x-rate-limit-per-client-user: 30
+  /v1/url-asset-uploads/{jobId}:
+    get:
+      description: |-
+        <Warning>
+
+        This API is currently provided as a preview. Be aware of the following:
+
+        - There might be unannounced breaking changes.
+        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+
+        </Warning>
+
+        Get the result of an asset upload job that was created using the [Create asset upload job via URL API](https://www.canva.dev/docs/connect/api-reference/assets/create-url-asset-upload-job/).
+
+        You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+      operationId: getUrlAssetUploadJob
+      parameters:
+        - description: The asset upload job ID.
+          explode: false
+          in: path
+          name: jobId
+          required: true
+          schema:
+            pattern: "^[a-zA-Z0-9_-]{1,50}$"
+            type: string
+          style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                in_progress:
+                  $ref: "#/components/examples/InProgressAssetUploadJobExample"
+                success:
+                  $ref: "#/components/examples/SuccessAssetUploadJobExample"
+                failed:
+                  $ref: "#/components/examples/FailedAssetUploadJobExample"
+              schema:
+                $ref: "#/components/schemas/GetUrlAssetUploadJobResponse"
           description: OK
         default:
           content:
@@ -1167,6 +1275,8 @@ paths:
         - Set height and width dimensions for a custom design.
 
         Additionally, you can also provide the `asset_id` of an asset in the user's [projects](https://www.canva.com/help/find-designs-and-folders/) to add to the new design. Currently, this only supports image assets. To list the assets in a folder in the user's projects, use the [List folder items API](https://www.canva.dev/docs/connect/api-reference/folders/list-folder-items/).
+
+        NOTE: Blank designs created with this API are automatically deleted if they're not edited within 7 days. These blank designs bypass the user's Canva trash and are permanently deleted.
       operationId: createDesign
       requestBody:
         content:
@@ -1453,16 +1563,6 @@ paths:
   /v1/url-imports:
     post:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
         Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to import an external file from a URL as a new design in Canva.
 
         Supported file types for imports are listed in [Design imports overview](https://www.canva.dev/docs/connect/api-reference/design-imports/#supported-file-types).
@@ -1508,16 +1608,6 @@ paths:
   /v1/url-imports/{jobId}:
     get:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
         Gets the result of a URL import job created using the [Create URL import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/create-url-import-job/).
 
         You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
@@ -1871,9 +1961,13 @@ paths:
   /v1/folders:
     post:
       description: |-
-        Creates a folder in either the top level of a Canva user's
-        [projects](https://www.canva.com/help/find-designs-and-folders/) (using the ID `root`), or
-        another folder (using the parent folder's ID). When a folder is successfully created, the
+        Creates a folder in one of the following locations:
+
+        - The top level of a Canva user's [projects](https://www.canva.com/help/find-designs-and-folders/) (using the ID `root`),
+        - The user's Uploads folder (using the ID `uploads`),
+        - Another folder (using the parent folder's ID).
+
+        When a folder is successfully created, the
         endpoint returns its folder ID, along with other information.
       operationId: createFolder
       requestBody:
@@ -2045,16 +2139,6 @@ paths:
   /v1/resizes:
     post:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
         <Note>
 
         To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
@@ -2071,7 +2155,12 @@ paths:
           - Use a preset design type.
           - Set height and width dimensions for a custom design.
 
-        NOTE: [Canva docs](https://www.canva.com/create/documents/) can't be resized, and other design types can't be resized to a Canva doc.
+        Note the following behaviors and restrictions when resizing designs:
+        - Designs can be resized to a maximum area of 25,000,000 pixels squared.
+        - Resizing designs using the Connect API always creates a new design. In-place resizing is currently not available in the Connect API, but can be done in the Canva UI.
+        - Resizing a multi-page design results in all pages of the design being resized. Resizing a section of a design is only available in the Canva UI.
+        - [Canva docs](https://www.canva.com/create/documents/) can't be resized, and other design types can't be resized to a Canva doc.
+        - Canva Code designs can't be resized, and other design types can't be resized to a Canva Code design.
 
         <Note>
         For more information on the workflow for using asynchronous jobs,
@@ -2123,16 +2212,6 @@ paths:
   /v1/resizes/{jobId}:
     get:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
         <Note>
 
         To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
@@ -2213,18 +2292,9 @@ paths:
       x-rate-limit-per-client-user: 10
   /v1/users/me/capabilities:
     get:
-      description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
-        Lists the API capabilities for the user account associated with the provided access token. For more information, see [Capabilities](https://www.canva.dev/docs/connect/capabilities/).
+      description:
+        "Lists the API capabilities for the user account associated with\
+        \ the provided access token. For more information, see [Capabilities](https://www.canva.dev/docs/connect/capabilities/)."
       operationId: getUserCapabilities
       responses:
         "200":
@@ -2516,8 +2586,8 @@ components:
               urls:
                 edit_url: https://www.canva.com/design/DAGhRehVa2c/0L_1s4UXSpZhls8EtPaRKw/edit
                 view_url: https://www.canva.com/design/DAGhRehVa2c/0L_1s4UXSpZhls8EtPaRKw/view
-              created_at: "1742856750,"
-              updated_at: "1742856752,"
+              created_at: 1742856750
+              updated_at: 1742856752
               page_count: 5
     FailedResizeJobExample:
       summary: Failed job
@@ -2529,6 +2599,16 @@ components:
             code: design_resize_error
             message: Failed to resize the design
   parameters:
+    appId:
+      description: The app ID.
+      explode: false
+      in: path
+      name: appId
+      required: true
+      schema:
+        pattern: "^[a-zA-Z0-9_-]{1,50}$"
+        type: string
+      style: simple
     brandTemplateId:
       description: The brand template ID.
       explode: false
@@ -2582,11 +2662,32 @@ components:
         pattern: "^[a-zA-Z0-9_-]{1,50}$"
         type: string
       style: simple
+    transactionIdParameter:
+      description: The editing transaction ID.
+      example: EDT123456
+      explode: false
+      in: path
+      name: transactionId
+      required: true
+      schema:
+        pattern: "^[a-zA-Z0-9_-]{1,50}$"
+        type: string
+      style: simple
     exportId:
       description: The export job ID.
       explode: false
       in: path
       name: exportId
+      required: true
+      schema:
+        pattern: "^[a-zA-Z0-9_-]{1,50}$"
+        type: string
+      style: simple
+    fileIdParameter:
+      description: The file ID.
+      explode: false
+      in: path
+      name: fileId
       required: true
       schema:
         pattern: "^[a-zA-Z0-9_-]{1,50}$"
@@ -2669,6 +2770,40 @@ components:
         - kty
         - "n"
       type: object
+    CreateUrlAssetUploadJobRequest:
+      properties:
+        name:
+          description: A name for the asset.
+          example: My Awesome Asset
+          maxLength: 255
+          minLength: 1
+          type: string
+        url:
+          description:
+            The URL of the file to import. This URL must be accessible
+            from the internet and be publicly available.
+          example: https://example.com/my_asset_to_upload.jpg
+          maxLength: 2048
+          minLength: 8
+          type: string
+      required:
+        - name
+        - url
+      type: object
+    CreateUrlAssetUploadJobResponse:
+      properties:
+        job:
+          $ref: "#/components/schemas/AssetUploadJob"
+      required:
+        - job
+      type: object
+    GetUrlAssetUploadJobResponse:
+      properties:
+        job:
+          $ref: "#/components/schemas/AssetUploadJob"
+      required:
+        - job
+      type: object
     GetAssetResponse:
       properties:
         asset:
@@ -2749,12 +2884,15 @@ components:
           example: 1692928800
           format: int64
           type: integer
+        owner:
+          $ref: "#/components/schemas/TeamUserSummary"
         thumbnail:
           $ref: "#/components/schemas/Thumbnail"
       required:
         - created_at
         - id
         - name
+        - owner
         - tags
         - type
         - updated_at
@@ -2811,9 +2949,7 @@ components:
         - updated_at
       type: object
     AssetType:
-      description:
-        "Type of an asset. Support for `video` assets is currently provided\
-        \ as a [preview](https://www.canva.dev/docs/connect/api-reference/assets/#videos)."
+      description: Type of an asset.
       enum:
         - image
         - video
@@ -3208,12 +3344,10 @@ components:
       enum:
         - any
         - non_empty
-        - empty
       type: string
       x-enum-descriptions:
         - Brand templates with and without dataset definitions.
         - Brand templates with one or more data fields defined.
-        - Brand templates with no data fields defined.
     ListBrandTemplatesResponse:
       properties:
         continuation:
@@ -3398,6 +3532,8 @@ components:
             using the format `[user_id:team_id]`. If the `assignee_id` parameter is specified, you
             must mention the assignee in the message.
           example: "Great work [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!"
+          maxLength: 2048
+          minLength: 1
           type: string
         assignee_id:
           description: |-
@@ -3420,6 +3556,8 @@ components:
             You can also mention users in your message by specifying their User ID and Team ID
             using the format `[user_id:team_id]`.
           example: Thanks!
+          maxLength: 2048
+          minLength: 1
           type: string
       required:
         - attached_to
@@ -3434,6 +3572,8 @@ components:
             You can also mention users in your message by specifying their User ID and Team ID
             using the format `[user_id:team_id]`.
           example: Thanks!
+          maxLength: 2048
+          minLength: 1
           type: string
       required:
         - message_plaintext
@@ -3469,6 +3609,8 @@ components:
             using the format `[user_id:team_id]`. If the `assignee_id` parameter is specified, you
             must mention the assignee in the message.
           example: "Great work [oUnPjZ2k2yuhftbWF7873o:oBpVhLW22VrqtwKgaayRbP]!"
+          maxLength: 2048
+          minLength: 1
           type: string
         assignee_id:
           description: |-
@@ -5065,6 +5207,8 @@ components:
         - autofill_data_invalid
         - feature_not_available
         - license_required
+        - input_unsafe
+        - display_name_unavailable
       type: string
     CreateDesignExportJobRequest:
       description: |-
@@ -5606,6 +5750,7 @@ components:
           description: |-
             The folder ID of the parent folder. To create a new folder at the top level of a user's
             [projects](https://www.canva.com/help/find-designs-and-folders/), use the ID `root`.
+            To create it in their Uploads folder, use `uploads`.
           example: FAF2lZtloor
           maxLength: 50
           minLength: 1
@@ -6169,6 +6314,7 @@ components:
         - thumbnail_generation_error
         - design_resize_error
         - create_design_error
+        - trial_quota_exceeded
       type: string
     DesignResizeError:
       description:

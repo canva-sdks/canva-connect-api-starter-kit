@@ -1,5 +1,18 @@
 # Changelog
 
+## 2025-09-04
+
+### 🔧 Changed
+
+- Updated TypeScript to version 5.9.2
+- Updated dependencies across all demos
+- Refreshed the OpenAPI yml spec `openapi/spec.yml` to be based on the latest Connect API
+
+### 🐞 Fixed
+
+- Fixed bug in `demos/realty`: Updated field mapping validation logic to only check for fields that are present in the template being created.
+- Fixed compatibility issues with TypeScript 5.9.2 in crypto.ts files
+
 ## 2025-07-23
 
 ### 🔧 Changed

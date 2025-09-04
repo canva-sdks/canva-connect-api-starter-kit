@@ -57,6 +57,25 @@ export type JsonWebKey = {
   use?: string;
 };
 
+export type CreateUrlAssetUploadJobRequest = {
+  /**
+   * A name for the asset.
+   */
+  name: string;
+  /**
+   * The URL of the file to import. This URL must be accessible from the internet and be publicly available.
+   */
+  url: string;
+};
+
+export type CreateUrlAssetUploadJobResponse = {
+  job: AssetUploadJob;
+};
+
+export type GetUrlAssetUploadJobResponse = {
+  job: AssetUploadJob;
+};
+
 export type GetAssetResponse = {
   asset: Asset;
 };
@@ -110,6 +129,7 @@ export type Asset = {
    * Unix Epoch).
    */
   updated_at: number;
+  owner: TeamUserSummary;
   thumbnail?: Thumbnail;
 };
 
@@ -148,12 +168,12 @@ export type AssetSummary = {
 };
 
 /**
- * Type of an asset. Support for `video` assets is currently provided as a [preview](https://www.canva.dev/docs/connect/api-reference/assets/#videos).
+ * Type of an asset.
  */
 export type AssetType = "image" | "video";
 
 /**
- * Type of an asset. Support for `video` assets is currently provided as a [preview](https://www.canva.dev/docs/connect/api-reference/assets/#videos).
+ * Type of an asset.
  */
 export const AssetType = {
   IMAGE: "image",
@@ -440,7 +460,7 @@ export type AutofillError = {
   message: string;
 };
 
-export type DatasetFilter = "any" | "non_empty" | "empty";
+export type DatasetFilter = "any" | "non_empty";
 
 export const DatasetFilter = {
   /**
@@ -451,10 +471,6 @@ export const DatasetFilter = {
    * Brand templates with one or more data fields defined.
    */
   NON_EMPTY: "non_empty",
-  /**
-   * Brand templates with no data fields defined.
-   */
-  EMPTY: "empty",
 } as const;
 
 export type ListBrandTemplatesResponse = {
@@ -1911,7 +1927,9 @@ export type ErrorCode =
   | "design_not_fillable"
   | "autofill_data_invalid"
   | "feature_not_available"
-  | "license_required";
+  | "license_required"
+  | "input_unsafe"
+  | "display_name_unavailable";
 
 /**
  * A short string indicating what failed. This field can be used to handle errors programmatically.
@@ -1974,6 +1992,8 @@ export const ErrorCode = {
   AUTOFILL_DATA_INVALID: "autofill_data_invalid",
   FEATURE_NOT_AVAILABLE: "feature_not_available",
   LICENSE_REQUIRED: "license_required",
+  INPUT_UNSAFE: "input_unsafe",
+  DISPLAY_NAME_UNAVAILABLE: "display_name_unavailable",
 } as const;
 
 /**
@@ -2451,6 +2471,7 @@ export type CreateFolderRequest = {
   /**
    * The folder ID of the parent folder. To create a new folder at the top level of a user's
    * [projects](https://www.canva.com/help/find-designs-and-folders/), use the ID `root`.
+   * To create it in their Uploads folder, use `uploads`.
    */
   parent_folder_id: string;
 };
@@ -2916,12 +2937,14 @@ export const DesignResizeStatus = {
 export type DesignResizeErrorCode =
   | "thumbnail_generation_error"
   | "design_resize_error"
-  | "create_design_error";
+  | "create_design_error"
+  | "trial_quota_exceeded";
 
 export const DesignResizeErrorCode = {
   THUMBNAIL_GENERATION_ERROR: "thumbnail_generation_error",
   DESIGN_RESIZE_ERROR: "design_resize_error",
   CREATE_DESIGN_ERROR: "create_design_error",
+  TRIAL_QUOTA_EXCEEDED: "trial_quota_exceeded",
 } as const;
 
 /**
@@ -3290,6 +3313,11 @@ export type ApprovalResponseAction = {
 };
 
 /**
+ * The app ID.
+ */
+export type appId = string;
+
+/**
  * The brand template ID.
  */
 export type brandTemplateId = string;
@@ -3315,9 +3343,19 @@ export type replyId = string;
 export type designId = string;
 
 /**
+ * The editing transaction ID.
+ */
+export type transactionIdParameter = string;
+
+/**
  * The export job ID.
  */
 export type exportId = string;
+
+/**
+ * The file ID.
+ */
+export type fileIdParameter = string;
 
 /**
  * The folder ID.
@@ -3328,7 +3366,7 @@ export type GetAppJwksData = {
   body?: never;
   path: {
     /**
-     * The app id
+     * The app ID.
      */
     appId: string;
   };
@@ -3511,6 +3549,63 @@ export type GetAssetUploadJobResponses = {
 
 export type GetAssetUploadJobResponse2 =
   GetAssetUploadJobResponses[keyof GetAssetUploadJobResponses];
+
+export type CreateUrlAssetUploadJobData = {
+  body: CreateUrlAssetUploadJobRequest;
+  url: "/v1/url-asset-uploads";
+};
+
+export type CreateUrlAssetUploadJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type CreateUrlAssetUploadJobError =
+  CreateUrlAssetUploadJobErrors[keyof CreateUrlAssetUploadJobErrors];
+
+export type CreateUrlAssetUploadJobResponses = {
+  /**
+   * OK
+   */
+  200: CreateUrlAssetUploadJobResponse;
+};
+
+export type CreateUrlAssetUploadJobResponse2 =
+  CreateUrlAssetUploadJobResponses[keyof CreateUrlAssetUploadJobResponses];
+
+export type GetUrlAssetUploadJobData = {
+  body?: never;
+  path: {
+    /**
+     * The asset upload job ID.
+     */
+    jobId: string;
+  };
+  query?: never;
+  url: "/v1/url-asset-uploads/{jobId}";
+};
+
+export type GetUrlAssetUploadJobErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type GetUrlAssetUploadJobError =
+  GetUrlAssetUploadJobErrors[keyof GetUrlAssetUploadJobErrors];
+
+export type GetUrlAssetUploadJobResponses = {
+  /**
+   * OK
+   */
+  200: GetUrlAssetUploadJobResponse;
+};
+
+export type GetUrlAssetUploadJobResponse2 =
+  GetUrlAssetUploadJobResponses[keyof GetUrlAssetUploadJobResponses];
 
 export type CreateDesignAutofillJobData = {
   body?: CreateDesignAutofillJobRequest;

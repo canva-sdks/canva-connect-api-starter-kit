@@ -9,6 +9,6 @@
   "license": "SEE LICENSE IN LICENSE.md in root directory",
   "private": true,
   "devDependencies": {
-    "typescript": "5.8.2"
+    "typescript": "5.9.2"
   }
 }

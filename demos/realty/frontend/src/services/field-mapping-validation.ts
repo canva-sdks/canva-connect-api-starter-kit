@@ -16,14 +16,7 @@ export type FieldMapping = {
 export type FieldMappingError = {
   field: string;
   reason: string;
-  type:
-    | "missing_broker"
-    | "missing_broker2"
-    | "insufficient_images"
-    | "unknown_field"
-    | "invalid_field_type"
-    | "no_dataset"
-    | "missing_field";
+  type: "unknown_field" | "invalid_field_type" | "no_dataset";
 };
 
 type FieldMappingConfig = {
@@ -100,53 +93,6 @@ const createMapping = (
   };
 };
 
-const getFieldMappingError = (
-  fieldName: string,
-  dataset: string[],
-  config: FieldMappingConfig,
-  context: ValidationContext,
-): FieldMappingError | null => {
-  if (dataset.includes(fieldName)) {
-    return null;
-  }
-
-  // if the field is optional, we can skip it without error
-  if (config.optional) {
-    return null;
-  }
-
-  // all non-optional fields that are not broker fields are required
-  if (!config.brokerField) {
-    return {
-      field: fieldName,
-      reason: `Field "${fieldName}" is missing from in the brand template`,
-      type: "missing_field",
-    };
-  }
-
-  // broker fields
-
-  // missing broker field for the first agent found, and we need at least one agent
-  if (config.brokerIndex === 0 && context.requiredAgentCount > 0) {
-    return {
-      field: fieldName,
-      reason: "This field requires the first agent to be selected",
-      type: "missing_broker",
-    };
-  }
-
-  if (config.brokerIndex === 1 && context.requiredAgentCount > 1) {
-    return {
-      field: fieldName,
-      reason: "This field requires the second agent to be selected",
-      type: "missing_broker2",
-    };
-  }
-
-  // if we get here, the field is a broker field and we've checked for the required agent count
-  return null;
-};
-
 export const validateFieldMappings = async (
   template: BrandTemplate,
   context: ValidationContext,
@@ -173,18 +119,17 @@ export const validateFieldMappings = async (
 
     const datasetFields = Object.keys(response.dataset);
 
-    // Check for missing fields from the configuration
-    Object.keys(FIELD_MAPPING_CONFIG).forEach((fieldName) => {
+    // Only validate fields that exist in the template's dataset
+    datasetFields.forEach((fieldName) => {
       const config = FIELD_MAPPING_CONFIG[fieldName];
-      const error = getFieldMappingError(
-        fieldName,
-        datasetFields,
-        config,
-        context,
-      );
 
-      if (error) {
-        errors.push(error);
+      if (!config) {
+        // Field exists in template but not in our configuration
+        errors.push({
+          field: fieldName,
+          reason: `Field "${fieldName}" exists in template but is not supported by the application`,
+          type: "unknown_field",
+        });
         return;
       }
 

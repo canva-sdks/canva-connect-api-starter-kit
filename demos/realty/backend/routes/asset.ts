@@ -25,7 +25,8 @@ router.post(
     }
 
     try {
-      const blob = new Blob([req.file.buffer], {
+      const buffer = new Uint8Array(req.file.buffer);
+      const blob = new Blob([buffer], {
         type: "application/octet-stream",
       });
 

@@ -1,3 +1,4 @@
+import type { JSX } from "react";
 import { useState, useCallback } from "react";
 import { DemoButton } from "src/components";
 import { useAppContext } from "src/context";

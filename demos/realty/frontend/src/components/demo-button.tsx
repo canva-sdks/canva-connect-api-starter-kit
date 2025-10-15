@@ -2,6 +2,7 @@ import { Button as MUIButton, CircularProgress } from "@mui/material";
 import type { ButtonProps as MUIButtonProps } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import type { SxProps, Theme } from "@mui/material/styles";
+import type { JSX } from "react";
 
 /**
  * Available button variants for the demo application

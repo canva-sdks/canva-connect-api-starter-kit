@@ -11,6 +11,7 @@ import type {
   ButtonProps as MUIButtonProps,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import type { JSX } from "react";
 
 /**
  * Props for the DemoAlert component

@@ -1,4 +1,5 @@
 import type { BrandTemplate } from "@canva/connect-api-ts/types.gen";
+import type { JSX } from "react";
 import { createContext, useContext, useState } from "react";
 
 export interface CampaignContextType {

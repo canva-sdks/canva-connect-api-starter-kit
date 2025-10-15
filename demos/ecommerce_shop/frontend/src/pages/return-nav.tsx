@@ -13,6 +13,7 @@ import {
   stepConnectorClasses,
   styled,
 } from "@mui/material";
+import type { JSX } from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { NavBar } from "src/components";

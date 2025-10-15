@@ -1,5 +1,6 @@
 import { HelpOutline } from "@mui/icons-material";
 import { Chip, Tooltip, useTheme } from "@mui/material";
+import type { JSX } from "react";
 
 /**
  * Props for the DeveloperNote component

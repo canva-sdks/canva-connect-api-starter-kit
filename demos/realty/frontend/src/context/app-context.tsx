@@ -1,4 +1,4 @@
-import type { Dispatch, ReactNode, SetStateAction } from "react";
+import type { Dispatch, JSX, ReactNode, SetStateAction } from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { checkAuthorizationStatus } from "src/services";
 import type { ShopAlertOptions, ShopAlert } from "src/components";

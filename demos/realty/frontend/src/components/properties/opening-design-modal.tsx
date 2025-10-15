@@ -1,4 +1,5 @@
 import { Box, Modal, CircularProgress, Typography, Paper } from "@mui/material";
+import type { JSX } from "react";
 
 /**
  * Props for the OpeningDesignModal component

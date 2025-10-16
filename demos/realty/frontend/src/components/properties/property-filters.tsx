@@ -13,6 +13,7 @@ import {
   useTheme,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import type { JSX } from "react";
 import { memo, useCallback } from "react";
 
 /**

@@ -3,6 +3,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { ConnectButton } from "../home/connect-button";
 import { useAppContext } from "src/context";
+import type { JSX } from "react";
 
 const darkBlue = "#0A2A43";
 const darkGreen = "#008009";

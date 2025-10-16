@@ -10,6 +10,7 @@ import type {
   ButtonProps as MUIButtonProps,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import type { JSX } from "react";
 
 interface DemoAlertProps extends MUIAlertProps {
   alertTitle: React.ReactNode;

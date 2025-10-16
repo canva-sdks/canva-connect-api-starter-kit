@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { CanvaIcon } from "src/components/canva-icon";
 import { DemoButton } from "src/components/demo-button";
 import { Paths } from "src/routes";
+import type { JSX } from "react";
 import { useCallback } from "react";
 
 /**

@@ -1,5 +1,6 @@
 import { Button as MUIButton, CircularProgress } from "@mui/material";
 import type { ButtonProps as MUIButtonProps } from "@mui/material";
+import type { JSX } from "react";
 
 type DemoButtonVariant = "primary" | "secondary" | "destructive";
 

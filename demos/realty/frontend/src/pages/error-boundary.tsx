@@ -9,6 +9,7 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { Box, Stack, Typography } from "@mui/material";
 import { DemoButton } from "src/components";
 import { Paths } from "src/routes";
+import type { JSX } from "react";
 
 const NotFound = (): JSX.Element => {
   const navigate = useNavigate();

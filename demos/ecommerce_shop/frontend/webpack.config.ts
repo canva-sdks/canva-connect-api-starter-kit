@@ -23,6 +23,8 @@ export function buildConfig({
         src: path.resolve(__dirname, "src"),
       },
       extensions: [".ts", ".tsx", ".js", ".css", ".svg", ".woff", ".woff2"],
+      // '...' is important here – it keeps the default webpack conditionNames
+      conditionNames: ["require", "..."],
     },
     infrastructureLogging: {
       level: "none",

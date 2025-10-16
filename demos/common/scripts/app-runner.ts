@@ -62,7 +62,7 @@ export class AppRunner {
   ): Promise<WebpackDevServer> => {
     const runtimeWebpackConfig = buildConfig();
 
-    const compiler = webpack(runtimeWebpackConfig);
+    const compiler = webpack(runtimeWebpackConfig) as webpack.Compiler;
     const server = new WebpackDevServer(
       runtimeWebpackConfig.devServer,
       compiler,

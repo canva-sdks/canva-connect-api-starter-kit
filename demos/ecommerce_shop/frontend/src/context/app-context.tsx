@@ -1,4 +1,4 @@
-import type { Dispatch, ReactNode, SetStateAction } from "react";
+import type { Dispatch, JSX, ReactNode, SetStateAction } from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 import type { Services } from "src/services";
 import { checkForAccessToken, installServices } from "src/services";

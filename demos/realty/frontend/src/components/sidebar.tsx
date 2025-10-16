@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Paths } from "src/routes/routes";
+import type { JSX } from "react";
 import { useCallback } from "react";
 import ListingsIcon from "src/components/icons/listing.svg";
 import AssetsIcon from "src/components/icons/asset.svg";

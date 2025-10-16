@@ -16,8 +16,7 @@
     "demos/realty/frontend",
     "demos/realty/backend",
     "demos/realty/shared-models",
-    "client",
-    "examples"
+    "client"
   ],
   "engines": {
     "node": ">=20.14.0"
@@ -27,6 +26,7 @@
     "generate": "cd client && npm run generate",
     "demo:ecommerce": "cd demos/ecommerce_shop && npm start",
     "demo:playground": "cd demos/playground && npm start",
-    "demo:realty": "cd demos/realty && npm start"
+    "demo:realty": "cd demos/realty && npm start",
+    "lint:types": "tsc --noEmit"
   }
 }

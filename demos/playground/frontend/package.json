@@ -21,7 +21,6 @@
     "@fontsource/roboto": "5.2.6",
     "@mui/icons-material": "5.18.0",
     "@mui/material": "5.18.0",
-    "@mui/x-charts": "7.23.6",
     "canvas-confetti": "1.9.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

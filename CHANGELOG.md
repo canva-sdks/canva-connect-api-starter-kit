@@ -1,5 +1,11 @@
 # Changelog
 
+## 2025-11-13
+
+### 🔧 Changed
+
+- Update brand template ID migration warning message
+
 ## 2025-10-16
 
 ### 🔧 Changed

@@ -34,7 +34,7 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./"
   },
-  "include": ["./**/*", "../node_modules/@types/**/*"],
+  "include": ["./**/*"],
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"

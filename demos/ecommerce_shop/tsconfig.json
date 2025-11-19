@@ -33,7 +33,7 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./"
   },
-  "include": ["./node_modules/@types/**/*", "./scripts/*", "../common"],
+  "include": ["./scripts/*", "../common"],
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"

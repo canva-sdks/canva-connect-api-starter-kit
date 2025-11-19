@@ -1,5 +1,11 @@
 # Changelog
 
+## 2025-11-20
+
+### 🐞 Fixed
+
+- Removed incorrect `node_modules/@types/` include from tsconfig.json.
+
 ## 2025-11-13
 
 ### 🔧 Changed

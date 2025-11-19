@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["./node_modules/@types/**/*", "./**/*"],
+  "include": ["./**/*"],
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"

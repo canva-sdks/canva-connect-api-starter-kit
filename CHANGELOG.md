@@ -1,5 +1,15 @@
 # Changelog
 
+## 2025-12-04
+
+### 🔧 Changed
+
+- Updated `express`, `js-yaml` and `node-forge` dev/transitive dependencies
+
+### 🗑️ Removed
+
+- Removed the `eslint-plugin-unicorn` dev dependency as it was unused
+
 ## 2025-11-20
 
 ### 🐞 Fixed

@@ -17,7 +17,7 @@
     "cookie-parser": "1.4.7",
     "cors": "2.8.5",
     "dotenv": "16.6.0",
-    "express": "4.21.2",
+    "express": "4.22.1",
     "multer": "2.0.2",
     "open": "10.2.0",
     "pug": "3.0.3"

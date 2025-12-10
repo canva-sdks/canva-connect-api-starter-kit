@@ -23,8 +23,8 @@
     "@mui/material": "5.18.0",
     "@realty-demo/shared-models": "file:../shared-models/src",
     "axios": "1.12.2",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
     "react-router-dom": "7.8.2"
   },
   "devDependencies": {

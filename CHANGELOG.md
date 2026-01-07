@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-01-08
+
+### 🔧 Changed
+
+- Upgraded `react` and `react-dom` to `19.2.3`.
+
 ## 2025-12-11
 
 ### 🔧 Changed

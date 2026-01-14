@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-01-15
+
+### 🔧 Changed
+
+- Dependencies audit bringing modules up to date:
+
+```text
+react-router-dom                               7.8.2   ->   7.12.0
+```
+
 ## 2026-01-08
 
 ### 🔧 Changed

@@ -8,11 +8,13 @@ info:
     name: ©2023 All Rights Reserved
   termsOfService: https://www.canva.com/trust/legal/
   title: Canva Connect API
-  version: 2024-06-18
+  version: 2026-02-02
 servers:
   - description: Canva Connect API
     url: https://api.canva.com/rest
 tags:
+  - description: Allow management of brands
+    name: brands
   - name: app
   - name: asset
   - name: autofill
@@ -24,6 +26,7 @@ tags:
   - name: export
   - name: folder
   - name: oauth
+  - name: oidc
   - name: resize
   - name: user
 paths:
@@ -372,17 +375,9 @@ paths:
   /v1/autofills:
     post:
       description: |-
-        <Warning>
+        WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
 
-        Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
-
-        </Warning>
-
-        <Note>
-
-        To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
-
-        </Note>
+        AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
 
         Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to autofill a Canva design using a brand template and input data.
 
@@ -397,11 +392,7 @@ paths:
 
           WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
 
-        <Note>
-
-        For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of autofill jobs created with this API using the [Get design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/get-design-autofill-job/).
-
-        </Note>
+        NOTE: For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of autofill jobs created with this API using the [Get design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/get-design-autofill-job/).
       operationId: createDesignAutofillJob
       requestBody:
         content:
@@ -464,11 +455,7 @@ paths:
   /v1/autofills/{jobId}:
     get:
       description: |-
-        <Note>
-
-        To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
-
-        </Note>
+        AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
 
         Get the result of a design autofill job that was created using the [Create design autofill job
         API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
@@ -532,17 +519,9 @@ paths:
   /v1/brand-templates:
     get:
       description: |-
-        <Warning>
+        WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
 
-        Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
-
-        </Warning>
-
-        <Note>
-
-        To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
-
-        </Note>
+        AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
 
         Get a list of the [brand templates](https://www.canva.com/help/publish-team-template/) the user has access to.
       operationId: listBrandTemplates
@@ -570,6 +549,18 @@ paths:
           required: false
           schema:
             type: string
+          style: form
+        - description: The number of brand templates to return.
+          explode: true
+          in: query
+          name: limit
+          required: false
+          schema:
+            default: 25
+            format: int32
+            maximum: 100
+            minimum: 1
+            type: integer
           style: form
         - description:
             Filter the list of brand templates based on the user's ownership
@@ -621,17 +612,9 @@ paths:
   /v1/brand-templates/{brandTemplateId}:
     get:
       description: |-
-        <Warning>
+        WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
 
-        Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
-
-        </Warning>
-
-        <Note>
-
-        To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
-
-        </Note>
+        AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
 
         Retrieves the metadata for a brand template.
       operationId: getBrandTemplate
@@ -667,17 +650,9 @@ paths:
   /v1/brand-templates/{brandTemplateId}/dataset:
     get:
       description: |-
-        <Warning>
+        WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
 
-        Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
-
-        </Warning>
-
-        <Note>
-
-        To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
-
-        </Note>
+        AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
 
         Gets the dataset definition of a brand template. If the brand
         template contains autofill data fields, this API returns an object with the data field
@@ -761,6 +736,37 @@ paths:
               schema:
                 $ref: "#/components/schemas/CreateCommentResponse"
           description: OK
+        "400":
+          content:
+            application/json:
+              examples:
+                assignee_not_mentioned:
+                  $ref: "#/components/examples/AssigneeNotMentionedError"
+                message_too_long:
+                  $ref: "#/components/examples/MessageTooLongError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad Request
+        "403":
+          content:
+            application/json:
+              examples:
+                too_many_comments:
+                  $ref: "#/components/examples/TooManyCommentsError"
+                not_allowed_to_comment:
+                  $ref: "#/components/examples/NotAllowedToCommentError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              examples:
+                design_not_found:
+                  $ref: "#/components/examples/DesignNotFoundError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
         default:
           content:
             application/json:
@@ -824,6 +830,35 @@ paths:
               schema:
                 $ref: "#/components/schemas/CreateReplyResponse"
           description: OK
+        "400":
+          content:
+            application/json:
+              examples:
+                message_too_long:
+                  $ref: "#/components/examples/MessageTooLongError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad Request
+        "403":
+          content:
+            application/json:
+              examples:
+                too_many_replies:
+                  $ref: "#/components/examples/TooManyRepliesError"
+                not_allowed_to_reply:
+                  $ref: "#/components/examples/NotAllowedToReplyError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              examples:
+                design_or_comment_not_found:
+                  $ref: "#/components/examples/DesignOrCommentNotFoundForReplyError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
         default:
           content:
             application/json:
@@ -900,6 +935,24 @@ paths:
               schema:
                 $ref: "#/components/schemas/ListRepliesResponse"
           description: OK
+        "403":
+          content:
+            application/json:
+              examples:
+                not_allowed_to_fetch_replies:
+                  $ref: "#/components/examples/NotAllowedToFetchRepliesError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              examples:
+                design_or_thread_not_found:
+                  $ref: "#/components/examples/DesignOrThreadNotFoundError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
         default:
           content:
             application/json:
@@ -966,6 +1019,35 @@ paths:
               schema:
                 $ref: "#/components/schemas/CreateReplyV2Response"
           description: OK
+        "400":
+          content:
+            application/json:
+              examples:
+                message_too_long:
+                  $ref: "#/components/examples/MessageTooLongError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad Request
+        "403":
+          content:
+            application/json:
+              examples:
+                too_many_replies:
+                  $ref: "#/components/examples/TooManyRepliesError"
+                not_allowed_to_reply:
+                  $ref: "#/components/examples/NotAllowedToReplyError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              examples:
+                design_or_comment_not_found:
+                  $ref: "#/components/examples/DesignOrCommentNotFoundForReplyError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
         default:
           content:
             application/json:
@@ -1023,6 +1105,30 @@ paths:
               schema:
                 $ref: "#/components/schemas/GetThreadResponse"
           description: OK
+        "403":
+          content:
+            application/json:
+              examples:
+                not_allowed_to_fetch_comment:
+                  $ref: "#/components/examples/NotAllowedToFetchCommentError"
+                not_allowed_to_fetch_suggestion:
+                  $ref: "#/components/examples/NotAllowedToFetchSuggestionError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              examples:
+                thread_not_found:
+                  $ref: "#/components/examples/ThreadNotFoundError"
+                thread_not_attached_to_design:
+                  $ref: "#/components/examples/ThreadNotAttachedToDesignError"
+                suggestion_not_found:
+                  $ref: "#/components/examples/SuggestionNotFoundError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
         default:
           content:
             application/json:
@@ -1089,6 +1195,26 @@ paths:
               schema:
                 $ref: "#/components/schemas/GetReplyResponse"
           description: OK
+        "403":
+          content:
+            application/json:
+              examples:
+                not_allowed_to_fetch_reply:
+                  $ref: "#/components/examples/NotAllowedToFetchReplyError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              examples:
+                reply_not_found:
+                  $ref: "#/components/examples/ReplyNotFoundError"
+                suggestion_reply_not_found:
+                  $ref: "#/components/examples/SuggestionReplyNotFoundError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
         default:
           content:
             application/json:
@@ -1138,6 +1264,37 @@ paths:
               schema:
                 $ref: "#/components/schemas/CreateThreadResponse"
           description: OK
+        "400":
+          content:
+            application/json:
+              examples:
+                assignee_not_mentioned:
+                  $ref: "#/components/examples/AssigneeNotMentionedError"
+                message_too_long:
+                  $ref: "#/components/examples/MessageTooLongError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad Request
+        "403":
+          content:
+            application/json:
+              examples:
+                too_many_comments:
+                  $ref: "#/components/examples/TooManyCommentsError"
+                not_allowed_to_comment:
+                  $ref: "#/components/examples/NotAllowedToCommentError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              examples:
+                design_not_found:
+                  $ref: "#/components/examples/DesignNotFoundError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
         default:
           content:
             application/json:
@@ -1247,6 +1404,18 @@ paths:
           required: false
           schema:
             $ref: "#/components/schemas/SortByType"
+          style: form
+        - description: The number of designs to return.
+          explode: true
+          in: query
+          name: limit
+          required: false
+          schema:
+            default: 25
+            format: int32
+            maximum: 100
+            minimum: 1
+            type: integer
           style: form
       responses:
         "200":
@@ -1417,17 +1586,12 @@ paths:
   /v1/designs/{designId}/export-formats:
     get:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-        - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
         Lists the available file formats for [exporting a design](https://www.canva.dev/docs/connect/api-reference/exports/create-design-export-job/).
+
+        <Note>
+        The available export formats depend on the design type and the types of pages in the design.
+        In general, the available export formats returned are only those that are supported by every page type in the design.
+        </Note>
       operationId: getDesignExportFormats
       parameters:
         - description: The design ID.
@@ -1890,6 +2054,18 @@ paths:
           schema:
             type: string
           style: form
+        - explode: true
+          in: query
+          name: limit
+          required: false
+          schema:
+            default: 50
+            description: The number of folder items to return.
+            format: int32
+            maximum: 100
+            minimum: 1
+            type: integer
+          style: form
         - description: |-
             Filter the folder items to only return specified types. The available types are:
             `design`, `folder`, and `image`. To filter for more than one item type, provide a comma-
@@ -2048,6 +2224,40 @@ paths:
               schema:
                 $ref: "#/components/schemas/ExchangeAccessTokenResponse"
           description: OK
+        "400":
+          content:
+            application/json:
+              examples:
+                client_id_body_param_multiple_values:
+                  $ref: "#/components/examples/ClientIdBodyParamMultipleValues"
+                client_id_body_param_blank:
+                  $ref: "#/components/examples/ClientIdBodyParamBlank"
+                client_secret_body_param_multiple_values:
+                  $ref: "#/components/examples/ClientSecretBodyParamMultipleValues"
+                client_id_basic_auth_param_blank:
+                  $ref: "#/components/examples/ClientIdBasicAuthParamBlank"
+                secret_basic_auth_param_blank:
+                  $ref: "#/components/examples/SecretBasicAuthParamBlank"
+                bad_request_body_too_large:
+                  $ref: "#/components/examples/BadRequestBodyTooLarge"
+                invalid_refresh_token:
+                  $ref: "#/components/examples/InvalidRefreshToken"
+                unauthorized_client:
+                  $ref: "#/components/examples/UnauthorizedClientError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              examples:
+                client_secret_invalid:
+                  $ref: "#/components/examples/ClientSecretInvalid"
+                access_token_missing:
+                  $ref: "#/components/examples/AccessTokenMissing"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unauthorized
         default:
           content:
             application/json:
@@ -2084,6 +2294,36 @@ paths:
               schema:
                 $ref: "#/components/schemas/IntrospectTokenResponse"
           description: OK
+        "400":
+          content:
+            application/json:
+              examples:
+                client_id_body_param_multiple_values:
+                  $ref: "#/components/examples/ClientIdBodyParamMultipleValues"
+                client_id_body_param_blank:
+                  $ref: "#/components/examples/ClientIdBodyParamBlank"
+                client_secret_body_param_multiple_values:
+                  $ref: "#/components/examples/ClientSecretBodyParamMultipleValues"
+                client_id_basic_auth_param_blank:
+                  $ref: "#/components/examples/ClientIdBasicAuthParamBlank"
+                secret_basic_auth_param_blank:
+                  $ref: "#/components/examples/SecretBasicAuthParamBlank"
+                bad_request_body_too_large:
+                  $ref: "#/components/examples/BadRequestBodyTooLarge"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              examples:
+                client_secret_invalid:
+                  $ref: "#/components/examples/ClientSecretInvalid"
+                access_token_missing:
+                  $ref: "#/components/examples/AccessTokenMissing"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unauthorized
         default:
           content:
             application/json:
@@ -2125,6 +2365,40 @@ paths:
               schema:
                 $ref: "#/components/schemas/RevokeTokensResponse"
           description: OK
+        "400":
+          content:
+            application/json:
+              examples:
+                client_id_body_param_multiple_values:
+                  $ref: "#/components/examples/ClientIdBodyParamMultipleValues"
+                client_id_body_param_blank:
+                  $ref: "#/components/examples/ClientIdBodyParamBlank"
+                client_secret_body_param_multiple_values:
+                  $ref: "#/components/examples/ClientSecretBodyParamMultipleValues"
+                client_id_basic_auth_param_blank:
+                  $ref: "#/components/examples/ClientIdBasicAuthParamBlank"
+                secret_basic_auth_param_blank:
+                  $ref: "#/components/examples/SecretBasicAuthParamBlank"
+                bad_request_body_too_large:
+                  $ref: "#/components/examples/BadRequestBodyTooLarge"
+                invalid_token:
+                  $ref: "#/components/examples/InvalidTokenError"
+                invalid_request:
+                  $ref: "#/components/examples/InvalidRequestError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              examples:
+                client_secret_invalid:
+                  $ref: "#/components/examples/ClientSecretInvalid"
+                access_token_missing:
+                  $ref: "#/components/examples/AccessTokenMissing"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unauthorized
         default:
           content:
             application/json:
@@ -2136,14 +2410,65 @@ paths:
         - basicAuth: []
       tags:
         - oauth
+  /v1/oidc/jwks:
+    get:
+      description:
+        Gets the JSON Web Key Set (public keys) for OIDC. These keys are
+        used to verify JWTs in OpenID Connect flows.
+      operationId: getOidcJwks
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonWebKeySet"
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Error Response
+      security: []
+      tags:
+        - oidc
+  /v1/oidc/userinfo:
+    get:
+      description: |-
+        Fetches the current UserInfo claims for the authorized user. This is the same fields
+        returned by a id_token returns during authorization.
+      operationId: userInfo
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfoResponse"
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Error Response
+      security:
+        - oauthAuthCode:
+            - openid
+            - profile
+            - email
+      tags:
+        - oidc
+      x-rate-limit-per-client-user: 10
   /v1/resizes:
     post:
       description: |-
-        <Note>
-
-        To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
-
-        </Note>
+        AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
 
         Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints)
         to create a resized copy of a design. The new resized design is
@@ -2212,11 +2537,7 @@ paths:
   /v1/resizes/{jobId}:
     get:
       description: |-
-        <Note>
-
-        To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
-
-        </Note>
+        AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
 
         Gets the result of a design resize job that was created using the [Create design resize
         job API](https://www.canva.dev/docs/connect/api-reference/resizes/create-design-resize-job/).
@@ -2357,11 +2678,15 @@ components:
           status: success
           asset:
             id: Msd59349ff
+            type: image
             name: My Awesome Upload
             tags:
               - image
               - holiday
               - best day ever
+            owner:
+              user_id: oU123456AbCdE
+              team_id: oB123456AbCdE
             created_at: 1377396000
             updated_at: 1692928800
             thumbnail:
@@ -2395,10 +2720,15 @@ components:
               id: DAFVztcvd9z
               title: My summer holiday
               url: https://www.canva.com/design/DAFVztcvd9z/edit
+              urls:
+                edit_url: https://www.canva.com/api/ekimus8HTvsdf&/edit
+                view_url: https://www.canva.com/api/eylPinTv358hYb8n1U4/view
               thumbnail:
                 width: 595
                 height: 335
                 url: https://document-export.canva.com/Vczz9/zF9vzVtdADc/2/thumbnail/0001.png?<query-string>
+              created_at: 1586734043
+              updated_at: 1586734043
     FailedAutofillJobExample:
       summary: Failed job
       value:
@@ -2441,6 +2771,98 @@ components:
       value:
         code: permission_denied
         message: Calling user was not the creator of the autofill job
+    AssigneeNotMentionedError:
+      summary: Assignee must be mentioned in comment content
+      value:
+        code: bad_request_body
+        message: Assignee must be mentioned in comment content
+    MessageTooLongError:
+      summary: Message is too long
+      value:
+        code: message_too_long
+        message: Message is too long
+    TooManyCommentsError:
+      summary: Design already has the maximum number of allowed comments
+      value:
+        code: too_many_comments
+        message: Design already has the maximum number of allowed comments
+    NotAllowedToCommentError:
+      summary: Not allowed to comment on this design
+      value:
+        code: permission_denied
+        message: Not allowed to comment on this design
+    DesignNotFoundError:
+      summary: Design not found
+      value:
+        code: design_not_found
+        message: Design not found
+    TooManyRepliesError:
+      summary: This comment thread already has the maximum number of allowed replies
+      value:
+        code: too_many_replies
+        message: This comment thread already has the maximum number of allowed replies
+    NotAllowedToReplyError:
+      summary: Not allowed to reply on this design
+      value:
+        code: permission_denied
+        message: Not allowed to reply on this design
+    DesignOrCommentNotFoundForReplyError:
+      summary: Design or comment not found
+      value:
+        code: design_not_found
+        message: Design or comment not found
+    NotAllowedToFetchRepliesError:
+      summary: Not allowed to fetch replies
+      value:
+        code: permission_denied
+        message: Not allowed to fetch replies
+    DesignOrThreadNotFoundError:
+      summary: Design or comment not found
+      value:
+        code: design_or_thread_not_found
+        message: Design or comment not found
+    NotAllowedToFetchCommentError:
+      summary: Not allowed to fetch this comment
+      value:
+        code: permission_denied
+        message: Not allowed to fetch this comment
+    NotAllowedToFetchSuggestionError:
+      summary: Not allowed to fetch this suggestion
+      value:
+        code: permission_denied
+        message: Not allowed to fetch this suggestion
+    ThreadNotFoundError:
+      summary: No thread with ID found
+      value:
+        code: thread_not_found
+        message: "No thread with ID {threadId} found"
+    ThreadNotAttachedToDesignError:
+      summary: Thread not attached to design
+      value:
+        code: thread_not_found
+        message:
+          "Thread with ID {threadId} is not attached to design {designId},\
+          \ or design not found"
+    SuggestionNotFoundError:
+      summary: No suggestion thread with ID found
+      value:
+        code: thread_not_found
+        message: "Suggestion with ID {threadId} not found"
+    NotAllowedToFetchReplyError:
+      summary: Not allowed to fetch this reply
+      value:
+        code: permission_denied
+        message: Not allowed to fetch this reply
+    ReplyNotFoundError:
+      summary: Reply not found
+      value:
+        code: reply_not_found
+        message: "Reply with ID {replyId} not found"
+    SuggestionReplyNotFoundError:
+      summary: Suggestion reply not found
+      value:
+        code: reply_not_found
+        message: "Suggestion reply with ID {replyId} not found"
     InProgressDesignImportJobExample:
       summary: In progress job
       value:
@@ -2474,7 +2896,167 @@ components:
           status: failed
           error:
             code: invalid_file
-            message: Document couldn't be imported because the file is corrupt.
+            message: Document could not be imported because the file is corrupt.
+    MissingAccessTokenError:
+      summary: Access token is missing from the request
+      value:
+        code: invalid_request
+        message: Access token is missing from the request.
+    MissingClientCredentialsError:
+      summary: Client credentials are missing from the request
+      value:
+        code: invalid_request
+        message: Client credentials are missing from the request.
+    MissingClientCredentialsOrBodyAuthError:
+      summary: Client credentials or body auth are missing from the request
+      value:
+        code: invalid_client
+        message: Client credentials or body auth are missing from the request.
+    UserRoleRequiredError:
+      summary: Request must be made on behalf of a user
+      value:
+        code: user_role_required
+        message: This request must be made on behalf of a user.
+    InvalidClientError:
+      summary: The OAuth client credentials are invalid
+      value:
+        code: invalid_client
+        message: "Client {clientId} not available"
+    MissingScopeError:
+      summary: The required OAuth scope is missing
+      value:
+        code: missing_scope
+        message: "Missing scopes: {scopes}"
+    TooManyRequestsError:
+      summary: Rate limit exceeded
+      value:
+        code: too_many_requests
+        message: "Too many requests to {operation}"
+    EndpointNotFoundError:
+      summary: The requested endpoint was not found
+      value:
+        code: endpoint_not_found
+        message: "Unknown endpoint {method} {path}"
+    BadRequestFieldError:
+      summary: The request field does not match expected format
+      value:
+        code: invalid_request
+        message: "{fieldValue} does not match expected format for {fieldName}"
+    MissingRequiredHeaderError:
+      summary: A required header is missing
+      value:
+        code: invalid_request
+        message: "missing required header {headerName}"
+    ContentTypeHeaderValueMissing:
+      summary: Content-Type header is missing
+      value:
+        code: invalid_header_value
+        message: "Content-Type header is missing for {path}"
+    ContentTypeHeaderValueInvalid:
+      summary: Content-Type header is invalid
+      value:
+        code: invalid_header_value
+        message: "Content-Type {contentType} is invalid for {path}"
+    MalformedAuthorizationHeaderComponents:
+      summary: Authorization header has wrong number of components
+      value:
+        code: invalid_access_token
+        message: "Malformed Authorization header: wrong number of components"
+    MalformedAuthorizationHeaderMode:
+      summary: Authorization header has invalid mode
+      value:
+        code: invalid_access_token
+        message: "Malformed Authorization header: invalid mode"
+    TokenIntrospectionFailed:
+      summary: Token couldn't be introspected
+      value:
+        code: invalid_access_token
+        message: Token couldn't be introspected
+    RevokedAccessToken:
+      summary: Access token is revoked
+      value:
+        code: revoked_access_token
+        message: Access token is revoked
+    ValidatingClientFailed:
+      summary: Validating client failed
+      value:
+        code: unauthorized_client
+        message: "Validating client failed for {clientAppId}"
+    ValidatingClientFailedWithCode:
+      summary: Validating client failed with error code
+      value:
+        code: unauthorized_client
+        message: "Validating client failed for {clientAppId}: {errorCode}"
+    ClientSecretInvalidError:
+      summary: Client secret is invalid
+      value:
+        code: invalid_client
+        message: "Client secret is invalid for {clientAppId}"
+    InvalidClientCredentialsBase64Encoding:
+      summary: Could not decode the base64 value for client credentials
+      value:
+        code: invalid_request
+        message: Credentials could not be decoded from base64
+    InvalidClientCredentialsValue:
+      summary: Number of column-separated components in the base64 value is not 2
+      value:
+        code: invalid_request
+        message: Malformed encoded client ID and secret
+    InvalidAccessToken:
+      summary: Access token could not be decoded or signature could not be verified.
+      value:
+        code: invalid_access_token
+        message: Access token is invalid
+    MissingAuthorizationHeader:
+      summary: Missing Authorization header
+      value:
+        code: invalid_access_token
+        message: Missing Authorization header
+    MalformedAuthorizationHeader:
+      summary: Malformed Authorization header
+      value:
+        code: invalid_access_token
+        message: Malformed Authorization header
+    ThrottledTooManyRequests:
+      summary: Throttled because too many requests
+      value:
+        code: too_many_requests
+        message: Throttled because too many requests
+    FailedToReadRequestBody:
+      summary: Failed to read request body
+      value:
+        code: bad_request_body
+        message: Failed to read request body
+    ExpectedIntegerQueryParam:
+      summary: Expected integer for query parameter
+      value:
+        code: bad_query_params
+        message: "Expected integer for query parameter `{key}` but found {value}"
+    ExpectedLongQueryParam:
+      summary: Expected long for query parameter
+      value:
+        code: bad_query_params
+        message: "Expected long for query parameter `{key}` but found {value}"
+    ExpectedLongListQueryParam:
+      summary: Expected long list for query parameter
+      value:
+        code: bad_query_params
+        message: "Expected long list for query parameter `{key}` but found {value}"
+    TooManyQueryParamValues:
+      summary: Expected 1 query parameter but found multiple
+      value:
+        code: bad_query_params
+        message: "Expected 1 query parameter {key} but found {count}"
+    MissingRequiredQueryParam:
+      summary: Missing required query parameter
+      value:
+        code: bad_query_params
+        message: "Missing required query parameter: {key}"
+    EndpointNoLongerAvailableError:
+      summary: This endpoint is no longer available
+      value:
+        code: endpoint_gone
+        message: This endpoint is no longer available
     InProgressExportJobExample:
       summary: In progress job
       value:
@@ -2498,73 +3080,68 @@ components:
           error:
             code: license_required
             message: User doesn't have the required license to export in PRO quality.
-    UpdateFolderPermissionsUserInputExample:
-      description:
-        "Example of an update folder permissions request, updating the\
-        \ permissions for a user."
-      summary: Update user permissions request
+    InvalidTokenError:
+      summary: The token supplied is neither an access token nor a refresh token.
       value:
-        role: editor
-        type: user
-        user_id: auDAbliZ2rQNNOsUl5OLu
-        team_id: Oi2RJILTrKk0KRhRUZozX
-    UpdateFolderPermissionsGroupInputExample:
-      description:
-        "Example of an update folder permissions request, updating the\
-        \ permissions for a group."
-      summary: Update group permissions request
+        code: bad_request_params
+        message: Token is neither an access or refresh token
+    InvalidRequestError:
+      summary: The request is invalid.
       value:
-        role: view
-        type: group
-        group_id: dl9n9SoWoExMsw6Ri1iTg
-    UpdateFolderPermissionsTeamInputExample:
-      description:
-        "Example of an update folder permissions request, updating the\
-        \ permissions for a team."
-      summary: Updating team permissions request
+        code: invalid_request
+        message: Invalid request
+    UnauthorizedClientError:
+      summary: The client must be authenticated using basic auth or body parameters.
       value:
-        role: none
-        type: team
-        team_id: Oi2RJILTrKk0KRhRUZozX
-    UpdateFolderPermissionsUserResponseExample:
-      description:
-        Example of the response returned when updating folder permissions
-        for a user.
-      summary: Updated user permissions response
+        code: unauthorized_client
+        message:
+          The client must either be authenticated using basic auth or body
+          parameters.
+    InvalidRefreshToken:
+      summary: The refresh token is invalid.
       value:
-        folder_permission:
-          type: user
-          role: editor
-          inherited: false
-          team_user:
-            user_id: auDAbliZ2rQNNOsUl5OLu
-            team_id: Oi2RJILTrKk0KRhRUZozX
-    UpdateFolderPermissionsGroupResponseExample:
-      description:
-        Example of the response returned when updating folder permissions
-        for a group.
-      summary: Updated group permissions response
+        code: invalid_grant
+        message: Invalid refresh token
+    ClientIdBodyParamMultipleValues:
+      summary: client_id body parameter has multiple values
       value:
-        role: view
-        type: group
-        inherited: false
-        group:
-          id: dl9n9SoWoExMsw6Ri1iTg
-          external: false
-          display_name: Sales team
-    UpdateFolderPermissionsTeamResponseExample:
-      description:
-        Example of the response returned when updating folder permissions
-        for a team.
-      summary: Updated team permissions response
+        code: invalid_field
+        message: client_id body param must have a single value
+    ClientIdBodyParamBlank:
+      summary: client_id body parameter is blank or empty
       value:
-        role: none
-        type: team
-        inherited: false
-        team:
-          id: Oi2RJILTrKk0KRhRUZozX
-          display_name: Acme Corporation
-          external: false
+        code: invalid_field
+        message: client_id body param must not be blank or empty
+    ClientSecretBodyParamMultipleValues:
+      summary: client_secret body parameter has multiple values
+      value:
+        code: invalid_field
+        message: client_secret body param must have a single value
+    ClientIdBasicAuthParamBlank:
+      summary: client_id basic auth parameter is blank or empty
+      value:
+        code: invalid_field
+        message: client_id basic auth parameter must not be blank or empty
+    SecretBasicAuthParamBlank:
+      summary: secret basic auth parameter is blank or empty
+      value:
+        code: invalid_field
+        message: secret basic auth parameter must not be blank or empty
+    BadRequestBodyTooLarge:
+      summary: Request body too large
+      value:
+        code: bad_request_body
+        message: Request body too large
+    ClientSecretInvalid:
+      summary: Client secret is invalid (Unauthorized)
+      value:
+        code: invalid_access_token
+        message: "Client secret is invalid for {clientAppId}"
+    AccessTokenMissing:
+      summary: Access token is missing
+      value:
+        code: invalid_access_token
+        message: Access token is missing
     InProgressResizeJobExample:
       summary: In progress job
       value:
@@ -2582,6 +3159,8 @@ components:
               id: DAGirp_1ZUA
               title: My summer holiday
               thumbnail:
+                width: 595
+                height: 335
                 url: https://document-export.canva.com/Vczz9/zF9vzVtdADc/2/thumbnail/0001.png?<query-string>
               urls:
                 edit_url: https://www.canva.com/design/DAGhRehVa2c/0L_1s4UXSpZhls8EtPaRKw/edit
@@ -2589,6 +3168,9 @@ components:
               created_at: 1742856750
               updated_at: 1742856752
               page_count: 5
+            trial_information:
+              uses_remaining: 0
+              upgrade_url: https://www.canva.com/?tailoringUpsellDialog=GENERIC_C4W
     FailedResizeJobExample:
       summary: Failed job
       value:
@@ -2673,6 +3255,27 @@ components:
         pattern: "^[a-zA-Z0-9_-]{1,50}$"
         type: string
       style: simple
+    pageIndicesParameter:
+      description: |-
+        The request with all the page indices
+        Pages are indexed using one-based numbering, so the first page in a design has the index value `1`.
+      explode: false
+      in: query
+      name: page_indices
+      required: true
+      schema:
+        example:
+          - 2
+          - 3
+          - 4
+        items:
+          format: int32
+          maximum: 500
+          minimum: 1
+          type: integer
+        maxItems: 4
+        type: array
+      style: form
     exportId:
       description: The export job ID.
       explode: false
@@ -2704,6 +3307,146 @@ components:
         pattern: "^[a-zA-Z0-9_-]{1,50}$"
         type: string
       style: simple
+    featureId:
+      explode: false
+      in: path
+      name: featureId
+      required: true
+      schema:
+        $ref: "#/components/schemas/FeatureId"
+      style: simple
+    feature_quota_limit:
+      explode: true
+      in: query
+      name: feature_quota_limit
+      required: false
+      schema:
+        $ref: "#/components/schemas/FeatureQuotaLimit"
+      style: form
+    interval:
+      description:
+        The interval at which the usage resets. 'never' means lifetime
+        quota that never resets.
+      explode: true
+      in: query
+      name: interval
+      required: false
+      schema:
+        $ref: "#/components/schemas/Interval"
+      style: form
+  responses:
+    CommonBadRequest:
+      content:
+        application/json:
+          examples:
+            BadRequestFieldError:
+              $ref: "#/components/examples/BadRequestFieldError"
+            MissingRequiredHeaderError:
+              $ref: "#/components/examples/MissingRequiredHeaderError"
+            MissingAccessTokenError:
+              $ref: "#/components/examples/MissingAccessTokenError"
+            MissingClientCredentialsError:
+              $ref: "#/components/examples/MissingClientCredentialsError"
+            ContentTypeHeaderValueMissing:
+              $ref: "#/components/examples/ContentTypeHeaderValueMissing"
+            ContentTypeHeaderValueInvalid:
+              $ref: "#/components/examples/ContentTypeHeaderValueInvalid"
+            ValidatingClientFailed:
+              $ref: "#/components/examples/ValidatingClientFailed"
+            ValidatingClientFailedWithCode:
+              $ref: "#/components/examples/ValidatingClientFailedWithCode"
+            ClientSecretInvalidError:
+              $ref: "#/components/examples/ClientSecretInvalidError"
+            InvalidClientCredentialsValue:
+              $ref: "#/components/examples/InvalidClientCredentialsValue"
+            InvalidClientCredentialsBase64Encoding:
+              $ref: "#/components/examples/InvalidClientCredentialsBase64Encoding"
+            FailedToReadRequestBody:
+              $ref: "#/components/examples/FailedToReadRequestBody"
+            ExpectedIntegerQueryParam:
+              $ref: "#/components/examples/ExpectedIntegerQueryParam"
+            ExpectedLongQueryParam:
+              $ref: "#/components/examples/ExpectedLongQueryParam"
+            ExpectedLongListQueryParam:
+              $ref: "#/components/examples/ExpectedLongListQueryParam"
+            TooManyQueryParamValues:
+              $ref: "#/components/examples/TooManyQueryParamValues"
+            MissingRequiredQueryParam:
+              $ref: "#/components/examples/MissingRequiredQueryParam"
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Bad Request
+      x-http-status-code: 400
+    CommonUnauthorized:
+      content:
+        application/json:
+          examples:
+            InvalidClientError:
+              $ref: "#/components/examples/InvalidClientError"
+            InvalidAccessToken:
+              $ref: "#/components/examples/InvalidAccessToken"
+            MissingClientCredentialsOrBodyAuthError:
+              $ref: "#/components/examples/MissingClientCredentialsOrBodyAuthError"
+            MalformedAuthorizationHeaderComponents:
+              $ref: "#/components/examples/MalformedAuthorizationHeaderComponents"
+            MalformedAuthorizationHeaderMode:
+              $ref: "#/components/examples/MalformedAuthorizationHeaderMode"
+            TokenIntrospectionFailed:
+              $ref: "#/components/examples/TokenIntrospectionFailed"
+            RevokedAccessToken:
+              $ref: "#/components/examples/RevokedAccessToken"
+            MissingAuthorizationHeader:
+              $ref: "#/components/examples/MissingAuthorizationHeader"
+            MalformedAuthorizationHeader:
+              $ref: "#/components/examples/MalformedAuthorizationHeader"
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Unauthorized
+      x-http-status-code: 401
+    CommonForbidden:
+      content:
+        application/json:
+          examples:
+            MissingScopeError:
+              $ref: "#/components/examples/MissingScopeError"
+            UserRoleRequiredError:
+              $ref: "#/components/examples/UserRoleRequiredError"
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Forbidden
+      x-http-status-code: 403
+    CommonNotFound:
+      content:
+        application/json:
+          examples:
+            EndpointNotFoundError:
+              $ref: "#/components/examples/EndpointNotFoundError"
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Not Found
+      x-http-status-code: 404
+    CommonGone:
+      content:
+        application/json:
+          examples:
+            EndpointNoLongerAvailableError:
+              $ref: "#/components/examples/EndpointNoLongerAvailableError"
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Gone
+      x-http-status-code: 410
+    CommonTooManyRequests:
+      content:
+        application/json:
+          examples:
+            TooManyRequestsError:
+              $ref: "#/components/examples/TooManyRequestsError"
+            ThrottledTooManyRequests:
+              $ref: "#/components/examples/ThrottledTooManyRequests"
+          schema:
+            $ref: "#/components/schemas/Error"
+      description: Too Many Requests
+      x-http-status-code: 429
   schemas:
     GetAppJwksResponse:
       properties:
@@ -2716,59 +3459,6 @@ components:
           type: array
       required:
         - keys
-      type: object
-    JsonWebKey:
-      description: |-
-        Standard Json Web Key specification following https://www.rfc-editor.org/rfc/rfc7517 and
-        https://www.rfc-editor.org/rfc/rfc7518.html.
-      properties:
-        alg:
-          description: |-
-            The "alg" (algorithm) parameter identifies the algorithm intended for
-            use with the key.
-            See https://www.rfc-editor.org/rfc/rfc7517#section-4
-          type: string
-        kid:
-          description: |-
-            The "kid" (key ID) parameter is used to match a specific key.  This
-            is used, for instance, to choose among a set of keys within a JWK Set
-            during key rollover. When "kid" values are used within a JWK Set,
-            different keys within the JWK Set SHOULD use distinct "kid" values.
-            The "kid" value is a case-sensitive string.
-            See https://www.rfc-editor.org/rfc/rfc7517#section-4
-          type: string
-        kty:
-          description: |-
-            The "kty" (key type) parameter identifies the cryptographic algorithm
-            family used with the key, such as "RSA" or "EC". The "kty" value is a
-            case-sensitive string. At the moment, only "RSA" is supported.
-            See https://www.rfc-editor.org/rfc/rfc7517#section-4
-          type: string
-        "n":
-          description: |-
-            The "n" (modulus) parameter contains the modulus value for the RSA
-               public key.  It is represented as a Base64urlUInt-encoded value.
-            See https://www.rfc-editor.org/rfc/rfc7518.html#section-6.3
-          type: string
-        e:
-          description: |-
-            The "e" (exponent) parameter contains the exponent value for the RSA
-               public key.  It is represented as a Base64urlUInt-encoded value.
-            See https://www.rfc-editor.org/rfc/rfc7518.html#section-6.3
-          type: string
-        use:
-          description: |-
-            The "use" (public key use) parameter identifies the intended use of
-            the public key. The "use" parameter is employed to indicate whether
-            a public key is used for encrypting data or verifying the signature
-            on data. Values are commonly "sig" (signature) or "enc" (encryption).
-            See https://www.rfc-editor.org/rfc/rfc7517#section-4
-          type: string
-      required:
-        - e
-        - kid
-        - kty
-        - "n"
       type: object
     CreateUrlAssetUploadJobRequest:
       properties:
@@ -3017,11 +3707,15 @@ components:
         status: success
         asset:
           id: Msd59349ff
+          type: image
           name: My Awesome Upload
           tags:
             - image
             - holiday
             - best day ever
+          owner:
+            user_id: oU123456AbCdE
+            team_id: oB123456AbCdE
           created_at: 1377396000
           updated_at: 1692928800
           thumbnail:
@@ -3511,6 +4205,7 @@ components:
         - autofill
         - brand_template
         - resize
+        - team_restricted_app
       type: string
       x-enum-descriptions:
         - "Capability required to call autofill APIs Users that are members of a [Canva\
@@ -3520,6 +4215,10 @@ components:
           \ this capability."
         - Capability required to create design resize jobs. Users on a Canva plan with
           premium features (such as Canva Pro) have this capability.
+        - "Capability required to create a team-restricted app. Users that are members\
+          \ of the [Canva Enterprise](https://www.canva.com/enterprise/) or the [Canva\
+          \ for Education](https://www.canva.com/education/) organization have this\
+          \ capability."
     CreateCommentRequest:
       properties:
         attached_to:
@@ -4827,6 +5526,26 @@ components:
       maximum: 500
       minimum: 1
       type: integer
+    PageDimensions:
+      description:
+        "The dimensions of a design page, if it is bounded. Design pages\
+        \ for non-bounded designs like Whiteboards and Docs will not include this\
+        \ property."
+      properties:
+        width:
+          description: The width of the design page in pixels.
+          example: 595
+          format: double
+          type: number
+        height:
+          description: The height of the design page in pixels.
+          example: 1295
+          format: double
+          type: number
+      required:
+        - height
+        - width
+      type: object
     DesignLinks:
       description: A temporary set of URLs for viewing or editing the design.
       properties:
@@ -4909,6 +5628,8 @@ components:
           maximum: 500
           minimum: 1
           type: integer
+        dimensions:
+          $ref: "#/components/schemas/PageDimensions"
         thumbnail:
           $ref: "#/components/schemas/Thumbnail"
       required:
@@ -5161,7 +5882,9 @@ components:
         - bad_http_method
         - bad_request_params
         - bad_query_params
+        - user_role_required
         - endpoint_not_found
+        - endpoint_gone
         - unsupported_version
         - invalid_access_token
         - revoked_access_token
@@ -5188,6 +5911,8 @@ components:
         - user_not_found
         - group_not_found
         - app_not_found
+        - app_has_non_draft_versions
+        - invalid_status_transition
         - content_not_found
         - doctype_not_found
         - design_not_found
@@ -5438,13 +6163,17 @@ components:
           default: true
           description: |-
             If set to `true` (default), the PNG is exported without compression.
-            If set to `false`, the PNG is compressed using a lossy compression algorithm. Lossy PNG compression is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `false`, the export operation will fail.
+
+            If set to `false`, the PNG is compressed using a lossy compression algorithm.
+
+            AVAILABILITY: Lossy PNG compression is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `false`, the export operation will fail.
           type: boolean
         transparent_background:
           default: false
           description: |-
             If set to `true`, the PNG is exported with a transparent background.
-            This option is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `true`, the export operation will fail.
+
+            AVAILABILITY: This option is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `true`, the export operation will fail.
           type: boolean
         as_single_image:
           default: false
@@ -5989,6 +6718,69 @@ components:
         - external
         - id
       type: object
+    JsonWebKeySet:
+      properties:
+        keys:
+          description: An array of JSON Web Key values. The order of keys has no meaning.
+          items:
+            $ref: "#/components/schemas/JsonWebKey"
+          type: array
+      required:
+        - keys
+      type: object
+    JsonWebKey:
+      description: |-
+        Standard Json Web Key specification following https://www.rfc-editor.org/rfc/rfc7517 and
+        https://www.rfc-editor.org/rfc/rfc7518.html.
+      properties:
+        alg:
+          description: |-
+            The "alg" (algorithm) parameter identifies the algorithm intended for
+            use with the key.
+            See https://www.rfc-editor.org/rfc/rfc7517#section-4
+          type: string
+        kid:
+          description: |-
+            The "kid" (key ID) parameter is used to match a specific key.  This
+            is used, for instance, to choose among a set of keys within a JWK Set
+            during key rollover. When "kid" values are used within a JWK Set,
+            different keys within the JWK Set SHOULD use distinct "kid" values.
+            The "kid" value is a case-sensitive string.
+            See https://www.rfc-editor.org/rfc/rfc7517#section-4
+          type: string
+        kty:
+          description: |-
+            The "kty" (key type) parameter identifies the cryptographic algorithm
+            family used with the key, such as "RSA" or "EC". The "kty" value is a
+            case-sensitive string. At the moment, only "RSA" is supported.
+            See https://www.rfc-editor.org/rfc/rfc7517#section-4
+          type: string
+        "n":
+          description: |-
+            The "n" (modulus) parameter contains the modulus value for the RSA
+               public key.  It is represented as a Base64urlUInt-encoded value.
+            See https://www.rfc-editor.org/rfc/rfc7518.html#section-6.3
+          type: string
+        e:
+          description: |-
+            The "e" (exponent) parameter contains the exponent value for the RSA
+               public key.  It is represented as a Base64urlUInt-encoded value.
+            See https://www.rfc-editor.org/rfc/rfc7518.html#section-6.3
+          type: string
+        use:
+          description: |-
+            The "use" (public key use) parameter identifies the intended use of
+            the public key. The "use" parameter is employed to indicate whether
+            a public key is used for encrypting data or verifying the signature
+            on data. Values are commonly "sig" (signature) or "enc" (encryption).
+            See https://www.rfc-editor.org/rfc/rfc7517#section-4
+          type: string
+      required:
+        - e
+        - kid
+        - kty
+        - "n"
+      type: object
     ExchangeAccessTokenRequest:
       discriminator:
         mapping:
@@ -6103,7 +6895,7 @@ components:
           example: Bearer
           type: string
         expires_in:
-          description: The expiry time (in seconds) for the token.
+          description: The expiry time (in seconds) for the access token.
           example: 14400
           format: int64
           type: integer
@@ -6245,6 +7037,78 @@ components:
         NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
       example: cnvcaAbcdefg12345_hijklm6789
       type: string
+    UserInfoResponse:
+      example:
+        sub: UAAAAAAAAA
+        name: Alice Person
+        given_name: Alice
+        family_name: Person
+        email: alice.person@example.com
+        email_verified: true
+      properties:
+        sub:
+          description: Identifier for the End-User at the Issuer.
+          type: string
+        name:
+          description: |-
+            End-User's full name in displayable form including all name parts, possibly including
+            titles and suffixes, ordered according to the End-User's locale and preferences.
+          type: string
+        given_name:
+          description: |-
+            Given name(s) or first name(s) of the End-User. Note that in some cultures, people can
+            have multiple given names; all can be present, with the names being separated by space
+            characters.
+          type: string
+        family_name:
+          description: |-
+            Surname(s) or last name(s) of the End-User. Note that in some cultures, people can have
+            multiple family names or no family name; all can be present, with the names being
+            separated by space characters.
+          type: string
+        email:
+          description: |-
+            End-User's preferred e-mail address. Its value MUST conform to the RFC 5322 [RFC5322]
+            addr-spec syntax. The RP MUST NOT rely upon this value being unique, as discussed in
+            Section 5.7.
+          format: email
+          type: string
+        email_verified:
+          description: |-
+            True if the End-User's e-mail address has been verified; otherwise false. When this
+            Claim Value is true, this means that the OP took affirmative steps to ensure that this
+            e-mail address was controlled by the End-User at the time the verification was
+            performed. The means by which an e-mail address is verified is context specific,
+            and dependent upon the trust framework or contractual agreements within which the
+            parties are operating.
+          type: boolean
+      required:
+        - sub
+      type: object
+    Interval:
+      description:
+        The interval at which the usage resets. 'never' means lifetime
+        quota that never resets.
+      enum:
+        - day
+        - week
+        - month
+        - year
+        - never
+      type: string
+    FeatureId:
+      description:
+        "Unique identification string for the feature. Need to be in `{application-id}.{feature-name}`\
+        \ pattern"
+      example: ingredient-generation.generate-image
+      pattern: "^[a-z0-9-]+\\.[a-z0-9-]+$"
+      type: string
+    FeatureQuotaLimit:
+      description: |
+        The quota limit set by the caller for this feature. This limit is used to determine if usage exceeds the customer-defined threshold.
+        If not provided, we assume the usage is unlimited.
+      minimum: 1
+      type: integer
     CreateDesignResizeJobRequest:
       description: |-
         Body parameters for starting a resize job for a design.
@@ -6298,6 +7162,8 @@ components:
       properties:
         design:
           $ref: "#/components/schemas/DesignSummary"
+        trial_information:
+          $ref: "#/components/schemas/TrialInformation"
       required:
         - design
       type: object
@@ -6329,6 +7195,25 @@ components:
       required:
         - code
         - message
+      type: object
+    TrialInformation:
+      description: |-
+        WARNING: Trials and trial information are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis).
+        There might be unannounced breaking changes to this feature which won't produce a new API version.
+      properties:
+        uses_remaining:
+          description: The number of uses remaining in the free trial.
+          example: 0
+          format: int32
+          minimum: 0
+          type: integer
+        upgrade_url:
+          description: The URL for a user to upgrade their Canva account.
+          example: https://www.canva.com/?tailoringUpsellDialog=GENERIC_C4W
+          type: string
+      required:
+        - upgrade_url
+        - uses_remaining
       type: object
     Team:
       description: |-
@@ -6856,26 +7741,15 @@ components:
         authorizationCode:
           authorizationUrl: https://www.canva.com/api/oauth/authorize
           scopes:
-            app:read:
-              "View [Canva app](https://www.canva.dev/docs/connect/canva-concepts/#canva-apps)\
-              \ metadata."
-            app:write:
-              "Create, update, or remove [Canva apps](https://www.canva.dev/docs/connect/canva-concepts/#canva-apps)\
-              \ on the user's behalf."
             design:content:read: View the contents of the user's designs.
             design:meta:read: View the metadata of the user's designs.
             design:content:write: Create designs on the user's behalf.
-            design:permission:read: View the permissions assigned to a user's designs.
-            design:permission:write:
-              "Set, update, or remove the permissions assigned\
-              \ to the user's designs."
             folder:read: |-
               View the metadata and contents of the user's folders, including their **Projects**
               folder.
             folder:write: |-
               Add, move, or remove the user's folders. It also lets you edit folder metadata,
               such as the folder's name.
-            folder:permission:read: View permissions assigned to a user's folders.
             folder:permission:write:
               "Set, update, or remove permissions assigned\
               \ to the user's folders."
@@ -6897,5 +7771,8 @@ components:
               Read the content of the brand templates associated
               with the user's brand.
             profile:read: Read a user's profile and account information.
+            openid: Read user information through Open ID Connect (OIDC).
+            profile: Read user profile information through OIDC.
+            email: Read user email address through OIDC.
           tokenUrl: https://api.canva.com/rest/v1/oauth/token
       type: oauth2

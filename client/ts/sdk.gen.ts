@@ -130,6 +130,12 @@ import type {
   RevokeTokensData,
   RevokeTokensError,
   RevokeTokensResponse2,
+  GetOidcJwksData,
+  GetOidcJwksError,
+  GetOidcJwksResponse,
+  UserInfoData,
+  UserInfoError,
+  UserInfoResponse2,
   CreateDesignResizeJobData,
   CreateDesignResizeJobError,
   CreateDesignResizeJobResponse2,
@@ -341,17 +347,9 @@ export class AssetService {
 
 export class AutofillService {
   /**
-   * <Warning>
+   * WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
    *
-   * Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
-   *
-   * </Warning>
-   *
-   * <Note>
-   *
-   * To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
-   *
-   * </Note>
+   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
    *
    * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to autofill a Canva design using a brand template and input data.
    *
@@ -366,11 +364,7 @@ export class AutofillService {
    *
    * WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
    *
-   * <Note>
-   *
-   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of autofill jobs created with this API using the [Get design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/get-design-autofill-job/).
-   *
-   * </Note>
+   * NOTE: For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of autofill jobs created with this API using the [Get design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/get-design-autofill-job/).
    */
   public static createDesignAutofillJob<ThrowOnError extends boolean = false>(
     options?: Options<CreateDesignAutofillJobData, ThrowOnError>,
@@ -390,11 +384,7 @@ export class AutofillService {
   }
 
   /**
-   * <Note>
-   *
-   * To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
-   *
-   * </Note>
+   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
    *
    * Get the result of a design autofill job that was created using the [Create design autofill job
    * API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
@@ -417,17 +407,9 @@ export class AutofillService {
 
 export class BrandTemplateService {
   /**
-   * <Warning>
+   * WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
    *
-   * Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
-   *
-   * </Warning>
-   *
-   * <Note>
-   *
-   * To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
-   *
-   * </Note>
+   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
    *
    * Get a list of the [brand templates](https://www.canva.com/help/publish-team-template/) the user has access to.
    */
@@ -445,17 +427,9 @@ export class BrandTemplateService {
   }
 
   /**
-   * <Warning>
+   * WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
    *
-   * Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
-   *
-   * </Warning>
-   *
-   * <Note>
-   *
-   * To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
-   *
-   * </Note>
+   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
    *
    * Retrieves the metadata for a brand template.
    */
@@ -473,17 +447,9 @@ export class BrandTemplateService {
   }
 
   /**
-   * <Warning>
+   * WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
    *
-   * Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
-   *
-   * </Warning>
-   *
-   * <Note>
-   *
-   * To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
-   *
-   * </Note>
+   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
    *
    * Gets the dataset definition of a brand template. If the brand
    * template contains autofill data fields, this API returns an object with the data field
@@ -881,17 +847,12 @@ export class DesignService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Lists the available file formats for [exporting a design](https://www.canva.dev/docs/connect/api-reference/exports/create-design-export-job/).
+   *
+   * <Note>
+   * The available export formats depend on the design type and the types of pages in the design.
+   * In general, the available export formats returned are only those that are supported by every page type in the design.
+   * </Note>
    */
   public static getDesignExportFormats<ThrowOnError extends boolean = false>(
     options: Options<GetDesignExportFormatsData, ThrowOnError>,
@@ -1315,13 +1276,44 @@ export class OauthService {
   }
 }
 
+export class OidcService {
+  /**
+   * Gets the JSON Web Key Set (public keys) for OIDC. These keys are used to verify JWTs in OpenID Connect flows.
+   */
+  public static getOidcJwks<ThrowOnError extends boolean = false>(
+    options?: Options<GetOidcJwksData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).get<
+      GetOidcJwksResponse,
+      GetOidcJwksError,
+      ThrowOnError
+    >({
+      ...options,
+      url: "/v1/oidc/jwks",
+    });
+  }
+
+  /**
+   * Fetches the current UserInfo claims for the authorized user. This is the same fields
+   * returned by a id_token returns during authorization.
+   */
+  public static userInfo<ThrowOnError extends boolean = false>(
+    options?: Options<UserInfoData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).get<
+      UserInfoResponse2,
+      UserInfoError,
+      ThrowOnError
+    >({
+      ...options,
+      url: "/v1/oidc/userinfo",
+    });
+  }
+}
+
 export class ResizeService {
   /**
-   * <Note>
-   *
-   * To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
-   *
-   * </Note>
+   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
    *
    * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints)
    * to create a resized copy of a design. The new resized design is
@@ -1365,11 +1357,7 @@ export class ResizeService {
   }
 
   /**
-   * <Note>
-   *
-   * To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
-   *
-   * </Note>
+   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
    *
    * Gets the result of a design resize job that was created using the [Create design resize
    * job API](https://www.canva.dev/docs/connect/api-reference/resizes/create-design-resize-job/).

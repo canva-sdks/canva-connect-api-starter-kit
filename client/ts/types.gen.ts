@@ -8,55 +8,6 @@ export type GetAppJwksResponse = {
   keys: Array<JsonWebKey>;
 };
 
-/**
- * Standard Json Web Key specification following https://www.rfc-editor.org/rfc/rfc7517 and
- * https://www.rfc-editor.org/rfc/rfc7518.html.
- */
-export type JsonWebKey = {
-  /**
-   * The "alg" (algorithm) parameter identifies the algorithm intended for
-   * use with the key.
-   * See https://www.rfc-editor.org/rfc/rfc7517#section-4
-   */
-  alg?: string;
-  /**
-   * The "kid" (key ID) parameter is used to match a specific key.  This
-   * is used, for instance, to choose among a set of keys within a JWK Set
-   * during key rollover. When "kid" values are used within a JWK Set,
-   * different keys within the JWK Set SHOULD use distinct "kid" values.
-   * The "kid" value is a case-sensitive string.
-   * See https://www.rfc-editor.org/rfc/rfc7517#section-4
-   */
-  kid: string;
-  /**
-   * The "kty" (key type) parameter identifies the cryptographic algorithm
-   * family used with the key, such as "RSA" or "EC". The "kty" value is a
-   * case-sensitive string. At the moment, only "RSA" is supported.
-   * See https://www.rfc-editor.org/rfc/rfc7517#section-4
-   */
-  kty: string;
-  /**
-   * The "n" (modulus) parameter contains the modulus value for the RSA
-   * public key.  It is represented as a Base64urlUInt-encoded value.
-   * See https://www.rfc-editor.org/rfc/rfc7518.html#section-6.3
-   */
-  n: string;
-  /**
-   * The "e" (exponent) parameter contains the exponent value for the RSA
-   * public key.  It is represented as a Base64urlUInt-encoded value.
-   * See https://www.rfc-editor.org/rfc/rfc7518.html#section-6.3
-   */
-  e: string;
-  /**
-   * The "use" (public key use) parameter identifies the intended use of
-   * the public key. The "use" parameter is employed to indicate whether
-   * a public key is used for encrypting data or verifying the signature
-   * on data. Values are commonly "sig" (signature) or "enc" (encryption).
-   * See https://www.rfc-editor.org/rfc/rfc7517#section-4
-   */
-  use?: string;
-};
-
 export type CreateUrlAssetUploadJobRequest = {
   /**
    * A name for the asset.
@@ -591,7 +542,11 @@ export type ChartDataField = {
  * Some APIs are annotated with required capabilities. These endpoints require the user to
  * possess the required capabilities in order to be called successfully.
  */
-export type Capability = "autofill" | "brand_template" | "resize";
+export type Capability =
+  | "autofill"
+  | "brand_template"
+  | "resize"
+  | "team_restricted_app";
 
 /**
  * Some APIs are annotated with required capabilities. These endpoints require the user to
@@ -610,6 +565,10 @@ export const Capability = {
    * Capability required to create design resize jobs. Users on a Canva plan with premium features (such as Canva Pro) have this capability.
    */
   RESIZE: "resize",
+  /**
+   * Capability required to create a team-restricted app. Users that are members of the [Canva Enterprise](https://www.canva.com/enterprise/) or the [Canva for Education](https://www.canva.com/education/) organization have this capability.
+   */
+  TEAM_RESTRICTED_APP: "team_restricted_app",
 } as const;
 
 export type CreateCommentRequest = {
@@ -1608,6 +1567,20 @@ export type Design = {
 export type PageIndex = number;
 
 /**
+ * The dimensions of a design page, if it is bounded. Design pages for non-bounded designs like Whiteboards and Docs will not include this property.
+ */
+export type PageDimensions = {
+  /**
+   * The width of the design page in pixels.
+   */
+  width: number;
+  /**
+   * The height of the design page in pixels.
+   */
+  height: number;
+};
+
+/**
  * A temporary set of URLs for viewing or editing the design.
  */
 export type DesignLinks = {
@@ -1668,6 +1641,7 @@ export type DesignPage = {
    * The index of the page in the design. The first page in a design has the index value `1`.
    */
   index: number;
+  dimensions?: PageDimensions;
   thumbnail?: Thumbnail;
 };
 
@@ -1882,7 +1856,9 @@ export type ErrorCode =
   | "bad_http_method"
   | "bad_request_params"
   | "bad_query_params"
+  | "user_role_required"
   | "endpoint_not_found"
+  | "endpoint_gone"
   | "unsupported_version"
   | "invalid_access_token"
   | "revoked_access_token"
@@ -1909,6 +1885,8 @@ export type ErrorCode =
   | "user_not_found"
   | "group_not_found"
   | "app_not_found"
+  | "app_has_non_draft_versions"
+  | "invalid_status_transition"
   | "content_not_found"
   | "doctype_not_found"
   | "design_not_found"
@@ -1946,7 +1924,9 @@ export const ErrorCode = {
   BAD_HTTP_METHOD: "bad_http_method",
   BAD_REQUEST_PARAMS: "bad_request_params",
   BAD_QUERY_PARAMS: "bad_query_params",
+  USER_ROLE_REQUIRED: "user_role_required",
   ENDPOINT_NOT_FOUND: "endpoint_not_found",
+  ENDPOINT_GONE: "endpoint_gone",
   UNSUPPORTED_VERSION: "unsupported_version",
   INVALID_ACCESS_TOKEN: "invalid_access_token",
   REVOKED_ACCESS_TOKEN: "revoked_access_token",
@@ -1973,6 +1953,8 @@ export const ErrorCode = {
   USER_NOT_FOUND: "user_not_found",
   GROUP_NOT_FOUND: "group_not_found",
   APP_NOT_FOUND: "app_not_found",
+  APP_HAS_NON_DRAFT_VERSIONS: "app_has_non_draft_versions",
+  INVALID_STATUS_TRANSITION: "invalid_status_transition",
   CONTENT_NOT_FOUND: "content_not_found",
   DOCTYPE_NOT_FOUND: "doctype_not_found",
   DESIGN_NOT_FOUND: "design_not_found",
@@ -2143,12 +2125,16 @@ export type PngExportFormat = {
   width?: number;
   /**
    * If set to `true` (default), the PNG is exported without compression.
-   * If set to `false`, the PNG is compressed using a lossy compression algorithm. Lossy PNG compression is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `false`, the export operation will fail.
+   *
+   * If set to `false`, the PNG is compressed using a lossy compression algorithm.
+   *
+   * AVAILABILITY: Lossy PNG compression is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `false`, the export operation will fail.
    */
   lossless?: boolean;
   /**
    * If set to `true`, the PNG is exported with a transparent background.
-   * This option is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `true`, the export operation will fail.
+   *
+   * AVAILABILITY: This option is only available to users on a Canva plan that has premium features, such as Canva Pro. If the user is on the Canva Free plan and this parameter is set to `true`, the export operation will fail.
    */
   transparent_background?: boolean;
   /**
@@ -2662,6 +2648,62 @@ export type Group = {
   external: boolean;
 };
 
+export type JsonWebKeySet = {
+  /**
+   * An array of JSON Web Key values. The order of keys has no meaning.
+   */
+  keys: Array<JsonWebKey>;
+};
+
+/**
+ * Standard Json Web Key specification following https://www.rfc-editor.org/rfc/rfc7517 and
+ * https://www.rfc-editor.org/rfc/rfc7518.html.
+ */
+export type JsonWebKey = {
+  /**
+   * The "alg" (algorithm) parameter identifies the algorithm intended for
+   * use with the key.
+   * See https://www.rfc-editor.org/rfc/rfc7517#section-4
+   */
+  alg?: string;
+  /**
+   * The "kid" (key ID) parameter is used to match a specific key.  This
+   * is used, for instance, to choose among a set of keys within a JWK Set
+   * during key rollover. When "kid" values are used within a JWK Set,
+   * different keys within the JWK Set SHOULD use distinct "kid" values.
+   * The "kid" value is a case-sensitive string.
+   * See https://www.rfc-editor.org/rfc/rfc7517#section-4
+   */
+  kid: string;
+  /**
+   * The "kty" (key type) parameter identifies the cryptographic algorithm
+   * family used with the key, such as "RSA" or "EC". The "kty" value is a
+   * case-sensitive string. At the moment, only "RSA" is supported.
+   * See https://www.rfc-editor.org/rfc/rfc7517#section-4
+   */
+  kty: string;
+  /**
+   * The "n" (modulus) parameter contains the modulus value for the RSA
+   * public key.  It is represented as a Base64urlUInt-encoded value.
+   * See https://www.rfc-editor.org/rfc/rfc7518.html#section-6.3
+   */
+  n: string;
+  /**
+   * The "e" (exponent) parameter contains the exponent value for the RSA
+   * public key.  It is represented as a Base64urlUInt-encoded value.
+   * See https://www.rfc-editor.org/rfc/rfc7518.html#section-6.3
+   */
+  e: string;
+  /**
+   * The "use" (public key use) parameter identifies the intended use of
+   * the public key. The "use" parameter is employed to indicate whether
+   * a public key is used for encrypting data or verifying the signature
+   * on data. Values are commonly "sig" (signature) or "enc" (encryption).
+   * See https://www.rfc-editor.org/rfc/rfc7517#section-4
+   */
+  use?: string;
+};
+
 export type ExchangeAccessTokenRequest =
   | ({
       grant_type?: "authorization_code";
@@ -2755,7 +2797,7 @@ export type ExchangeAccessTokenResponse = {
    */
   token_type: string;
   /**
-   * The expiry time (in seconds) for the token.
+   * The expiry time (in seconds) for the access token.
    */
   expires_in: number;
   /**
@@ -2879,6 +2921,73 @@ export type client_id = string;
  */
 export type client_secret = string;
 
+export type UserInfoResponse = {
+  /**
+   * Identifier for the End-User at the Issuer.
+   */
+  sub: string;
+  /**
+   * End-User's full name in displayable form including all name parts, possibly including
+   * titles and suffixes, ordered according to the End-User's locale and preferences.
+   */
+  name?: string;
+  /**
+   * Given name(s) or first name(s) of the End-User. Note that in some cultures, people can
+   * have multiple given names; all can be present, with the names being separated by space
+   * characters.
+   */
+  given_name?: string;
+  /**
+   * Surname(s) or last name(s) of the End-User. Note that in some cultures, people can have
+   * multiple family names or no family name; all can be present, with the names being
+   * separated by space characters.
+   */
+  family_name?: string;
+  /**
+   * End-User's preferred e-mail address. Its value MUST conform to the RFC 5322 [RFC5322]
+   * addr-spec syntax. The RP MUST NOT rely upon this value being unique, as discussed in
+   * Section 5.7.
+   */
+  email?: string;
+  /**
+   * True if the End-User's e-mail address has been verified; otherwise false. When this
+   * Claim Value is true, this means that the OP took affirmative steps to ensure that this
+   * e-mail address was controlled by the End-User at the time the verification was
+   * performed. The means by which an e-mail address is verified is context specific,
+   * and dependent upon the trust framework or contractual agreements within which the
+   * parties are operating.
+   */
+  email_verified?: boolean;
+};
+
+/**
+ * The interval at which the usage resets. 'never' means lifetime quota that never resets.
+ */
+export type Interval = "day" | "week" | "month" | "year" | "never";
+
+/**
+ * The interval at which the usage resets. 'never' means lifetime quota that never resets.
+ */
+export const Interval = {
+  DAY: "day",
+  WEEK: "week",
+  MONTH: "month",
+  YEAR: "year",
+  NEVER: "never",
+} as const;
+
+/**
+ * Unique identification string for the feature. Need to be in `{application-id}.{feature-name}` pattern
+ */
+export type FeatureId = string;
+
+/**
+ * The quota limit set by the caller for this feature. This limit is used to determine if usage exceeds the customer-defined threshold.
+ * If not provided, we assume the usage is unlimited.
+ *
+ */
+export type FeatureQuotaLimit = number;
+
 /**
  * Body parameters for starting a resize job for a design.
  * It must include a design ID, and one of the supported design type.
@@ -2918,6 +3027,7 @@ export type DesignResizeJob = {
  */
 export type DesignResizeJobResult = {
   design: DesignSummary;
+  trial_information?: TrialInformation;
 };
 
 /**
@@ -2956,6 +3066,21 @@ export type DesignResizeError = {
    * A human-readable description of what went wrong.
    */
   message: string;
+};
+
+/**
+ * WARNING: Trials and trial information are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis).
+ * There might be unannounced breaking changes to this feature which won't produce a new API version.
+ */
+export type TrialInformation = {
+  /**
+   * The number of uses remaining in the free trial.
+   */
+  uses_remaining: number;
+  /**
+   * The URL for a user to upgrade their Canva account.
+   */
+  upgrade_url: string;
 };
 
 /**
@@ -3348,6 +3473,12 @@ export type designId = string;
 export type transactionIdParameter = string;
 
 /**
+ * The request with all the page indices
+ * Pages are indexed using one-based numbering, so the first page in a design has the index value `1`.
+ */
+export type pageIndicesParameter = Array<number>;
+
+/**
  * The export job ID.
  */
 export type exportId = string;
@@ -3361,6 +3492,15 @@ export type fileIdParameter = string;
  * The folder ID.
  */
 export type folderIdParameter = string;
+
+export type featureId = FeatureId;
+
+export type feature_quota_limit = FeatureQuotaLimit;
+
+/**
+ * The interval at which the usage resets. 'never' means lifetime quota that never resets.
+ */
+export type interval = Interval;
 
 export type GetAppJwksData = {
   body?: never;
@@ -3702,6 +3842,10 @@ export type ListBrandTemplatesData = {
      */
     continuation?: string;
     /**
+     * The number of brand templates to return.
+     */
+    limit?: number;
+    /**
      * Filter the list of brand templates based on the user's ownership of the brand templates.
      */
     ownership?: OwnershipType;
@@ -3809,6 +3953,18 @@ export type CreateCommentData = {
 
 export type CreateCommentErrors = {
   /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
    * Error Response
    */
   default: Error;
@@ -3839,6 +3995,18 @@ export type CreateReplyDeprecatedData = {
 };
 
 export type CreateReplyDeprecatedErrors = {
+  /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
   /**
    * Error Response
    */
@@ -3887,6 +4055,14 @@ export type ListRepliesData = {
 
 export type ListRepliesErrors = {
   /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
    * Error Response
    */
   default: Error;
@@ -3922,6 +4098,18 @@ export type CreateReplyData = {
 
 export type CreateReplyErrors = {
   /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
    * Error Response
    */
   default: Error;
@@ -3956,6 +4144,14 @@ export type GetThreadData = {
 };
 
 export type GetThreadErrors = {
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
   /**
    * Error Response
    */
@@ -3995,6 +4191,14 @@ export type GetReplyData = {
 
 export type GetReplyErrors = {
   /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
    * Error Response
    */
   default: Error;
@@ -4024,6 +4228,18 @@ export type CreateThreadData = {
 };
 
 export type CreateThreadErrors = {
+  /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
   /**
    * Error Response
    */
@@ -4092,6 +4308,10 @@ export type ListDesignsData = {
      * Sort the list of designs.
      */
     sort_by?: SortByType;
+    /**
+     * The number of designs to return.
+     */
+    limit?: number;
   };
   url: "/v1/designs";
 };
@@ -4535,6 +4755,10 @@ export type ListFolderItemsData = {
      */
     continuation?: string;
     /**
+     * The number of folder items to return.
+     */
+    limit?: number;
+    /**
      * Filter the folder items to only return specified types. The available types are:
      * `design`, `folder`, and `image`. To filter for more than one item type, provide a comma-
      * delimited list.
@@ -4624,6 +4848,14 @@ export type ExchangeAccessTokenData = {
 
 export type ExchangeAccessTokenErrors = {
   /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Unauthorized
+   */
+  401: Error;
+  /**
    * Error Response
    */
   default: OauthError;
@@ -4648,6 +4880,14 @@ export type IntrospectTokenData = {
 };
 
 export type IntrospectTokenErrors = {
+  /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Unauthorized
+   */
+  401: Error;
   /**
    * Error Response
    */
@@ -4674,6 +4914,14 @@ export type RevokeTokensData = {
 
 export type RevokeTokensErrors = {
   /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Unauthorized
+   */
+  401: Error;
+  /**
    * Error Response
    */
   default: OauthError;
@@ -4690,6 +4938,57 @@ export type RevokeTokensResponses = {
 
 export type RevokeTokensResponse2 =
   RevokeTokensResponses[keyof RevokeTokensResponses];
+
+export type GetOidcJwksData = {
+  body?: never;
+  url: "/v1/oidc/jwks";
+};
+
+export type GetOidcJwksErrors = {
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type GetOidcJwksError = GetOidcJwksErrors[keyof GetOidcJwksErrors];
+
+export type GetOidcJwksResponses = {
+  /**
+   * OK
+   */
+  200: JsonWebKeySet;
+};
+
+export type GetOidcJwksResponse =
+  GetOidcJwksResponses[keyof GetOidcJwksResponses];
+
+export type UserInfoData = {
+  body?: never;
+  url: "/v1/oidc/userinfo";
+};
+
+export type UserInfoErrors = {
+  /**
+   * Unauthorized
+   */
+  401: Error;
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type UserInfoError = UserInfoErrors[keyof UserInfoErrors];
+
+export type UserInfoResponses = {
+  /**
+   * OK
+   */
+  200: UserInfoResponse;
+};
+
+export type UserInfoResponse2 = UserInfoResponses[keyof UserInfoResponses];
 
 export type CreateDesignResizeJobData = {
   body?: CreateDesignResizeJobRequest;

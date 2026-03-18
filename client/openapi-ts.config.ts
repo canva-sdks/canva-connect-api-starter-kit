@@ -2,7 +2,6 @@ import { defineConfig } from "@hey-api/openapi-ts";
 
 export default defineConfig({
   input: "../openapi/spec.yml",
-  client: "@hey-api/client-fetch",
   experimentalParser: true,
   output: {
     path: "./ts",
@@ -11,8 +10,12 @@ export default defineConfig({
   },
   plugins: [
     {
+      name: "@hey-api/client-fetch",
+    },
+    {
       name: "@hey-api/sdk",
       asClass: true,
+      classNameBuilder: (name) => `${name}Service`,
     },
     {
       name: "@hey-api/typescript",

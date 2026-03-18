@@ -11,9 +11,6 @@ const endpoints = {
 router.post(endpoints.CREATE_AUTOFILL_JOB, async (req, res) => {
   const result = await AutofillService.createDesignAutofillJob({
     client: req.client,
-    path: {
-      brandTemplateId: req.params.id,
-    },
     body: req.body,
   });
 

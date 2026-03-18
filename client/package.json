@@ -8,15 +8,13 @@
   "scripts": {
     "generate": "rm -rf ./ts && openapi-ts"
   },
-  "dependencies": {
-    "@hey-api/client-fetch": "0.5.0"
-  },
+  "dependencies": {},
   "engines": {
     "node": ">=20.14.0"
   },
   "engineStrict": true,
   "devDependencies": {
-    "@hey-api/openapi-ts": "0.57.1",
+    "@hey-api/openapi-ts": "0.85.2",
     "typescript": "5.9.2"
   }
 }

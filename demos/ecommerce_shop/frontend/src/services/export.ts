@@ -1,7 +1,7 @@
 import type { GetDesignExportJobResponse } from "@canva/connect-api-ts/types.gen";
 import { poll } from "../../../../common/utils/poll";
 import { ExportService } from "@canva/connect-api-ts";
-import type { Client } from "@hey-api/client-fetch";
+import type { Client } from "@canva/connect-api-ts/client";
 
 export class Exports {
   constructor(private client: Client) {}

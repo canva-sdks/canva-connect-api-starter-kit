@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-03-19
+
+### 🔧 Changed
+
+- Upgraded `@hey-api/openapi-ts` to `0.85.2` and regenerated the Connect SDK. The demos now import from `@canva/connect-api-ts/client` instead of `@hey-api/client-fetch`.
+- Dependencies audit bringing modules up to date:
+
+```text
+@types/jest                              29.5.14   ->   30.0.0
+axios                                     1.12.2   ->   1.13.6
+jest                                      29.7.0   ->   30.2.0
+jest-environment-jsdom                    29.7.0   ->   30.2.0
+multer                                     2.0.2   ->   2.1.1
+terser-webpack-plugin                     5.3.14   ->   5.4.0
+```
+
 ## 2026-02-27
 
 ### 🔧 Changed

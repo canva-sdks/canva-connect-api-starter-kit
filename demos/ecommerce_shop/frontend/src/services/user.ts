@@ -1,6 +1,6 @@
 import type { GetUserProfileResponse } from "@canva/connect-api-ts";
 import { UserService } from "@canva/connect-api-ts";
-import type { Client } from "@hey-api/client-fetch";
+import type { Client } from "@canva/connect-api-ts/client";
 
 export class Users {
   constructor(private client: Client) {}

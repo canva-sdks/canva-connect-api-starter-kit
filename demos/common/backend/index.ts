@@ -1,4 +1,4 @@
-import type { Client } from "@hey-api/client-fetch";
+import type { Client } from "@canva/connect-api-ts/client";
 
 /**
  * We extend the Express Request interface to include the custom properties

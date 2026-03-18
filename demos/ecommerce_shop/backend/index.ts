@@ -9,7 +9,7 @@ import returnNavRoutes from "./routes/return-nav";
 import exportRoutes from "./routes/export";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "../../common/backend/middleware/errors";
-import type { Client } from "@hey-api/client-fetch";
+import type { Client } from "@canva/connect-api-ts/client";
 import { logger } from "../../common/backend/middleware/logger";
 
 /**

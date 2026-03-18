@@ -1,7 +1,7 @@
 export * from "./auth";
 
-import type { Client } from "@hey-api/client-fetch";
-import { createClient } from "@hey-api/client-fetch";
+import type { Client } from "@canva/connect-api-ts/client";
+import { createClient } from "@canva/connect-api-ts/client";
 import { Users } from "./user";
 
 export type Services = {

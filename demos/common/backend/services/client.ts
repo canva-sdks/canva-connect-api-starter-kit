@@ -1,7 +1,7 @@
-import { createClient } from "@hey-api/client-fetch";
 import { getToken, setToken } from "../database/queries";
 import * as jose from "jose";
 import { OauthService } from "@canva/connect-api-ts";
+import { createClient } from "@canva/connect-api-ts/client";
 import type { ExchangeAccessTokenRequest } from "@canva/connect-api-ts";
 import { JSONFileDatabase } from "../database/database";
 

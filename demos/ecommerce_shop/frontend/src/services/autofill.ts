@@ -8,7 +8,7 @@ import type {
 } from "@canva/connect-api-ts/types.gen";
 import type { Product, ProductAutofillDataset } from "src/models";
 import { poll } from "../../../../common/utils/poll";
-import type { Client } from "@hey-api/client-fetch";
+import type { Client } from "@canva/connect-api-ts/client";
 import { AutofillService, BrandTemplateService } from "@canva/connect-api-ts";
 import type { Assets } from "./asset";
 
@@ -181,9 +181,6 @@ export class Autofill {
     };
     const result = await AutofillService.createDesignAutofillJob({
       client: this.client,
-      path: {
-        brandTemplateId,
-      },
       body,
     });
 

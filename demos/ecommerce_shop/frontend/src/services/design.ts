@@ -2,7 +2,7 @@ import type { Design } from "@canva/connect-api-ts/types.gen";
 import type { Product } from "src/models";
 import type { Assets } from "./asset";
 
-import type { Client } from "@hey-api/client-fetch";
+import type { Client } from "@canva/connect-api-ts/client";
 import { DesignService } from "@canva/connect-api-ts";
 import { upsertProductDesign } from "./api";
 

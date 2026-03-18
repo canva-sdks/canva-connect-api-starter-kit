@@ -1,6 +1,6 @@
 import express from "express";
 import { AssetService } from "@canva/connect-api-ts";
-import { createClient } from "@hey-api/client-fetch";
+import { createClient } from "@canva/connect-api-ts/client";
 import multer from "multer";
 
 const router = express.Router();

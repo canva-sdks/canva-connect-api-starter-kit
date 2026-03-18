@@ -1,4 +1,4 @@
-import { createClient } from "@hey-api/client-fetch";
+import { createClient } from "@canva/connect-api-ts/client";
 import { Assets } from "./asset";
 import { Autofill } from "./autofill";
 import { Designs } from "./design";

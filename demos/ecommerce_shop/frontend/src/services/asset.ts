@@ -3,9 +3,9 @@ import type {
   GetAssetUploadJobResponse,
 } from "@canva/connect-api-ts/types.gen";
 import { poll } from "../../../../common/utils/poll";
-import type { Client } from "@hey-api/client-fetch";
+import type { Client } from "@canva/connect-api-ts/client";
 import { AssetService } from "@canva/connect-api-ts";
-import { createClient } from "@hey-api/client-fetch";
+import { createClient } from "@canva/connect-api-ts/client";
 
 export class Assets {
   constructor(private client: Client) {}

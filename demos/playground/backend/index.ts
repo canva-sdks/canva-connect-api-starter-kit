@@ -9,7 +9,7 @@ import { errorHandler } from "../../common/backend/middleware/errors";
 import { logger } from "../../common/backend/middleware/logger";
 import { JSONFileDatabase } from "../../common/backend/database/database";
 import type { DatabaseSchema } from "./schema";
-import type { Client } from "@hey-api/client-fetch";
+import type { Client } from "@canva/connect-api-ts/client";
 
 const port = process.env.BACKEND_PORT;
 

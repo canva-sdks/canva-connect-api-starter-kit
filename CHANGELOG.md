@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-03-26
+
+### 🔧 Changed
+
+- Updated the `.nvmrc` to recommend Node.js lts/krypton (v24) and all `@types/node` dependencies to `24.12.0`.
+- Upgrade examples/backend/typescript-express `better-sqlite3` from `8.5.0` -> `12.8.0` (to suit later node.js versions 22 & 24).
+
+### 🐞 Fixed
+
+- Fixed OAuth token exchange in the demos failing with `bad_request_body`. The `bodySerializer` override passed to `OauthService.exchangeAccessToken` and `OauthService.revokeTokens` was calling `.toString()` on a plain object, producing `"[object Object]"` as the request body. The SDK already applies the correct `urlSearchParamsBodySerializer` to these endpoints, so the manual overrides have been removed.
+
 ## 2026-03-19
 
 ### 🔧 Changed

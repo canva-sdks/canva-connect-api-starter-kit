@@ -79,12 +79,6 @@ router.get(endpoints.REDIRECT, async (req, res) => {
     const result = await OauthService.exchangeAccessToken({
       client: getBasicAuthClient(),
       body: params,
-      // by default, the body is JSON stringified, but given this endpoint expects form URL encoded data
-      // we need to override the `bodySerializer`
-      bodySerializer: (params) => params.toString(),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
     });
 
     if (result.error) {
@@ -209,13 +203,7 @@ router.get(endpoints.REVOKE, async (req, res) => {
 
     await OauthService.revokeTokens({
       client: getBasicAuthClient(),
-      // by default, the body is JSON stringified, but given this endpoint expects form URL encoded data
-      // we need to override the `bodySerializer`
       body: params,
-      bodySerializer: (params) => params.toString(),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
     });
   } catch (e) {
     console.log(e);

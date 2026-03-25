@@ -35,13 +35,7 @@ export async function getAccessTokenForUser(
 
   const result = await OauthService.exchangeAccessToken({
     client: getBasicAuthClient(),
-    // by default, the body is JSON stringified, but given this endpoint expects form URL encoded data
-    // we need to override the `bodySerializer`
     body: params,
-    bodySerializer: (params) => params.toString(),
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
     baseUrl: process.env.BASE_CANVA_CONNECT_API_URL,
   });
 

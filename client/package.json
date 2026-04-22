@@ -10,7 +10,7 @@
   },
   "dependencies": {},
   "engines": {
-    "node": ">=20.14.0"
+    "node": ">=22.0.0"
   },
   "engineStrict": true,
   "devDependencies": {

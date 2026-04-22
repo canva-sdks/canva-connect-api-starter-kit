@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-04-23
+
+### 🗑️ Removed
+
+- Dropped support for Node.js 20. The minimum supported version is now Node.js 22.
+
 ## 2026-03-26
 
 ### 🔧 Changed

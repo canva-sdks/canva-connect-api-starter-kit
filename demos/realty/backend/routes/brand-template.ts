@@ -28,7 +28,7 @@ router.get(endpoints.BRAND_TEMPLATES, async (req, res) => {
     });
 
     if (result.error) {
-      return res.status(result.response.status).json(result.error);
+      return res.status(result.response?.status ?? 500).json(result.error);
     }
 
     if (!result.data) {
@@ -55,7 +55,7 @@ router.get(endpoints.BRAND_TEMPLATE_DATASET, async (req, res) => {
     });
 
     if (result.error) {
-      return res.status(result.response.status).json(result.error);
+      return res.status(result.response?.status ?? 500).json(result.error);
     }
 
     if (!result.data) {

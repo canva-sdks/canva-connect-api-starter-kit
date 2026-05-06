@@ -129,7 +129,7 @@ export class Assets {
         },
       },
       body: image,
-      bodySerializer: (body: Blob) => body,
+      bodySerializer: (body: unknown) => body,
     });
 
     if (result.error) {

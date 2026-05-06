@@ -451,7 +451,7 @@ paths:
             - design:content:write
       tags:
         - autofill
-      x-rate-limit-per-client-user: 10
+      x-rate-limit-per-client-user: 60
   /v1/autofills/{jobId}:
     get:
       description: |-
@@ -1438,10 +1438,12 @@ paths:
       x-rate-limit-per-client-user: 100
     post:
       description: |-
-        Creates a new Canva design. To create a new design, you can either:
+        Creates a new Canva design. To create a new design, you can:
 
         - Use a preset design type.
         - Set height and width dimensions for a custom design.
+        - Create a copy of an existing design.
+        - Create a new design from a brand template.
 
         Additionally, you can also provide the `asset_id` of an asset in the user's [projects](https://www.canva.com/help/find-designs-and-folders/) to add to the new design. Currently, this only supports image assets. To list the assets in a folder in the user's projects, use the [List folder items API](https://www.canva.dev/docs/connect/api-reference/folders/list-folder-items/).
 
@@ -1459,6 +1461,17 @@ paths:
               schema:
                 $ref: "#/components/schemas/CreateDesignResponse"
           description: OK
+        "404":
+          content:
+            application/json:
+              examples:
+                create_design_not_found:
+                  $ref: "#/components/examples/CreateDesignNotFoundError"
+                create_brand_template_not_found:
+                  $ref: "#/components/examples/CreateBrandTemplateNotFoundError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
         default:
           content:
             application/json:
@@ -1821,8 +1834,17 @@ paths:
 
         The request requires the design ID and the exported file format type.
 
-        Supported file formats (and export file type values): PDF (`pdf`), JPG (`jpg`), PNG (`png`), GIF (`gif`), Microsoft PowerPoint (`pptx`), and MP4 (`mp4`).
+        Supported file formats (and export file type values): JPG (`jpg`), PNG (`png`), GIF (`gif`), Microsoft PowerPoint (`pptx`), MP4 (`mp4`), PDF (`pdf`), HTML bundle (`html_bundle`), and standalone HTML (`html_standalone`).
 
+        <Note>
+
+        This endpoint has the following additional rate limits:
+
+          - **Integration throttle:** Each integration can export a maximum of 750 times per 5-minute window, and 5,000 times per 24-hour window.
+          - **Document throttle:** Each document can be exported a maximum of 75 times per 5-minute window.
+          - **User throttle:** Each user can export a maximum of 75 times per 5-minute window, and 500 times per 24-hour window.
+
+        </Note>
         <Note>
 
         For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/connect/api-reference/exports/get-design-export-job/).
@@ -1848,6 +1870,64 @@ paths:
               schema:
                 $ref: "#/components/schemas/CreateDesignExportJobResponse"
           description: OK
+        "400":
+          content:
+            application/json:
+              examples:
+                export_invalid_design_id:
+                  $ref: "#/components/examples/ExportInvalidDesignIdError"
+                export_design_type_not_supported:
+                  $ref: "#/components/examples/UnsupportedDesignType"
+                export_format_not_supported:
+                  $ref: "#/components/examples/UnsupportedFormatError"
+                invalid_page_range:
+                  $ref: "#/components/examples/InvalidPageRangeError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad Request
+          x-http-status-code: 400
+        "403":
+          content:
+            application/json:
+              examples:
+                design_permission_denied:
+                  $ref: "#/components/examples/DesignPermissionDeniedError"
+                license_required:
+                  $ref: "#/components/examples/LicenseRequiredError"
+                svg_export_unavailable:
+                  $ref: "#/components/examples/SvgExportUnavailableError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Forbidden
+          x-http-status-code: 403
+        "404":
+          content:
+            application/json:
+              examples:
+                export_design_not_found:
+                  $ref: "#/components/examples/ExportDesignNotFoundError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
+          x-http-status-code: 404
+        "429":
+          content:
+            application/json:
+              examples:
+                client_throttle:
+                  $ref: "#/components/examples/ClientThrottleError"
+                client_daily_throttle:
+                  $ref: "#/components/examples/ClientDailyThrottleError"
+                user_throttle:
+                  $ref: "#/components/examples/UserThrottleError"
+                user_daily_throttle:
+                  $ref: "#/components/examples/UserDailyThrottleError"
+                design_throttle:
+                  $ref: "#/components/examples/DesignThrottleError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Too Many Requests
+          x-http-status-code: 429
         default:
           content:
             application/json:
@@ -1894,6 +1974,26 @@ paths:
               schema:
                 $ref: "#/components/schemas/GetDesignExportJobResponse"
           description: OK
+        "403":
+          content:
+            application/json:
+              examples:
+                export_job_permission_denied:
+                  $ref: "#/components/examples/ExportJobPermissionDeniedError"
+                export_job_result_permission_denied:
+                  $ref: "#/components/examples/ExportJobResultPermissionDeniedError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Forbidden
+        "404":
+          content:
+            application/json:
+              examples:
+                export_job_expired:
+                  $ref: "#/components/examples/ExportJobExpiredError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Not Found
         default:
           content:
             application/json:
@@ -2088,6 +2188,14 @@ paths:
           schema:
             $ref: "#/components/schemas/FolderItemSortBy"
           style: form
+        - description: Filter the folder items by their pinned status.
+          explode: true
+          in: query
+          name: pin_status
+          required: false
+          schema:
+            $ref: "#/components/schemas/FolderItemPinStatus"
+          style: form
       responses:
         "200":
           content:
@@ -2244,6 +2352,16 @@ paths:
                   $ref: "#/components/examples/InvalidRefreshToken"
                 unauthorized_client:
                   $ref: "#/components/examples/UnauthorizedClientError"
+                token_exchange_invalid_request:
+                  $ref: "#/components/examples/TokenExchangeInvalidRequest"
+                token_exchange_invalid_grant:
+                  $ref: "#/components/examples/TokenExchangeInvalidGrant"
+                token_exchange_unauthorized_client:
+                  $ref: "#/components/examples/TokenExchangeUnauthorizedClient"
+                token_exchange_unsupported_grant_type:
+                  $ref: "#/components/examples/TokenExchangeUnsupportedGrantType"
+                token_exchange_invalid_scope:
+                  $ref: "#/components/examples/TokenExchangeInvalidScope"
               schema:
                 $ref: "#/components/schemas/Error"
           description: Bad Request
@@ -2255,9 +2373,22 @@ paths:
                   $ref: "#/components/examples/ClientSecretInvalid"
                 access_token_missing:
                   $ref: "#/components/examples/AccessTokenMissing"
+                token_exchange_invalid_client:
+                  $ref: "#/components/examples/TokenExchangeInvalidClient"
+                token_exchange_unauthorized_user:
+                  $ref: "#/components/examples/TokenExchangeUnauthorizedUser"
               schema:
                 $ref: "#/components/schemas/Error"
           description: Unauthorized
+        "429":
+          content:
+            application/json:
+              examples:
+                too_many_token_exchange_requests:
+                  $ref: "#/components/examples/TooManyTokenExchangeRequests"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Too Many Requests
         default:
           content:
             application/json:
@@ -2484,7 +2615,7 @@ paths:
         - Designs can be resized to a maximum area of 25,000,000 pixels squared.
         - Resizing designs using the Connect API always creates a new design. In-place resizing is currently not available in the Connect API, but can be done in the Canva UI.
         - Resizing a multi-page design results in all pages of the design being resized. Resizing a section of a design is only available in the Canva UI.
-        - [Canva docs](https://www.canva.com/create/documents/) can't be resized, and other design types can't be resized to a Canva doc.
+        - [Canva docs](https://www.canva.com/create/documents/) and [emails](https://www.canva.com/emails/) can't be resized, and other design types can't be resized to a Canva doc or email.
         - Canva Code designs can't be resized, and other design types can't be resized to a Canva Code design.
 
         <Note>
@@ -2519,6 +2650,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/CreateDesignResizeJobResponse"
           description: OK
+        "400":
+          content:
+            application/json:
+              examples:
+                unsupported_design_type:
+                  $ref: "#/components/examples/UnsupportedDesignTypeError"
+              schema:
+                $ref: "#/components/schemas/Error"
+          description: Bad Request
         default:
           content:
             application/json:
@@ -2863,6 +3003,18 @@ components:
       value:
         code: reply_not_found
         message: "Suggestion reply with ID {replyId} not found"
+    CreateDesignNotFoundError:
+      summary: A design with the ID specified in the request could not be found.
+      value:
+        code: not_found
+        message: "Design with id '{designId}' not found"
+    CreateBrandTemplateNotFoundError:
+      summary:
+        A brand template with the ID specified in the request could not be
+        found.
+      value:
+        code: not_found
+        message: "Brand template with id '{brandTemplateId}' not found"
     InProgressDesignImportJobExample:
       summary: In progress job
       value:
@@ -3080,6 +3232,88 @@ components:
           error:
             code: license_required
             message: User doesn't have the required license to export in PRO quality.
+    ExportInvalidDesignIdError:
+      summary: Request design ID does not match expected format.
+      value:
+        code: invalid_request
+        message: "{designId} does not match expected format for designId"
+    UnsupportedDesignType:
+      summary: Export not supported for this design type.
+      value:
+        code: bad_request_body
+        message: "{formatType} export not supported for this design type"
+    SvgExportUnavailableError:
+      summary: SVG export is currently unavailable.
+      value:
+        code: feature_not_available
+        message: SVG Export is currently unavailable
+    ClientThrottleError:
+      summary: Too many requests for client.
+      value:
+        code: too_many_requests
+        message: Too many export requests for client
+    ClientDailyThrottleError:
+      summary: Too many daily requests for client.
+      value:
+        code: too_many_requests
+        message: Too many daily export requests for client
+    UserThrottleError:
+      summary: Too many requests for user.
+      value:
+        code: too_many_requests
+        message: Too many export requests for user
+    UserDailyThrottleError:
+      summary: Too many daily requests for user.
+      value:
+        code: too_many_requests
+        message: Too many daily export requests for user
+    DesignThrottleError:
+      summary: Too many requests for design.
+      value:
+        code: too_many_requests
+        message: Too many export requests for design
+    ExportJobPermissionDeniedError:
+      summary: Not allowed to access export job.
+      value:
+        code: permission_denied
+        message: Not allowed to access export job
+    ExportJobExpiredError:
+      summary: Export job result has expired.
+      value:
+        code: not_found
+        message: export job result has expired
+    ExportJobResultPermissionDeniedError:
+      summary: Not allowed to access export job result.
+      value:
+        code: permission_denied
+        message: Not allowed to access export job result
+    UnsupportedFormatError:
+      summary: Export format not supported for requested page(s).
+      value:
+        code: bad_request_body
+        message: "{formatType} export not supported for requested page(s) [{pageNumbers}]"
+    InvalidPageRangeError:
+      summary: Requested invalid page range for design.
+      value:
+        code: bad_request_body
+        message:
+          "Requested page(s) [{badPageNumbers}] of a design with {maxPageNumber}\
+          \ page(s)"
+    LicenseRequiredError:
+      summary: User doesn't have the required license to export in PRO quality.
+      value:
+        code: license_required
+        message: User doesn't have the required license to export in PRO quality
+    ExportDesignNotFoundError:
+      summary: Design not found.
+      value:
+        code: design_not_found
+        message: "Design with id '{designId}' not found"
+    DesignPermissionDeniedError:
+      summary: Not allowed to access design.
+      value:
+        code: permission_denied
+        message: "Not allowed to access design with id {designId}"
     InvalidTokenError:
       summary: The token supplied is neither an access token nor a refresh token.
       value:
@@ -3142,6 +3376,46 @@ components:
       value:
         code: invalid_access_token
         message: Access token is missing
+    TokenExchangeInvalidRequest:
+      summary: The token exchange request is invalid.
+      value:
+        code: invalid_request
+        message: "{description}"
+    TokenExchangeInvalidClient:
+      summary: The client credentials are invalid.
+      value:
+        code: invalid_client
+        message: "{description}"
+    TokenExchangeInvalidGrant:
+      summary: "The provided authorization grant is invalid, expired, or revoked."
+      value:
+        code: invalid_grant
+        message: "{description}"
+    TokenExchangeUnauthorizedClient:
+      summary: The client is not authorized to use this grant type.
+      value:
+        code: unauthorized_client
+        message: "{description}"
+    TokenExchangeUnauthorizedUser:
+      summary: The user is not authorized.
+      value:
+        code: unauthorized_user
+        message: "{description}"
+    TokenExchangeUnsupportedGrantType:
+      summary: The grant type is not supported.
+      value:
+        code: unsupported_grant_type
+        message: "{description}"
+    TokenExchangeInvalidScope:
+      summary: "The requested scope is invalid, unknown, or malformed."
+      value:
+        code: invalid_scope
+        message: "{description}"
+    TooManyTokenExchangeRequests:
+      summary: Too many token exchange requests.
+      value:
+        code: too_many_requests
+        message: "Too many {grantType} requests"
     InProgressResizeJobExample:
       summary: In progress job
       value:
@@ -3180,6 +3454,11 @@ components:
           error:
             code: design_resize_error
             message: Failed to resize the design
+    UnsupportedDesignTypeError:
+      summary: Unsupported design type
+      value:
+        code: bad_request_params
+        message: "Canva designs can't be resized to the selected design type: `{designTypeName}`"
   parameters:
     appId:
       description: The app ID.
@@ -3578,6 +3857,8 @@ components:
           $ref: "#/components/schemas/TeamUserSummary"
         thumbnail:
           $ref: "#/components/schemas/Thumbnail"
+        metadata:
+          $ref: "#/components/schemas/AssetMetadata"
       required:
         - created_at
         - id
@@ -3586,6 +3867,73 @@ components:
         - tags
         - type
         - updated_at
+      type: object
+    AssetMetadata:
+      description: Type-specific metadata for the asset.
+      discriminator:
+        mapping:
+          image: "#/components/schemas/ImageMetadata"
+          video: "#/components/schemas/VideoMetadata"
+        propertyName: type
+      oneOf:
+        - $ref: "#/components/schemas/ImageMetadata"
+        - $ref: "#/components/schemas/VideoMetadata"
+      type: object
+    ImageMetadata:
+      properties:
+        type:
+          enum:
+            - image
+          type: string
+        width:
+          description: The width of the image in pixels.
+          example: 1920
+          format: int32
+          type: integer
+        height:
+          description: The height of the image in pixels.
+          example: 1080
+          format: int32
+          type: integer
+        smart_tags:
+          description: AI-generated tags for the image.
+          example:
+            - landscape
+            - sunset
+            - mountains
+            - nature
+          items:
+            maxLength: 50
+            type: string
+          type: array
+      required:
+        - type
+      type: object
+    VideoMetadata:
+      properties:
+        type:
+          enum:
+            - video
+          type: string
+        width:
+          description: The width of the video in pixels.
+          example: 1920
+          format: int32
+          type: integer
+        height:
+          description: The height of the video in pixels.
+          example: 1080
+          format: int32
+          type: integer
+        duration:
+          description: The duration of the video in seconds.
+          example: 60
+          format: int32
+          type: integer
+      required:
+        - height
+        - type
+        - width
       type: object
     AssetSummary:
       description: An object representing an asset with associated metadata.
@@ -3815,21 +4163,25 @@ components:
             cute_pet_sales_chart:
               type: chart
               chart_data:
+                column_configs:
+                  - name: Geographic Region
+                    type: string
+                  - name: Sales (millions AUD)
+                    type: number
+                  - name: Target (millions AUD)
+                    type: number
+                  - name: Target met?
+                    type: boolean
+                  - name: Date met
+                    type: date
                 rows:
-                  - cells:
-                      - type: string
-                        value: Geographic Region
-                      - type: string
-                        value: Sales (millions AUD)
-                      - type: string
-                        value: Target met?
-                      - type: string
-                        value: Date met
                   - cells:
                       - type: string
                         value: Asia Pacific
                       - type: number
                         value: 10.2
+                      - type: number
+                        value: 10
                       - type: boolean
                         value: true
                       - type: date
@@ -3839,6 +4191,8 @@ components:
                         value: EMEA
                       - type: number
                         value: 13.8
+                      - type: number
+                        value: 14
                       - type: boolean
                         value: false
                       - type: date
@@ -3881,21 +4235,25 @@ components:
         cute_pet_sales_chart:
           type: chart
           chart_data:
+            column_configs:
+              - name: Geographic Region
+                type: string
+              - name: Sales (millions AUD)
+                type: number
+              - name: Target (millions AUD)
+                type: number
+              - name: Target met?
+                type: boolean
+              - name: Date met
+                type: date
             rows:
-              - cells:
-                  - type: string
-                    value: Geographic Region
-                  - type: string
-                    value: Sales (millions AUD)
-                  - type: string
-                    value: Target met?
-                  - type: string
-                    value: Date met
               - cells:
                   - type: string
                     value: Asia Pacific
                   - type: number
                     value: 10.2
+                  - type: number
+                    value: 10
                   - type: boolean
                     value: true
                   - type: date
@@ -3905,6 +4263,8 @@ components:
                     value: EMEA
                   - type: number
                     value: 13.8
+                  - type: number
+                    value: 14
                   - type: boolean
                     value: false
                   - type: date
@@ -3942,6 +4302,12 @@ components:
     DatasetChartValue:
       description: |-
         If the data field is a chart.
+
+        Note the following behavior:
+        - If `column_configs` is not provided, the first row is assumed to contain column headers where applicable.
+        - Chart autofill supports a maximum of 100 rows and 20 columns.
+        - `number` cells with formatting metadata are not currently supported for autofill and will result in an error response.
+        - `media` cells are not supported for chart autofill and will result in an error response.
 
          WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
       properties:
@@ -4018,6 +4384,8 @@ components:
         - autofill_error
         - thumbnail_generation_error
         - create_design_error
+        - design_approval_error
+        - trial_quota_exceeded
       type: string
     AutofillError:
       description:
@@ -5234,59 +5602,113 @@ components:
       description: |-
         Tabular data, structured in rows of cells.
 
-        - The first row usually contains column headers.
         - Each cell must have a data type configured.
         - All rows must have the same number of cells.
-        - Maximum of 100 rows and 20 columns.
+        - The number of entries in `column_configs` must match the number of columns in the data.
 
         WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
       example:
+        column_configs:
+          - name: Geographic Region
+            type: string
+          - name: Sales (millions AUD)
+            type: number
+          - name: Target (millions AUD)
+            type: number
+          - name: Target met?
+            type: boolean
+          - name: Date met
+            type: date
+          - name: Logo
+            type: media
         rows:
-          - cells:
-              - type: string
-                value: Geographic Region
-              - type: string
-                value: Sales (millions AUD)
-              - type: string
-                value: Target (millions AUD)
-              - type: string
-                value: Target met?
-              - type: string
-                value: Date met
           - cells:
               - type: string
                 value: Asia Pacific
               - type: number
                 value: 10.2
+                metadata:
+                  formatting: "#,##0.0"
               - type: number
                 value: 10
+                metadata:
+                  formatting: "#,##0.0"
               - type: boolean
                 value: true
               - type: date
                 value: 1721944387
+              - type: media
+                value:
+                  - type: image_upload
+                    url: https://example.com/apac-logo.png
+                    thumbnail_url: https://example.com/apac-logo-thumb.png
+                    mime_type: image/png
+                    ai_disclosure: none
+                  - type: video_upload
+                    url: https://example.com/apac-logo.mp4
+                    thumbnail_image_url: https://example.com/apac-logo-thumb.png
+                    thumbnail_video_url: https://example.com/apac-logo-thumb.mp4
+                    mime_type: video/mp4
+                    ai_disclosure: none
           - cells:
               - type: string
                 value: EMEA
               - type: number
                 value: 13.8
+                metadata:
+                  formatting: "#,##0.0"
               - type: number
                 value: 14
+                metadata:
+                  formatting: "#,##0.0"
               - type: boolean
                 value: false
               - type: date
+              - type: media
+                value: []
       properties:
+        column_configs:
+          description: Column definitions with names and data types.
+          items:
+            $ref: "#/components/schemas/ColumnConfig"
+          type: array
         rows:
-          description: |-
-            Rows of data.
-
-            The first row usually contains column headers.
+          description: Rows of data.
           items:
             $ref: "#/components/schemas/DataTableRow"
-          maxItems: 100
           type: array
       required:
         - rows
       type: object
+    ColumnConfig:
+      description: Configuration for a data table column.
+      properties:
+        name:
+          description: "Name for the column, displayed as header text."
+          type: string
+        type:
+          $ref: "#/components/schemas/ColumnDataType"
+      required:
+        - type
+      type: object
+    ColumnDataType:
+      description: Expected data type for cells in this column.
+      enum:
+        - string
+        - number
+        - date
+        - boolean
+        - media
+        - variant
+      type: string
+      x-enum-descriptions:
+        - String data
+        - Numeric data
+        - Date data
+        - Boolean data
+        - "Media data (such as images, videos, or combinations of both)"
+        - Mixed data types (use where the column contains cells of a combination of
+          data types)
     DataTableRow:
       description: A single row of tabular data.
       properties:
@@ -5297,7 +5719,6 @@ components:
             All rows must have the same number of cells.
           items:
             $ref: "#/components/schemas/DataTableCell"
-          maxItems: 20
           type: array
       required:
         - cells
@@ -5310,12 +5731,14 @@ components:
           number: "#/components/schemas/NumberDataTableCell"
           boolean: "#/components/schemas/BooleanDataTableCell"
           date: "#/components/schemas/DateDataTableCell"
+          media: "#/components/schemas/MediaCollectionDataTableCell"
         propertyName: type
       oneOf:
         - $ref: "#/components/schemas/StringDataTableCell"
         - $ref: "#/components/schemas/NumberDataTableCell"
         - $ref: "#/components/schemas/BooleanDataTableCell"
         - $ref: "#/components/schemas/DateDataTableCell"
+        - $ref: "#/components/schemas/MediaCollectionDataTableCell"
       type: object
     StringDataTableCell:
       description: A string tabular data cell.
@@ -5325,6 +5748,7 @@ components:
             - string
           type: string
         value:
+          maxLength: 10000
           type: string
       required:
         - type
@@ -5339,8 +5763,21 @@ components:
         value:
           format: double
           type: number
+        metadata:
+          $ref: "#/components/schemas/NumberCellMetadata"
       required:
         - type
+      type: object
+    NumberCellMetadata:
+      description: Formatting metadata for number cells.
+      properties:
+        formatting:
+          description: |-
+            Formatting pattern using Office Open XML Format.
+
+            These patterns control how numbers are displayed to users, including currency symbols,
+            decimal places, and separators.
+          type: string
       type: object
     BooleanDataTableCell:
       description: A boolean tabular data cell.
@@ -5370,6 +5807,156 @@ components:
       required:
         - type
       type: object
+    MediaCollectionDataTableCell:
+      description: Cell containing a media collection.
+      properties:
+        type:
+          enum:
+            - media
+          type: string
+        value:
+          description: |-
+            Media collection values.
+
+            Provide an empty array for an empty cell.
+          items:
+            $ref: "#/components/schemas/DataTableMedia"
+          maxItems: 20
+          type: array
+      required:
+        - type
+        - value
+      type: object
+    DataTableMedia:
+      discriminator:
+        mapping:
+          image_upload: "#/components/schemas/DataTableImageUpload"
+          video_upload: "#/components/schemas/DataTableVideoUpload"
+        propertyName: type
+      oneOf:
+        - $ref: "#/components/schemas/DataTableImageUpload"
+        - $ref: "#/components/schemas/DataTableVideoUpload"
+    DataTableImageUpload:
+      description: Options for uploading an image asset.
+      properties:
+        type:
+          enum:
+            - image_upload
+          type: string
+        url:
+          description: |-
+            The URL of the image file to upload.
+            This can be an external URL or a data URL.
+          type: string
+        thumbnail_url:
+          description: |-
+            The URL of a thumbnail image to display while the image is queued for upload.
+            This can be an external URL or a data URL.
+          type: string
+        mime_type:
+          $ref: "#/components/schemas/DataTableImageMimeType"
+        width:
+          description: The width of the image in pixels.
+          format: int32
+          type: integer
+        height:
+          description: The height of the image in pixels.
+          format: int32
+          type: integer
+        ai_disclosure:
+          $ref: "#/components/schemas/DataTableAiDisclosure"
+      required:
+        - ai_disclosure
+        - mime_type
+        - thumbnail_url
+        - type
+        - url
+      type: object
+    DataTableVideoUpload:
+      description: Options for uploading a video asset.
+      properties:
+        type:
+          enum:
+            - video_upload
+          type: string
+        url:
+          description: The URL of the video file to upload.
+          type: string
+        thumbnail_image_url:
+          description: |-
+            The URL of a thumbnail image to use as a fallback if thumbnailVideoUrl isn't provided.
+            This can be an external URL or a data URL.
+          type: string
+        thumbnail_video_url:
+          description:
+            The URL of a thumbnail video to display while the video is
+            queued for upload.
+          type: string
+        mime_type:
+          $ref: "#/components/schemas/DataTableVideoMimeType"
+        width:
+          description: The width of the video in pixels.
+          format: int32
+          type: integer
+        height:
+          description: The height of the video in pixels.
+          format: int32
+          type: integer
+        ai_disclosure:
+          $ref: "#/components/schemas/DataTableAiDisclosure"
+      required:
+        - ai_disclosure
+        - mime_type
+        - thumbnail_image_url
+        - type
+        - url
+      type: object
+    DataTableImageMimeType:
+      description: The MIME type of an image file that's supported by Canva's backend.
+      enum:
+        - image/jpeg
+        - image/heic
+        - image/png
+        - image/svg+xml
+        - image/webp
+        - image/tiff
+      type: string
+    DataTableVideoMimeType:
+      description: The MIME type of a video file that's supported by Canva's backend.
+      enum:
+        - video/avi
+        - video/x-msvideo
+        - image/gif
+        - video/x-m4v
+        - video/x-matroska
+        - video/quicktime
+        - video/mp4
+        - video/mpeg
+        - video/webm
+        - application/json
+      type: string
+      x-enum-descriptions:
+        - ""
+        - ""
+        - "GIFs are treated as videos, not images."
+        - ""
+        - ""
+        - ""
+        - ""
+        - ""
+        - ""
+        - Used for Lottie files.
+    DataTableAiDisclosure:
+      description:
+        A disclosure identifying if the app generated this media asset
+        using AI.
+      enum:
+        - app_generated
+        - none
+      type: string
+      x-enum-descriptions:
+        - App creates or significantly alters content using AI
+        - No AI involvement in creation or alteration
     SortByType:
       default: relevance
       enum:
@@ -5419,10 +6006,31 @@ components:
       type: object
     CreateDesignRequest:
       description: |-
-        Body parameters for creating a new design.
-        At least one of `design_type` or `asset_id` must be defined
-        to create a new design.
+        Body parameters for creating a new design. Use the `type` discriminator to choose the creation mode:
+
+        - Use `type_and_asset` to create a design by specifying the design type and/or an asset.
+
+        NOTE: For backward compatibility, if `type` isn't specified in the request,
+        the request type will be assumed to be `type_and_asset`.
+      discriminator:
+        mapping:
+          type_and_asset: "#/components/schemas/DesignTypeCreateDesignRequest"
+        propertyName: type
+      oneOf:
+        - $ref: "#/components/schemas/DesignTypeCreateDesignRequest"
+      type: object
+    DesignTypeCreateDesignRequest:
+      description: |-
+        Create a design by specifying the design type and/or an asset.
+        At least one of `design_type` or `asset_id` must be defined.
       properties:
+        type:
+          description:
+            "For backward compatibility, if `type` isn't specified in the\
+            \ request, the request type will be assumed to be `type_and_asset`."
+          enum:
+            - type_and_asset
+          type: string
         design_type:
           $ref: "#/components/schemas/DesignTypeInput"
         asset_id:
@@ -5437,6 +6045,8 @@ components:
           maxLength: 255
           minLength: 1
           type: string
+      required:
+        - type
       type: object
     CreateDesignResponse:
       description: Details about the new design.
@@ -5675,6 +6285,7 @@ components:
         id:
           description: The ID of the design import job.
           example: e08861ae-3b29-45db-8dc1-1fe0bf7f1cc8
+          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         status:
           $ref: "#/components/schemas/DesignImportStatus"
@@ -5812,16 +6423,18 @@ components:
       description: The name of the design type.
       enum:
         - doc
-        - whiteboard
+        - email
         - presentation
+        - whiteboard
       type: string
       x-enum-descriptions:
         - "A [Canva doc](https://www.canva.com/docs/); a document for Canva's online\
           \ text editor."
-        - "A [whiteboard](https://www.canva.com/online-whiteboard/); a design which\
-          \ gives you infinite space to collaborate."
+        - "An [email](https://www.canva.com/emails/); for creating email campaign designs."
         - "A [presentation](https://www.canva.com/presentations/); lets you create and\
           \ collaborate for presenting to an audience."
+        - "A [whiteboard](https://www.canva.com/online-whiteboard/); a design which\
+          \ gives you infinite space to collaborate."
     CustomDesignTypeInput:
       description: Provide the width and height to define a custom design type.
       properties:
@@ -5934,6 +6547,7 @@ components:
         - license_required
         - input_unsafe
         - display_name_unavailable
+        - user_not_managed
       type: string
     CreateDesignExportJobRequest:
       description: |-
@@ -5968,6 +6582,8 @@ components:
           pptx: "#/components/schemas/PptxExportFormat"
           gif: "#/components/schemas/GifExportFormat"
           mp4: "#/components/schemas/Mp4ExportFormat"
+          html_bundle: "#/components/schemas/HtmlBundleExportFormat"
+          html_standalone: "#/components/schemas/HtmlStandaloneExportFormat"
         propertyName: type
       oneOf:
         - $ref: "#/components/schemas/PdfExportFormat"
@@ -5976,6 +6592,8 @@ components:
         - $ref: "#/components/schemas/PptxExportFormat"
         - $ref: "#/components/schemas/GifExportFormat"
         - $ref: "#/components/schemas/Mp4ExportFormat"
+        - $ref: "#/components/schemas/HtmlBundleExportFormat"
+        - $ref: "#/components/schemas/HtmlStandaloneExportFormat"
       type: object
     PdfExportFormat:
       description: Export the design as a PDF. Providing a paper size is optional.
@@ -6250,6 +6868,54 @@ components:
         - quality
         - type
       type: object
+    HtmlBundleExportFormat:
+      description:
+        Export the email design as an HTML bundle. An HTML bundle is a
+        zip file that contains an HTML file and the associated assets.
+      properties:
+        type:
+          enum:
+            - html_bundle
+          type: string
+        pages:
+          description: |-
+            The pages of the design to export. Currently only a single page can be exported. If not provided,
+            the first page of the design is used.
+          example:
+            - 1
+          items:
+            format: int32
+            minimum: 1
+            type: integer
+          maxItems: 1
+          minItems: 1
+          type: array
+      required:
+        - type
+      type: object
+    HtmlStandaloneExportFormat:
+      description: Export the email design as a standalone HTML file with hosted assets.
+      properties:
+        type:
+          enum:
+            - html_standalone
+          type: string
+        pages:
+          description: |-
+            The pages of the design to export. Currently only a single page can be exported. If not provided,
+            the first page of the design is used.
+          example:
+            - 1
+          items:
+            format: int32
+            minimum: 1
+            type: integer
+          maxItems: 1
+          minItems: 1
+          type: array
+      required:
+        - type
+      type: object
     CreateDesignExportJobResponse:
       properties:
         job:
@@ -6365,6 +7031,10 @@ components:
           $ref: "#/components/schemas/GifExportFormatOption"
         mp4:
           $ref: "#/components/schemas/Mp4ExportFormatOption"
+        html_bundle:
+          $ref: "#/components/schemas/HtmlBundleExportFormatOption"
+        html_standalone:
+          $ref: "#/components/schemas/HtmlStandaloneExportFormatOption"
       type: object
     PdfExportFormatOption:
       description: Whether the design can be exported as a PDF.
@@ -6387,6 +7057,12 @@ components:
     Mp4ExportFormatOption:
       description: Whether the design can be exported as an MP4.
       type: object
+    HtmlBundleExportFormatOption:
+      description: Whether the design can be exported as an HTML bundle.
+      type: object
+    HtmlStandaloneExportFormatOption:
+      description: Whether the design can be exported as an standalone HTML file.
+      type: object
     ExportError:
       description: "If the export fails, this object provides details about the error."
       properties:
@@ -6400,12 +7076,7 @@ components:
         - message
       type: object
     ExportErrorCode:
-      description: |-
-        If the export failed, this specifies the reason why it failed.
-
-        - `license_required`: The design contains [premium elements](https://www.canva.com/help/premium-elements/) that haven't been purchased. You can either buy the elements or upgrade to a Canva plan (such as Canva Pro) that has premium features, then try again. Alternatively, you can set `export_quality` to `regular` to export your document in regular quality.
-        - `approval_required`: The design requires [reviewer approval](https://www.canva.com/en_au/help/design-approval/) before it can be exported.
-        - `internal_failure`: The service encountered an error when exporting your design.
+      description: "If the export failed, this specifies the reason why it failed."
       enum:
         - license_required
         - approval_required
@@ -6458,6 +7129,16 @@ components:
         - folder
         - image
       type: string
+    FolderItemPinStatus:
+      default: any
+      description: Filter folder items by their pinned status.
+      enum:
+        - any
+        - pinned
+      type: string
+      x-enum-descriptions:
+        - Return all items regardless of pinned status (default).
+        - Return only pinned items.
     GetFolderResponse:
       description: The folder ID.
       properties:
@@ -7116,7 +7797,6 @@ components:
       properties:
         design_id:
           description: The design ID.
-          pattern: "^[a-zA-Z0-9_-]{1,50}$"
           type: string
         design_type:
           $ref: "#/components/schemas/DesignTypeInput"
@@ -7378,6 +8058,7 @@ components:
           team_invite: "#/components/schemas/TeamInviteNotificationContent"
           folder_access_requested: "#/components/schemas/FolderAccessRequestedNotificationContent"
           suggestion: "#/components/schemas/SuggestionNotificationContent"
+          autofill_job: "#/components/schemas/DesignAutofillJobNotificationContent"
         propertyName: type
       oneOf:
         - $ref: "#/components/schemas/ShareDesignNotificationContent"
@@ -7391,6 +8072,7 @@ components:
         - $ref: "#/components/schemas/TeamInviteNotificationContent"
         - $ref: "#/components/schemas/FolderAccessRequestedNotificationContent"
         - $ref: "#/components/schemas/SuggestionNotificationContent"
+        - $ref: "#/components/schemas/DesignAutofillJobNotificationContent"
       type: object
     ShareDesignNotificationContent:
       description: The notification content for when someone shares a design.
@@ -7689,6 +8371,25 @@ components:
         - receiving_team_user
         - suggestion_event_type
         - triggering_user
+        - type
+      type: object
+    DesignAutofillJobNotificationContent:
+      description:
+        The notification content for when a design autofill job reaches
+        a terminal state.
+      properties:
+        type:
+          enum:
+            - autofill_job
+          example: autofill_job
+          type: string
+        receiving_team_user:
+          $ref: "#/components/schemas/TeamUser"
+        job:
+          $ref: "#/components/schemas/DesignAutofillJob"
+      required:
+        - job
+        - receiving_team_user
         - type
       type: object
     ShareAction:

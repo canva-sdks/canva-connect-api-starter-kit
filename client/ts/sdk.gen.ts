@@ -157,7 +157,8 @@ import type {
 export type Options<
   TData extends TDataShape = TDataShape,
   ThrowOnError extends boolean = boolean,
-> = Options2<TData, ThrowOnError> & {
+  TResponse = unknown,
+> = Options2<TData, ThrowOnError, TResponse> & {
   /**
    * You can provide a client instance returned by `createClient()` instead of
    * individual options. This might be also useful if you want to implement a
@@ -183,10 +184,7 @@ export class AppService {
       GetAppJwksResponses,
       GetAppJwksErrors,
       ThrowOnError
-    >({
-      url: "/v1/apps/{appId}/jwks",
-      ...options,
-    });
+    >({ url: "/v1/apps/{appId}/jwks", ...options });
   }
 }
 
@@ -204,12 +202,7 @@ export class AssetService {
       DeleteAssetErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/assets/{assetId}",
       ...options,
     });
@@ -226,12 +219,7 @@ export class AssetService {
       GetAssetErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/assets/{assetId}",
       ...options,
     });
@@ -249,12 +237,7 @@ export class AssetService {
       UpdateAssetErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/assets/{assetId}",
       ...options,
       headers: {
@@ -286,12 +269,7 @@ export class AssetService {
       ThrowOnError
     >({
       bodySerializer: null,
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/asset-uploads",
       ...options,
       headers: {
@@ -314,12 +292,7 @@ export class AssetService {
       GetAssetUploadJobErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/asset-uploads/{jobId}",
       ...options,
     });
@@ -354,12 +327,7 @@ export class AssetService {
       CreateUrlAssetUploadJobErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/url-asset-uploads",
       ...options,
       headers: {
@@ -392,12 +360,7 @@ export class AssetService {
       GetUrlAssetUploadJobErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/url-asset-uploads/{jobId}",
       ...options,
     });
@@ -433,12 +396,7 @@ export class AutofillService {
       CreateDesignAutofillJobErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/autofills",
       ...options,
       headers: {
@@ -464,12 +422,7 @@ export class AutofillService {
       GetDesignAutofillJobErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/autofills/{jobId}",
       ...options,
     });
@@ -492,12 +445,7 @@ export class BrandTemplateService {
       ListBrandTemplatesErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/brand-templates",
       ...options,
     });
@@ -518,12 +466,7 @@ export class BrandTemplateService {
       GetBrandTemplateErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/brand-templates/{brandTemplateId}",
       ...options,
     });
@@ -557,12 +500,7 @@ export class BrandTemplateService {
       GetBrandTemplateDatasetErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/brand-templates/{brandTemplateId}/dataset",
       ...options,
     });
@@ -602,12 +540,7 @@ export class CommentService {
       CreateCommentErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/comments",
       ...options,
       headers: {
@@ -651,12 +584,7 @@ export class CommentService {
       CreateReplyDeprecatedErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/comments/{commentId}/replies",
       ...options,
       headers: {
@@ -687,12 +615,7 @@ export class CommentService {
       ListRepliesErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/designs/{designId}/comments/{threadId}/replies",
       ...options,
     });
@@ -726,12 +649,7 @@ export class CommentService {
       CreateReplyErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/designs/{designId}/comments/{threadId}/replies",
       ...options,
       headers: {
@@ -765,12 +683,7 @@ export class CommentService {
       GetThreadErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/designs/{designId}/comments/{threadId}",
       ...options,
     });
@@ -799,12 +712,7 @@ export class CommentService {
       GetReplyErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/designs/{designId}/comments/{threadId}/replies/{replyId}",
       ...options,
     });
@@ -830,12 +738,7 @@ export class CommentService {
       CreateThreadErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/designs/{designId}/comments",
       ...options,
       headers: {
@@ -877,10 +780,7 @@ export class ConnectService {
       GetSigningPublicKeysResponses,
       GetSigningPublicKeysErrors,
       ThrowOnError
-    >({
-      url: "/v1/connect/keys",
-      ...options,
-    });
+    >({ url: "/v1/connect/keys", ...options });
   }
 }
 
@@ -901,22 +801,19 @@ export class DesignService {
       ListDesignsErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/designs",
       ...options,
     });
   }
 
   /**
-   * Creates a new Canva design. To create a new design, you can either:
+   * Creates a new Canva design. To create a new design, you can:
    *
    * - Use a preset design type.
    * - Set height and width dimensions for a custom design.
+   * - Create a copy of an existing design.
+   * - Create a new design from a brand template.
    *
    * Additionally, you can also provide the `asset_id` of an asset in the user's [projects](https://www.canva.com/help/find-designs-and-folders/) to add to the new design. Currently, this only supports image assets. To list the assets in a folder in the user's projects, use the [List folder items API](https://www.canva.dev/docs/connect/api-reference/folders/list-folder-items/).
    *
@@ -930,12 +827,7 @@ export class DesignService {
       CreateDesignErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/designs",
       ...options,
       headers: {
@@ -956,12 +848,7 @@ export class DesignService {
       GetDesignErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/designs/{designId}",
       ...options,
     });
@@ -992,12 +879,7 @@ export class DesignService {
       GetDesignPagesErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/designs/{designId}/pages",
       ...options,
     });
@@ -1019,12 +901,7 @@ export class DesignService {
       GetDesignExportFormatsErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/designs/{designId}/export-formats",
       ...options,
     });
@@ -1055,12 +932,7 @@ export class DesignImportService {
       ThrowOnError
     >({
       bodySerializer: null,
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/imports",
       ...options,
       headers: {
@@ -1083,12 +955,7 @@ export class DesignImportService {
       GetDesignImportJobErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/imports/{jobId}",
       ...options,
     });
@@ -1113,12 +980,7 @@ export class DesignImportService {
       CreateUrlImportJobErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/url-imports",
       ...options,
       headers: {
@@ -1141,12 +1003,7 @@ export class DesignImportService {
       GetUrlImportJobErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/url-imports/{jobId}",
       ...options,
     });
@@ -1160,8 +1017,17 @@ export class ExportService {
    *
    * The request requires the design ID and the exported file format type.
    *
-   * Supported file formats (and export file type values): PDF (`pdf`), JPG (`jpg`), PNG (`png`), GIF (`gif`), Microsoft PowerPoint (`pptx`), and MP4 (`mp4`).
+   * Supported file formats (and export file type values): JPG (`jpg`), PNG (`png`), GIF (`gif`), Microsoft PowerPoint (`pptx`), MP4 (`mp4`), PDF (`pdf`), HTML bundle (`html_bundle`), and standalone HTML (`html_standalone`).
    *
+   * <Note>
+   *
+   * This endpoint has the following additional rate limits:
+   *
+   * - **Integration throttle:** Each integration can export a maximum of 750 times per 5-minute window, and 5,000 times per 24-hour window.
+   * - **Document throttle:** Each document can be exported a maximum of 75 times per 5-minute window.
+   * - **User throttle:** Each user can export a maximum of 75 times per 5-minute window, and 500 times per 24-hour window.
+   *
+   * </Note>
    * <Note>
    *
    * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/connect/api-reference/exports/get-design-export-job/).
@@ -1176,12 +1042,7 @@ export class ExportService {
       CreateDesignExportJobErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/exports",
       ...options,
       headers: {
@@ -1207,12 +1068,7 @@ export class ExportService {
       GetDesignExportJobErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/exports/{exportId}",
       ...options,
     });
@@ -1235,12 +1091,7 @@ export class FolderService {
       DeleteFolderErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/folders/{folderId}",
       ...options,
     });
@@ -1257,12 +1108,7 @@ export class FolderService {
       GetFolderErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/folders/{folderId}",
       ...options,
     });
@@ -1280,12 +1126,7 @@ export class FolderService {
       UpdateFolderErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/folders/{folderId}",
       ...options,
       headers: {
@@ -1315,17 +1156,9 @@ export class FolderService {
       ThrowOnError
     >({
       querySerializer: {
-        array: {
-          explode: false,
-          style: "form",
-        },
+        parameters: { item_types: { array: { explode: false } } },
       },
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/folders/{folderId}/items",
       ...options,
     });
@@ -1344,12 +1177,7 @@ export class FolderService {
       MoveFolderItemErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/folders/move",
       ...options,
       headers: {
@@ -1377,12 +1205,7 @@ export class FolderService {
       CreateFolderErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/folders",
       ...options,
       headers: {
@@ -1441,12 +1264,7 @@ export class OauthService {
       ThrowOnError
     >({
       ...urlSearchParamsBodySerializer,
-      security: [
-        {
-          scheme: "basic",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "basic", type: "http" }],
       url: "/v1/oauth/token",
       ...options,
       headers: {
@@ -1475,12 +1293,7 @@ export class OauthService {
       ThrowOnError
     >({
       ...urlSearchParamsBodySerializer,
-      security: [
-        {
-          scheme: "basic",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "basic", type: "http" }],
       url: "/v1/oauth/introspect",
       ...options,
       headers: {
@@ -1514,12 +1327,7 @@ export class OauthService {
       ThrowOnError
     >({
       ...urlSearchParamsBodySerializer,
-      security: [
-        {
-          scheme: "basic",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "basic", type: "http" }],
       url: "/v1/oauth/revoke",
       ...options,
       headers: {
@@ -1541,10 +1349,7 @@ export class OidcService {
       GetOidcJwksResponses,
       GetOidcJwksErrors,
       ThrowOnError
-    >({
-      url: "/v1/oidc/jwks",
-      ...options,
-    });
+    >({ url: "/v1/oidc/jwks", ...options });
   }
 
   /**
@@ -1559,12 +1364,7 @@ export class OidcService {
       UserInfoErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/oidc/userinfo",
       ...options,
     });
@@ -1589,7 +1389,7 @@ export class ResizeService {
    * - Designs can be resized to a maximum area of 25,000,000 pixels squared.
    * - Resizing designs using the Connect API always creates a new design. In-place resizing is currently not available in the Connect API, but can be done in the Canva UI.
    * - Resizing a multi-page design results in all pages of the design being resized. Resizing a section of a design is only available in the Canva UI.
-   * - [Canva docs](https://www.canva.com/create/documents/) can't be resized, and other design types can't be resized to a Canva doc.
+   * - [Canva docs](https://www.canva.com/create/documents/) and [emails](https://www.canva.com/emails/) can't be resized, and other design types can't be resized to a Canva doc or email.
    * - Canva Code designs can't be resized, and other design types can't be resized to a Canva Code design.
    *
    * <Note>
@@ -1607,12 +1407,7 @@ export class ResizeService {
       CreateDesignResizeJobErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/resizes",
       ...options,
       headers: {
@@ -1642,12 +1437,7 @@ export class ResizeService {
       GetDesignResizeJobErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/resizes/{jobId}",
       ...options,
     });
@@ -1667,12 +1457,7 @@ export class UserService {
       UsersMeErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/users/me",
       ...options,
     });
@@ -1689,12 +1474,7 @@ export class UserService {
       GetUserCapabilitiesErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/users/me/capabilities",
       ...options,
     });
@@ -1711,12 +1491,7 @@ export class UserService {
       GetUserProfileErrors,
       ThrowOnError
     >({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http",
-        },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/users/me/profile",
       ...options,
     });

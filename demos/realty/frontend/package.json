@@ -22,7 +22,7 @@
     "@mui/icons-material": "5.18.0",
     "@mui/material": "5.18.0",
     "@realty-demo/shared-models": "file:../shared-models/src",
-    "axios": "1.13.6",
+    "axios": "1.15.2",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-router-dom": "7.12.0"

@@ -8,7 +8,7 @@ router.get("/user", async (req, res) => {
     client: req.client,
   });
   if (result.error) {
-    return res.status(result.response.status).json(result.error);
+    return res.status(result.response?.status ?? 500).json(result.error);
   }
   return res.json(result.data);
 });

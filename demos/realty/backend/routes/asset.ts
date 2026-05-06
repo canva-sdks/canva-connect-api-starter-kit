@@ -56,12 +56,12 @@ router.post(
           },
         },
         body: blob,
-        bodySerializer: (body: Blob) => body,
+        bodySerializer: (body: unknown) => body,
       });
 
       if (result.error) {
         console.error("Asset upload error:", result.error);
-        return res.status(result.response.status).json(result.error);
+        return res.status(result.response?.status ?? 500).json(result.error);
       }
 
       return res.json(result.data);
@@ -85,7 +85,7 @@ router.get(endpoints.GET_ASSET_UPLOAD_JOB, async (req, res) => {
     });
 
     if (result.error) {
-      return res.status(result.response.status).json(result.error);
+      return res.status(result.response?.status ?? 500).json(result.error);
     }
 
     return res.json(result.data);

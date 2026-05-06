@@ -86,6 +86,50 @@ export type Asset = {
   updated_at: number;
   owner: TeamUserSummary;
   thumbnail?: Thumbnail;
+  metadata?: AssetMetadata;
+};
+
+/**
+ * Type-specific metadata for the asset.
+ */
+export type AssetMetadata =
+  | ({
+      type: "image";
+    } & ImageMetadata)
+  | ({
+      type: "video";
+    } & VideoMetadata);
+
+export type ImageMetadata = {
+  type: "image";
+  /**
+   * The width of the image in pixels.
+   */
+  width?: number;
+  /**
+   * The height of the image in pixels.
+   */
+  height?: number;
+  /**
+   * AI-generated tags for the image.
+   */
+  smart_tags?: Array<string>;
+};
+
+export type VideoMetadata = {
+  type: "video";
+  /**
+   * The width of the video in pixels.
+   */
+  width: number;
+  /**
+   * The height of the video in pixels.
+   */
+  height: number;
+  /**
+   * The duration of the video in seconds.
+   */
+  duration?: number;
 };
 
 /**
@@ -125,10 +169,7 @@ export type AssetSummary = {
 /**
  * Type of an asset.
  */
-export const AssetType = {
-  IMAGE: "image",
-  VIDEO: "video",
-} as const;
+export const AssetType = { IMAGE: "image", VIDEO: "video" } as const;
 
 /**
  * Type of an asset.
@@ -347,6 +388,12 @@ export type DatasetTextValue = {
 /**
  * If the data field is a chart.
  *
+ * Note the following behavior:
+ * - If `column_configs` is not provided, the first row is assumed to contain column headers where applicable.
+ * - Chart autofill supports a maximum of 100 rows and 20 columns.
+ * - `number` cells with formatting metadata are not currently supported for autofill and will result in an error response.
+ * - `media` cells are not supported for chart autofill and will result in an error response.
+ *
  * WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
  */
 export type DatasetChartValue = {
@@ -405,6 +452,8 @@ export const AutofillErrorCode = {
   AUTOFILL_ERROR: "autofill_error",
   THUMBNAIL_GENERATION_ERROR: "thumbnail_generation_error",
   CREATE_DESIGN_ERROR: "create_design_error",
+  DESIGN_APPROVAL_ERROR: "design_approval_error",
+  TRIAL_QUOTA_EXCEEDED: "trial_quota_exceeded",
 } as const;
 
 export type AutofillErrorCode =
@@ -425,10 +474,9 @@ export const DatasetFilter = {
   /**
    * Brand templates with and without dataset definitions.
    */
-  ANY: "any",
-  /**
+  ANY: "any" /**
    * Brand templates with one or more data fields defined.
-   */
+   */,
   NON_EMPTY: "non_empty",
 } as const;
 
@@ -1335,21 +1383,69 @@ export type EdDsaJwk = {
 /**
  * Tabular data, structured in rows of cells.
  *
- * - The first row usually contains column headers.
  * - Each cell must have a data type configured.
  * - All rows must have the same number of cells.
- * - Maximum of 100 rows and 20 columns.
+ * - The number of entries in `column_configs` must match the number of columns in the data.
  *
  * WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
  */
 export type DataTable = {
   /**
+   * Column definitions with names and data types.
+   */
+  column_configs?: Array<ColumnConfig>;
+  /**
    * Rows of data.
-   *
-   * The first row usually contains column headers.
    */
   rows: Array<DataTableRow>;
 };
+
+/**
+ * Configuration for a data table column.
+ */
+export type ColumnConfig = {
+  /**
+   * Name for the column, displayed as header text.
+   */
+  name?: string;
+  type: ColumnDataType;
+};
+
+/**
+ * Expected data type for cells in this column.
+ */
+export const ColumnDataType = {
+  /**
+   * String data
+   */
+  STRING: "string",
+  /**
+   * Numeric data
+   */
+  NUMBER: "number",
+  /**
+   * Date data
+   */
+  DATE: "date",
+  /**
+   * Boolean data
+   */
+  BOOLEAN: "boolean",
+  /**
+   * Media data (such as images, videos, or combinations of both)
+   */
+  MEDIA: "media",
+  /**
+   * Mixed data types (use where the column contains cells of a combination of data types)
+   */
+  VARIANT: "variant",
+} as const;
+
+/**
+ * Expected data type for cells in this column.
+ */
+export type ColumnDataType =
+  (typeof ColumnDataType)[keyof typeof ColumnDataType];
 
 /**
  * A single row of tabular data.
@@ -1378,7 +1474,10 @@ export type DataTableCell =
     } & BooleanDataTableCell)
   | ({
       type: "date";
-    } & DateDataTableCell);
+    } & DateDataTableCell)
+  | ({
+      type: "media";
+    } & MediaCollectionDataTableCell);
 
 /**
  * A string tabular data cell.
@@ -1394,6 +1493,20 @@ export type StringDataTableCell = {
 export type NumberDataTableCell = {
   type: "number";
   value?: number;
+  metadata?: NumberCellMetadata;
+};
+
+/**
+ * Formatting metadata for number cells.
+ */
+export type NumberCellMetadata = {
+  /**
+   * Formatting pattern using Office Open XML Format.
+   *
+   * These patterns control how numbers are displayed to users, including currency symbols,
+   * decimal places, and separators.
+   */
+  formatting?: string;
 };
 
 /**
@@ -1413,6 +1526,149 @@ export type DateDataTableCell = {
   type: "date";
   value?: number;
 };
+
+/**
+ * Cell containing a media collection.
+ */
+export type MediaCollectionDataTableCell = {
+  type: "media";
+  /**
+   * Media collection values.
+   *
+   * Provide an empty array for an empty cell.
+   */
+  value: Array<DataTableMedia>;
+};
+
+export type DataTableMedia =
+  | ({
+      type: "image_upload";
+    } & DataTableImageUpload)
+  | ({
+      type: "video_upload";
+    } & DataTableVideoUpload);
+
+/**
+ * Options for uploading an image asset.
+ */
+export type DataTableImageUpload = {
+  type: "image_upload";
+  /**
+   * The URL of the image file to upload.
+   * This can be an external URL or a data URL.
+   */
+  url: string;
+  /**
+   * The URL of a thumbnail image to display while the image is queued for upload.
+   * This can be an external URL or a data URL.
+   */
+  thumbnail_url: string;
+  mime_type: DataTableImageMimeType;
+  /**
+   * The width of the image in pixels.
+   */
+  width?: number;
+  /**
+   * The height of the image in pixels.
+   */
+  height?: number;
+  ai_disclosure: DataTableAiDisclosure;
+};
+
+/**
+ * Options for uploading a video asset.
+ */
+export type DataTableVideoUpload = {
+  type: "video_upload";
+  /**
+   * The URL of the video file to upload.
+   */
+  url: string;
+  /**
+   * The URL of a thumbnail image to use as a fallback if thumbnailVideoUrl isn't provided.
+   * This can be an external URL or a data URL.
+   */
+  thumbnail_image_url: string;
+  /**
+   * The URL of a thumbnail video to display while the video is queued for upload.
+   */
+  thumbnail_video_url?: string;
+  mime_type: DataTableVideoMimeType;
+  /**
+   * The width of the video in pixels.
+   */
+  width?: number;
+  /**
+   * The height of the video in pixels.
+   */
+  height?: number;
+  ai_disclosure: DataTableAiDisclosure;
+};
+
+/**
+ * The MIME type of an image file that's supported by Canva's backend.
+ */
+export const DataTableImageMimeType = {
+  IMAGE_JPEG: "image/jpeg",
+  IMAGE_HEIC: "image/heic",
+  IMAGE_PNG: "image/png",
+  IMAGE_SVG_XML: "image/svg+xml",
+  IMAGE_WEBP: "image/webp",
+  IMAGE_TIFF: "image/tiff",
+} as const;
+
+/**
+ * The MIME type of an image file that's supported by Canva's backend.
+ */
+export type DataTableImageMimeType =
+  (typeof DataTableImageMimeType)[keyof typeof DataTableImageMimeType];
+
+/**
+ * The MIME type of a video file that's supported by Canva's backend.
+ */
+export const DataTableVideoMimeType = {
+  VIDEO_AVI: "video/avi",
+  VIDEO_X_MSVIDEO: "video/x-msvideo",
+  /**
+   * GIFs are treated as videos, not images.
+   */
+  IMAGE_GIF: "image/gif",
+  VIDEO_X_M4V: "video/x-m4v",
+  VIDEO_X_MATROSKA: "video/x-matroska",
+  VIDEO_QUICKTIME: "video/quicktime",
+  VIDEO_MP4: "video/mp4",
+  VIDEO_MPEG: "video/mpeg",
+  VIDEO_WEBM: "video/webm",
+  /**
+   * Used for Lottie files.
+   */
+  APPLICATION_JSON: "application/json",
+} as const;
+
+/**
+ * The MIME type of a video file that's supported by Canva's backend.
+ */
+export type DataTableVideoMimeType =
+  (typeof DataTableVideoMimeType)[keyof typeof DataTableVideoMimeType];
+
+/**
+ * A disclosure identifying if the app generated this media asset using AI.
+ */
+export const DataTableAiDisclosure = {
+  /**
+   * App creates or significantly alters content using AI
+   */
+  APP_GENERATED: "app_generated" /**
+   * No AI involvement in creation or alteration
+   */,
+  NONE: "none",
+} as const;
+
+/**
+ * A disclosure identifying if the app generated this media asset using AI.
+ */
+export type DataTableAiDisclosure =
+  (typeof DataTableAiDisclosure)[keyof typeof DataTableAiDisclosure];
 
 export const SortByType = {
   /**
@@ -1474,11 +1730,26 @@ export type GetListDesignResponse = {
 };
 
 /**
- * Body parameters for creating a new design.
- * At least one of `design_type` or `asset_id` must be defined
- * to create a new design.
+ * Body parameters for creating a new design. Use the `type` discriminator to choose the creation mode:
+ *
+ * - Use `type_and_asset` to create a design by specifying the design type and/or an asset.
+ *
+ * NOTE: For backward compatibility, if `type` isn't specified in the request,
+ * the request type will be assumed to be `type_and_asset`.
  */
 export type CreateDesignRequest = {
+  type: "type_and_asset";
+} & DesignTypeCreateDesignRequest;
+
+/**
+ * Create a design by specifying the design type and/or an asset.
+ * At least one of `design_type` or `asset_id` must be defined.
+ */
+export type DesignTypeCreateDesignRequest = {
+  /**
+   * For backward compatibility, if `type` isn't specified in the request, the request type will be assumed to be `type_and_asset`.
+   */
+  type: "type_and_asset";
   design_type?: DesignTypeInput;
   /**
    * The ID of an asset to insert into the created design. Currently, this only supports image assets.
@@ -1783,13 +2054,17 @@ export const PresetDesignTypeName = {
    */
   DOC: "doc",
   /**
-   * A [whiteboard](https://www.canva.com/online-whiteboard/); a design which gives you infinite space to collaborate.
+   * An [email](https://www.canva.com/emails/); for creating email campaign designs.
    */
-  WHITEBOARD: "whiteboard",
+  EMAIL: "email",
   /**
    * A [presentation](https://www.canva.com/presentations/); lets you create and collaborate for presenting to an audience.
    */
   PRESENTATION: "presentation",
+  /**
+   * A [whiteboard](https://www.canva.com/online-whiteboard/); a design which gives you infinite space to collaborate.
+   */
+  WHITEBOARD: "whiteboard",
 } as const;
 
 /**
@@ -1813,7 +2088,7 @@ export type CustomDesignTypeInput = {
   height: number;
 };
 
-export type _Error = {
+export type Error = {
   code: ErrorCode;
   /**
    * A human-readable description of what went wrong.
@@ -1896,6 +2171,7 @@ export const ErrorCode = {
   LICENSE_REQUIRED: "license_required",
   INPUT_UNSAFE: "input_unsafe",
   DISPLAY_NAME_UNAVAILABLE: "display_name_unavailable",
+  USER_NOT_MANAGED: "user_not_managed",
 } as const;
 
 /**
@@ -1937,7 +2213,13 @@ export type ExportFormat =
     } & GifExportFormat)
   | ({
       type: "mp4";
-    } & Mp4ExportFormat);
+    } & Mp4ExportFormat)
+  | ({
+      type: "html_bundle";
+    } & HtmlBundleExportFormat)
+  | ({
+      type: "html_standalone";
+    } & HtmlStandaloneExportFormat);
 
 /**
  * Export the design as a PDF. Providing a paper size is optional.
@@ -2104,6 +2386,30 @@ export type Mp4ExportFormat = {
   pages?: Array<number>;
 };
 
+/**
+ * Export the email design as an HTML bundle. An HTML bundle is a zip file that contains an HTML file and the associated assets.
+ */
+export type HtmlBundleExportFormat = {
+  type: "html_bundle";
+  /**
+   * The pages of the design to export. Currently only a single page can be exported. If not provided,
+   * the first page of the design is used.
+   */
+  pages?: [number];
+};
+
+/**
+ * Export the email design as a standalone HTML file with hosted assets.
+ */
+export type HtmlStandaloneExportFormat = {
+  type: "html_standalone";
+  /**
+   * The pages of the design to export. Currently only a single page can be exported. If not provided,
+   * the first page of the design is used.
+   */
+  pages?: [number];
+};
+
 export type CreateDesignExportJobResponse = {
   job: ExportJob;
 };
@@ -2214,6 +2520,8 @@ export type ExportFormatOptions = {
   pptx?: PptxExportFormatOption;
   gif?: GifExportFormatOption;
   mp4?: Mp4ExportFormatOption;
+  html_bundle?: HtmlBundleExportFormatOption;
+  html_standalone?: HtmlStandaloneExportFormatOption;
 };
 
 /**
@@ -2266,6 +2574,20 @@ export type Mp4ExportFormatOption = {
 };
 
 /**
+ * Whether the design can be exported as an HTML bundle.
+ */
+export type HtmlBundleExportFormatOption = {
+  [key: string]: unknown;
+};
+
+/**
+ * Whether the design can be exported as an standalone HTML file.
+ */
+export type HtmlStandaloneExportFormatOption = {
+  [key: string]: unknown;
+};
+
+/**
  * If the export fails, this object provides details about the error.
  */
 export type ExportError = {
@@ -2278,10 +2600,6 @@ export type ExportError = {
 
 /**
  * If the export failed, this specifies the reason why it failed.
- *
- * - `license_required`: The design contains [premium elements](https://www.canva.com/help/premium-elements/) that haven't been purchased. You can either buy the elements or upgrade to a Canva plan (such as Canva Pro) that has premium features, then try again. Alternatively, you can set `export_quality` to `regular` to export your document in regular quality.
- * - `approval_required`: The design requires [reviewer approval](https://www.canva.com/en_au/help/design-approval/) before it can be exported.
- * - `internal_failure`: The service encountered an error when exporting your design.
  */
 export const ExportErrorCode = {
   /**
@@ -2300,10 +2618,6 @@ export const ExportErrorCode = {
 
 /**
  * If the export failed, this specifies the reason why it failed.
- *
- * - `license_required`: The design contains [premium elements](https://www.canva.com/help/premium-elements/) that haven't been purchased. You can either buy the elements or upgrade to a Canva plan (such as Canva Pro) that has premium features, then try again. Alternatively, you can set `export_quality` to `regular` to export your document in regular quality.
- * - `approval_required`: The design requires [reviewer approval](https://www.canva.com/en_au/help/design-approval/) before it can be exported.
- * - `internal_failure`: The service encountered an error when exporting your design.
  */
 export type ExportErrorCode =
   (typeof ExportErrorCode)[keyof typeof ExportErrorCode];
@@ -2315,12 +2629,11 @@ export const ExportQuality = {
   /**
    * Regular quality export.
    */
-  REGULAR: "regular",
-  /**
+  REGULAR: "regular" /**
    * Premium quality export.
    *
    * NOTE: A `pro` export might fail if the design contains [premium elements](https://www.canva.com/help/premium-elements/) and the calling user either hasn't purchased the elements or isn't on a Canva plan (such as Canva Pro) that has premium features.
-   */
+   */,
   PRO: "pro",
 } as const;
 
@@ -2367,6 +2680,25 @@ export const FolderItemType = {
 
 export type FolderItemType =
   (typeof FolderItemType)[keyof typeof FolderItemType];
+
+/**
+ * Filter folder items by their pinned status.
+ */
+export const FolderItemPinStatus = {
+  /**
+   * Return all items regardless of pinned status (default).
+   */
+  ANY: "any" /**
+   * Return only pinned items.
+   */,
+  PINNED: "pinned",
+} as const;
+
+/**
+ * Filter folder items by their pinned status.
+ */
+export type FolderItemPinStatus =
+  (typeof FolderItemPinStatus)[keyof typeof FolderItemPinStatus];
 
 /**
  * The folder ID.
@@ -3172,7 +3504,10 @@ export type NotificationContent =
     } & FolderAccessRequestedNotificationContent)
   | ({
       type: "suggestion";
-    } & SuggestionNotificationContent);
+    } & SuggestionNotificationContent)
+  | ({
+      type: "autofill_job";
+    } & DesignAutofillJobNotificationContent);
 
 /**
  * The notification content for when someone shares a design.
@@ -3328,6 +3663,15 @@ export type SuggestionNotificationContent = {
 };
 
 /**
+ * The notification content for when a design autofill job reaches a terminal state.
+ */
+export type DesignAutofillJobNotificationContent = {
+  type: "autofill_job";
+  receiving_team_user: TeamUser;
+  job: DesignAutofillJob;
+};
+
+/**
  * Metadata about the share event.
  */
 export type ShareAction = {
@@ -3449,7 +3793,7 @@ export type GetAppJwksErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetAppJwksError = GetAppJwksErrors[keyof GetAppJwksErrors];
@@ -3480,7 +3824,7 @@ export type DeleteAssetErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type DeleteAssetError = DeleteAssetErrors[keyof DeleteAssetErrors];
@@ -3511,7 +3855,7 @@ export type GetAssetErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetAssetError = GetAssetErrors[keyof GetAssetErrors];
@@ -3541,7 +3885,7 @@ export type UpdateAssetErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type UpdateAssetError = UpdateAssetErrors[keyof UpdateAssetErrors];
@@ -3573,7 +3917,7 @@ export type CreateAssetUploadJobErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type CreateAssetUploadJobError =
@@ -3605,7 +3949,7 @@ export type GetAssetUploadJobErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetAssetUploadJobError =
@@ -3632,7 +3976,7 @@ export type CreateUrlAssetUploadJobErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type CreateUrlAssetUploadJobError =
@@ -3664,7 +4008,7 @@ export type GetUrlAssetUploadJobErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetUrlAssetUploadJobError =
@@ -3691,19 +4035,19 @@ export type CreateDesignAutofillJobErrors = {
   /**
    * Bad Request
    */
-  400: _Error;
+  400: Error;
   /**
    * Forbidden
    */
-  403: _Error;
+  403: Error;
   /**
    * Not Found
    */
-  404: _Error;
+  404: Error;
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type CreateDesignAutofillJobError =
@@ -3735,15 +4079,15 @@ export type GetDesignAutofillJobErrors = {
   /**
    * Forbidden
    */
-  403: _Error;
+  403: Error;
   /**
    * Not Found
    */
-  404: _Error;
+  404: Error;
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetDesignAutofillJobError =
@@ -3801,7 +4145,7 @@ export type ListBrandTemplatesErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type ListBrandTemplatesError =
@@ -3833,7 +4177,7 @@ export type GetBrandTemplateErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetBrandTemplateError =
@@ -3865,7 +4209,7 @@ export type GetBrandTemplateDatasetErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetBrandTemplateDatasetError =
@@ -3892,19 +4236,19 @@ export type CreateCommentErrors = {
   /**
    * Bad Request
    */
-  400: _Error;
+  400: Error;
   /**
    * Forbidden
    */
-  403: _Error;
+  403: Error;
   /**
    * Not Found
    */
-  404: _Error;
+  404: Error;
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type CreateCommentError = CreateCommentErrors[keyof CreateCommentErrors];
@@ -3935,19 +4279,19 @@ export type CreateReplyDeprecatedErrors = {
   /**
    * Bad Request
    */
-  400: _Error;
+  400: Error;
   /**
    * Forbidden
    */
-  403: _Error;
+  403: Error;
   /**
    * Not Found
    */
-  404: _Error;
+  404: Error;
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type CreateReplyDeprecatedError =
@@ -3994,15 +4338,15 @@ export type ListRepliesErrors = {
   /**
    * Forbidden
    */
-  403: _Error;
+  403: Error;
   /**
    * Not Found
    */
-  404: _Error;
+  404: Error;
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type ListRepliesError = ListRepliesErrors[keyof ListRepliesErrors];
@@ -4037,19 +4381,19 @@ export type CreateReplyErrors = {
   /**
    * Bad Request
    */
-  400: _Error;
+  400: Error;
   /**
    * Forbidden
    */
-  403: _Error;
+  403: Error;
   /**
    * Not Found
    */
-  404: _Error;
+  404: Error;
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type CreateReplyError = CreateReplyErrors[keyof CreateReplyErrors];
@@ -4084,15 +4428,15 @@ export type GetThreadErrors = {
   /**
    * Forbidden
    */
-  403: _Error;
+  403: Error;
   /**
    * Not Found
    */
-  404: _Error;
+  404: Error;
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetThreadError = GetThreadErrors[keyof GetThreadErrors];
@@ -4130,15 +4474,15 @@ export type GetReplyErrors = {
   /**
    * Forbidden
    */
-  403: _Error;
+  403: Error;
   /**
    * Not Found
    */
-  404: _Error;
+  404: Error;
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetReplyError = GetReplyErrors[keyof GetReplyErrors];
@@ -4168,19 +4512,19 @@ export type CreateThreadErrors = {
   /**
    * Bad Request
    */
-  400: _Error;
+  400: Error;
   /**
    * Forbidden
    */
-  403: _Error;
+  403: Error;
   /**
    * Not Found
    */
-  404: _Error;
+  404: Error;
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type CreateThreadError = CreateThreadErrors[keyof CreateThreadErrors];
@@ -4206,7 +4550,7 @@ export type GetSigningPublicKeysErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetSigningPublicKeysError =
@@ -4259,7 +4603,7 @@ export type ListDesignsErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type ListDesignsError = ListDesignsErrors[keyof ListDesignsErrors];
@@ -4283,9 +4627,13 @@ export type CreateDesignData = {
 
 export type CreateDesignErrors = {
   /**
+   * Not Found
+   */
+  404: Error;
+  /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type CreateDesignError = CreateDesignErrors[keyof CreateDesignErrors];
@@ -4316,7 +4664,7 @@ export type GetDesignErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetDesignError = GetDesignErrors[keyof GetDesignErrors];
@@ -4358,7 +4706,7 @@ export type GetDesignPagesErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetDesignPagesError =
@@ -4390,7 +4738,7 @@ export type GetDesignExportFormatsErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetDesignExportFormatsError =
@@ -4423,7 +4771,7 @@ export type CreateDesignImportJobErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type CreateDesignImportJobError =
@@ -4455,7 +4803,7 @@ export type GetDesignImportJobErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetDesignImportJobError =
@@ -4482,7 +4830,7 @@ export type CreateUrlImportJobErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type CreateUrlImportJobError =
@@ -4514,7 +4862,7 @@ export type GetUrlImportJobErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetUrlImportJobError =
@@ -4539,9 +4887,25 @@ export type CreateDesignExportJobData = {
 
 export type CreateDesignExportJobErrors = {
   /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
+   * Too Many Requests
+   */
+  429: Error;
+  /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type CreateDesignExportJobError =
@@ -4571,9 +4935,17 @@ export type GetDesignExportJobData = {
 
 export type GetDesignExportJobErrors = {
   /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetDesignExportJobError =
@@ -4605,7 +4977,7 @@ export type DeleteFolderErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type DeleteFolderError = DeleteFolderErrors[keyof DeleteFolderErrors];
@@ -4636,7 +5008,7 @@ export type GetFolderErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetFolderError = GetFolderErrors[keyof GetFolderErrors];
@@ -4666,7 +5038,7 @@ export type UpdateFolderErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type UpdateFolderError = UpdateFolderErrors[keyof UpdateFolderErrors];
@@ -4713,6 +5085,10 @@ export type ListFolderItemsData = {
      * Sort the list of folder items.
      */
     sort_by?: FolderItemSortBy;
+    /**
+     * Filter the folder items by their pinned status.
+     */
+    pin_status?: FolderItemPinStatus;
   };
   url: "/v1/folders/{folderId}/items";
 };
@@ -4721,7 +5097,7 @@ export type ListFolderItemsErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type ListFolderItemsError =
@@ -4748,7 +5124,7 @@ export type MoveFolderItemErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type MoveFolderItemError =
@@ -4775,7 +5151,7 @@ export type CreateFolderErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type CreateFolderError = CreateFolderErrors[keyof CreateFolderErrors];
@@ -4801,11 +5177,15 @@ export type ExchangeAccessTokenErrors = {
   /**
    * Bad Request
    */
-  400: _Error;
+  400: Error;
   /**
    * Unauthorized
    */
-  401: _Error;
+  401: Error;
+  /**
+   * Too Many Requests
+   */
+  429: Error;
   /**
    * Error Response
    */
@@ -4836,11 +5216,11 @@ export type IntrospectTokenErrors = {
   /**
    * Bad Request
    */
-  400: _Error;
+  400: Error;
   /**
    * Unauthorized
    */
-  401: _Error;
+  401: Error;
   /**
    * Error Response
    */
@@ -4871,11 +5251,11 @@ export type RevokeTokensErrors = {
   /**
    * Bad Request
    */
-  400: _Error;
+  400: Error;
   /**
    * Unauthorized
    */
-  401: _Error;
+  401: Error;
   /**
    * Error Response
    */
@@ -4905,7 +5285,7 @@ export type GetOidcJwksErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetOidcJwksError = GetOidcJwksErrors[keyof GetOidcJwksErrors];
@@ -4931,11 +5311,11 @@ export type UserInfoErrors = {
   /**
    * Unauthorized
    */
-  401: _Error;
+  401: Error;
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type UserInfoError = UserInfoErrors[keyof UserInfoErrors];
@@ -4958,9 +5338,13 @@ export type CreateDesignResizeJobData = {
 
 export type CreateDesignResizeJobErrors = {
   /**
+   * Bad Request
+   */
+  400: Error;
+  /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type CreateDesignResizeJobError =
@@ -4992,7 +5376,7 @@ export type GetDesignResizeJobErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetDesignResizeJobError =
@@ -5019,7 +5403,7 @@ export type UsersMeErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type UsersMeError = UsersMeErrors[keyof UsersMeErrors];
@@ -5044,7 +5428,7 @@ export type GetUserCapabilitiesErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetUserCapabilitiesError =
@@ -5071,7 +5455,7 @@ export type GetUserProfileErrors = {
   /**
    * Error Response
    */
-  default: _Error;
+  default: Error;
 };
 
 export type GetUserProfileError =

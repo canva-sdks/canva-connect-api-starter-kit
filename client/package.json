@@ -14,7 +14,7 @@
   },
   "engineStrict": true,
   "devDependencies": {
-    "@hey-api/openapi-ts": "0.85.2",
+    "@hey-api/openapi-ts": "0.97.0",
     "typescript": "5.9.2"
   }
 }

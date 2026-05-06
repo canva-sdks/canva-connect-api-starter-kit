@@ -34,6 +34,7 @@ export class Designs {
     const result = await DesignService.createDesign({
       client: this.client,
       body: {
+        type: "type_and_asset",
         asset_id: asset.id,
         title: name,
       },

@@ -113,7 +113,7 @@ export const createDesign = async ({
   title: string;
 }): Promise<CreateDesignResponse> => {
   const body: CreateDesignRequest = {
-    design_type: undefined,
+    type: "type_and_asset",
     asset_id: assetId,
     title,
   };

@@ -16,7 +16,7 @@ router.post(endpoints.DESIGNS, async (req, res) => {
     body: requestBody,
   });
   if (result.error) {
-    return res.status(result.response.status).json(result.error);
+    return res.status(result.response?.status ?? 500).json(result.error);
   }
 
   return res.json(result.data);
@@ -29,7 +29,7 @@ router.get(endpoints.GET_DESIGN, async (req, res) => {
   });
 
   if (result.error) {
-    return res.status(result.response.status).json(result.error);
+    return res.status(result.response?.status ?? 500).json(result.error);
   }
 
   if (!result.data) {

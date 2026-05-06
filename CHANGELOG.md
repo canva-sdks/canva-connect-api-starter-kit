@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-05-07
+
+### 🔧 Changed
+
+- Upgraded GitHub Actions workflows to use `actions/checkout` and `actions/setup-node` v6.
+- Upgraded `axios` to `1.15.2` and `@hey-api/openapi-ts` to `0.97.0`.
+- Refreshed `openapi/spec.yml` to be based on the latest Connect API and regenerated the TypeScript client.
+
 ## 2026-04-23
 
 ### 🗑️ Removed

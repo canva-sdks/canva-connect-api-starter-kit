@@ -80,7 +80,7 @@ router.get(endpoints.REDIRECT, async (req, res) => {
 
     if (result.error) {
       console.error(result.error);
-      return res.status(result.response.status).json(result.error);
+      return res.status(result.response?.status ?? 500).json(result.error);
     }
 
     const token = result.data;

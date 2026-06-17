@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-06-18
+
+### 🔧 Changed
+
+- Enabled `isolatedModules` in TypeScript configs across all demo projects.
+
 ## 2026-05-07
 
 ### 🔧 Changed
@@ -19,7 +25,6 @@
 ### 🔧 Changed
 
 - Updated the `.nvmrc` to recommend Node.js lts/krypton (v24) and all `@types/node` dependencies to `24.12.0`.
-- Upgrade examples/backend/typescript-express `better-sqlite3` from `8.5.0` -> `12.8.0` (to suit later node.js versions 22 & 24).
 
 ### 🐞 Fixed
 

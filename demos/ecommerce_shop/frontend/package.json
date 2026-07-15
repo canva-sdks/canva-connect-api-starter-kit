@@ -23,9 +23,9 @@
     "@mui/material": "5.18.0",
     "@mui/x-charts": "8.14.0",
     "canvas-confetti": "1.9.3",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "react-router-dom": "7.12.0"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "7.17.0"
   },
   "devDependencies": {
     "@svgr/webpack": "8.1.0",
@@ -42,6 +42,6 @@
     "ts-loader": "9.5.4",
     "typescript": "5.9.2",
     "url-loader": "4.1.1",
-    "webpack-dev-server": "5.2.2"
+    "webpack-dev-server": "5.2.5"
   }
 }

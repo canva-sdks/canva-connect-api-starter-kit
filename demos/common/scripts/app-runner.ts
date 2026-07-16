@@ -64,7 +64,7 @@ export class AppRunner {
 
     const compiler = webpack(runtimeWebpackConfig) as webpack.Compiler;
     const server = new WebpackDevServer(
-      runtimeWebpackConfig.devServer,
+      runtimeWebpackConfig.devServer ?? {},
       compiler,
     );
     await server.start();

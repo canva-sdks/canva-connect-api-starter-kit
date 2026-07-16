@@ -19,9 +19,6 @@ declare module "*.png" {
 }
 
 declare module "*.svg" {
-  const content: React.FunctionComponent<{
-    size?: "tiny" | "small" | "medium" | "large";
-    className?: string;
-  }>;
+  const content: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
   export default content;
 }

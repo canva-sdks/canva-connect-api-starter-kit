@@ -18,15 +18,15 @@
     "@realty-demo/shared-models": "file:../shared-models/src",
     "cors": "2.8.5",
     "dotenv": "16.6.0",
-    "express": "4.22.1",
+    "express": "4.22.2",
     "multer": "2.1.1",
     "open": "10.2.0",
     "pug": "3.0.3",
-    "uuid": "11.1.0"
+    "uuid": "11.1.1"
   },
   "devDependencies": {
     "@types/cors": "2.8.19",
-    "@types/express": "4.17.21",
+    "@types/express": "4.17.25",
     "@types/multer": "2.0.0",
     "@types/uuid": "10.0.0",
     "prettier": "3.6.2",

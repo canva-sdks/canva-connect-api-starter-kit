@@ -1,5 +1,15 @@
 # Changelog
 
+## 2026-07-16
+
+### 🔧 Changed
+
+- Upgraded `react` & `react-dom` to `19.2.7`.
+
+### 🐞 Fixed
+
+- Fixed the `*.svg` type declaration to match the webpack configuration, and added a `*.svg?react` module declaration for importing SVGs as React components.
+
 ## 2026-06-18
 
 ### 🔧 Changed

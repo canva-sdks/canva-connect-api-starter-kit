@@ -22,10 +22,10 @@
     "@mui/icons-material": "5.18.0",
     "@mui/material": "5.18.0",
     "@realty-demo/shared-models": "file:../shared-models/src",
-    "axios": "1.15.2",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
-    "react-router-dom": "7.12.0"
+    "axios": "1.18.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "7.17.0"
   },
   "devDependencies": {
     "@svgr/webpack": "8.1.0",
@@ -40,6 +40,6 @@
     "terser-webpack-plugin": "5.4.0",
     "ts-loader": "9.5.4",
     "typescript": "5.9.2",
-    "webpack-dev-server": "5.2.2"
+    "webpack-dev-server": "5.2.5"
   }
 }

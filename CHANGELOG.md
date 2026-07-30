@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-07-30
+
+### 🧰 Added
+
+- Added `npm run openapi:download` to download the latest public Connect API OpenAPI description.
+
+### 🔧 Changed
+
+- Improved the visual design of the ecommerce_shop demo.
+- Improved the visual design of the realty demo.
+- Renamed `npm run generate` to `npm run openapi:generate`.
+- Updated the ecommerce_shop and realty demos to set the `type` field when creating a design autofill job.
+
+### 🛡️ Security
+
+- Dependencies audit bringing modules up to date:
+
+```text
+multer                                     2.1.1   ->   2.2.0
+postcss                                   8.5.16   ->   8.5.23
+webpack-dev-server                         5.2.5   ->   5.2.6
+react-router-dom                          7.17.0   ->   7.18.1
+@hey-api/openapi-ts                       0.97.0   ->   0.97.3
+```
+
 ## 2026-07-16
 
 ### 🔧 Changed

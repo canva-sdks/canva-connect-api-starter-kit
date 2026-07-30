@@ -96,6 +96,7 @@ export const postAutofill = async (
   data: PropertyAutofillDataset,
 ): Promise<GetDesignAutofillJobResponse> => {
   const body: CreateDesignAutofillJobRequest = {
+    type: "create_from_brand_template",
     brand_template_id: id,
     data,
   };

@@ -32,6 +32,7 @@
   "devDependencies": {
     "@eslint/js": "9.34.0",
     "@types/cookie-parser": "1.4.9",
+    "@types/express": "4.17.25",
     "@types/node": "22.19.17",
     "@types/yargs": "17.0.33",
     "@typescript-eslint/eslint-plugin": "8.41.0",
@@ -45,7 +46,7 @@
     "prettier": "3.6.2",
     "ts-node": "10.9.2",
     "typescript": "5.9.2",
-    "typescript-eslint": "8.41.0",
+    "typescript-eslint": "8.57.1",
     "yargs": "17.7.2"
   }
 }

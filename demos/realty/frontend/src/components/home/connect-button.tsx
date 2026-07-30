@@ -95,7 +95,7 @@ export const ConnectButton = ({
       };
     } else {
       return {
-        demoVariant: "primary" as const,
+        demoVariant: "secondary" as const,
         startIcon: <CanvaIcon />,
         onClick: handleConnect,
         label: "Connect to Canva",

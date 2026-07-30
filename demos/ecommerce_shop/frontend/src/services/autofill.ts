@@ -176,6 +176,7 @@ export class Autofill {
     autofillData: ProductAutofillDataset,
   ): Promise<GetDesignAutofillJobResponse> {
     const body: CreateDesignAutofillJobRequest = {
+      type: "create_from_brand_template",
       data: autofillData,
       brand_template_id: brandTemplateId,
     };

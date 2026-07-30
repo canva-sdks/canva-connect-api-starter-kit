@@ -18,7 +18,7 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "noImplicitOverride": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "rootDir": "../..",
     "outDir": "dist",
     "noEmit": true,

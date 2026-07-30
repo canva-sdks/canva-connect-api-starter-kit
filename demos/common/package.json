@@ -16,7 +16,7 @@
   "private": true,
   "type": "commonjs",
   "dependencies": {
-    "@canva/connect-api-ts": "file:../../client/ts",
+    "@canva/connect-api-ts": "*",
     "@types/jest": "30.0.0",
     "chalk": "4.1.2",
     "cli-table3": "0.6.5",
@@ -31,8 +31,9 @@
     "open": "10.2.0",
     "pug": "3.0.3",
     "ts-jest": "29.4.1",
+    "webpack": "5.105.2",
     "webpack-cli": "6.0.1",
-    "webpack-dev-server": "5.2.5",
+    "webpack-dev-server": "5.2.6",
     "yargs": "17.7.2"
   },
   "devDependencies": {

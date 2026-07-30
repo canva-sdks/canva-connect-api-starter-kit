@@ -23,7 +23,8 @@
   },
   "engineStrict": true,
   "scripts": {
-    "generate": "cd client && npm run generate",
+    "openapi:download": "./openapi/update_open_api_spec.sh",
+    "openapi:generate": "cd client && npm run generate",
     "demo:ecommerce": "cd demos/ecommerce_shop && npm start",
     "demo:playground": "cd demos/playground && npm start",
     "demo:realty": "cd demos/realty && npm start",

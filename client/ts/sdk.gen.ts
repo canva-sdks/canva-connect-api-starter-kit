@@ -25,6 +25,9 @@ import type {
   CreateDesignImportJobData,
   CreateDesignImportJobErrors,
   CreateDesignImportJobResponses,
+  CreateDesignMergeJobData,
+  CreateDesignMergeJobErrors,
+  CreateDesignMergeJobResponses,
   CreateDesignResizeJobData,
   CreateDesignResizeJobErrors,
   CreateDesignResizeJobResponses,
@@ -32,10 +35,13 @@ import type {
   CreateFolderData,
   CreateFolderErrors,
   CreateFolderResponses,
+  CreatePrintPartnerDesignData,
+  CreatePrintPartnerDesignErrors,
+  CreatePrintPartnerDesignExportJobData,
+  CreatePrintPartnerDesignExportJobErrors,
+  CreatePrintPartnerDesignExportJobResponses,
+  CreatePrintPartnerDesignResponses,
   CreateReplyData,
-  CreateReplyDeprecatedData,
-  CreateReplyDeprecatedErrors,
-  CreateReplyDeprecatedResponses,
   CreateReplyErrors,
   CreateReplyResponses,
   CreateThreadData,
@@ -71,10 +77,28 @@ import type {
   GetBrandTemplateDatasetResponses,
   GetBrandTemplateErrors,
   GetBrandTemplateResponses,
+  GetDesignAnalyticsData,
+  GetDesignAnalyticsErrors,
+  GetDesignAnalyticsLinksData,
+  GetDesignAnalyticsLinksErrors,
+  GetDesignAnalyticsLinksResponses,
+  GetDesignAnalyticsPageViewsData,
+  GetDesignAnalyticsPageViewsErrors,
+  GetDesignAnalyticsPageViewsResponses,
+  GetDesignAnalyticsResponses,
+  GetDesignAnalyticsViewersData,
+  GetDesignAnalyticsViewersErrors,
+  GetDesignAnalyticsViewersResponses,
+  GetDesignAnalyticsViewsOverTimeData,
+  GetDesignAnalyticsViewsOverTimeErrors,
+  GetDesignAnalyticsViewsOverTimeResponses,
   GetDesignAutofillJobData,
   GetDesignAutofillJobErrors,
   GetDesignAutofillJobResponses,
   GetDesignData,
+  GetDesignDatasetData,
+  GetDesignDatasetErrors,
+  GetDesignDatasetResponses,
   GetDesignErrors,
   GetDesignExportFormatsData,
   GetDesignExportFormatsErrors,
@@ -85,6 +109,9 @@ import type {
   GetDesignImportJobData,
   GetDesignImportJobErrors,
   GetDesignImportJobResponses,
+  GetDesignMergeJobData,
+  GetDesignMergeJobErrors,
+  GetDesignMergeJobResponses,
   GetDesignPagesData,
   GetDesignPagesErrors,
   GetDesignPagesResponses,
@@ -98,6 +125,9 @@ import type {
   GetOidcJwksData,
   GetOidcJwksErrors,
   GetOidcJwksResponses,
+  GetPrintPartnerDesignData,
+  GetPrintPartnerDesignErrors,
+  GetPrintPartnerDesignResponses,
   GetReplyData,
   GetReplyErrors,
   GetReplyResponses,
@@ -137,6 +167,9 @@ import type {
   MoveFolderItemData,
   MoveFolderItemErrors,
   MoveFolderItemResponses,
+  PublishBrandTemplateData,
+  PublishBrandTemplateErrors,
+  PublishBrandTemplateResponses,
   RevokeTokensData,
   RevokeTokensErrors,
   RevokeTokensResponses,
@@ -171,6 +204,173 @@ export type Options<
    */
   meta?: Record<string, unknown>;
 };
+
+export class AnalyticsService {
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * <Availability>
+   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * </Availability>
+   *
+   * Gets the aggregated analytics for a design.
+   *
+   * The response includes total views, unique viewers, and view duration metrics.
+   */
+  public static getDesignAnalytics<ThrowOnError extends boolean = false>(
+    options: Options<GetDesignAnalyticsData, ThrowOnError>,
+  ) {
+    return (options.client ?? client).get<
+      GetDesignAnalyticsResponses,
+      GetDesignAnalyticsErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/designs/{designId}/analytics",
+      ...options,
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * <Availability>
+   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * </Availability>
+   *
+   * Lists viewers for a design, ordered by most recent view first.
+   */
+  public static getDesignAnalyticsViewers<ThrowOnError extends boolean = false>(
+    options: Options<GetDesignAnalyticsViewersData, ThrowOnError>,
+  ) {
+    return (options.client ?? client).get<
+      GetDesignAnalyticsViewersResponses,
+      GetDesignAnalyticsViewersErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/designs/{designId}/analytics/viewers",
+      ...options,
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * <Availability>
+   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * </Availability>
+   *
+   * Lists the view counts over time for a design.
+   *
+   * Each response item represents one time bucket.
+   */
+  public static getDesignAnalyticsViewsOverTime<
+    ThrowOnError extends boolean = false,
+  >(options: Options<GetDesignAnalyticsViewsOverTimeData, ThrowOnError>) {
+    return (options.client ?? client).get<
+      GetDesignAnalyticsViewsOverTimeResponses,
+      GetDesignAnalyticsViewsOverTimeErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/designs/{designId}/analytics/views-over-time",
+      ...options,
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * <Availability>
+   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * </Availability>
+   *
+   * Lists the page-level view duration data for a design.
+   *
+   * The request body can include page filters and pagination controls.
+   */
+  public static getDesignAnalyticsPageViews<
+    ThrowOnError extends boolean = false,
+  >(options: Options<GetDesignAnalyticsPageViewsData, ThrowOnError>) {
+    return (options.client ?? client).post<
+      GetDesignAnalyticsPageViewsResponses,
+      GetDesignAnalyticsPageViewsErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/designs/{designId}/analytics/page-views",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * <Availability>
+   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * </Availability>
+   *
+   * Lists trackable links and their metrics for a design.
+   */
+  public static getDesignAnalyticsLinks<ThrowOnError extends boolean = false>(
+    options: Options<GetDesignAnalyticsLinksData, ThrowOnError>,
+  ) {
+    return (options.client ?? client).get<
+      GetDesignAnalyticsLinksResponses,
+      GetDesignAnalyticsLinksErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/designs/{designId}/analytics/links",
+      ...options,
+    });
+  }
+}
 
 export class AppService {
   /**
@@ -371,20 +571,28 @@ export class AutofillService {
   /**
    * WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
    *
-   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * <Availability>
+   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
    *
-   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to autofill a Canva design using a brand template and input data.
+   * Users on Canva paid plans have access to a limited trial while your integration is under development. For more information, see [Trial quotas](https://www.canva.dev/docs/connect/api-requests-responses/#trial-quotas).
+   * </Availability>
    *
-   * To get a list of input data fields, use the [Get brand template dataset
-   * API](https://www.canva.dev/docs/connect/api-reference/brand-templates/get-brand-template-dataset/).
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to autofill a new Canva design using input data. Use the `type` field to choose the source of the design:
+   *
+   * - `create_from_brand_template`: autofill a new design from a brand template. If `type` isn't specified in the request, the request type is assumed to be `create_from_brand_template`. To get a list of input data fields for a brand template, use the [Get brand template dataset API](https://www.canva.dev/docs/connect/api-reference/brand-templates/get-brand-template-dataset/).
+   * - `create_from_design`: autofill a new design from an existing design that contains autofill data fields. To get the input data fields for an existing design, use the [Get design dataset
+   * API](https://www.canva.dev/docs/connect/api-reference/designs/get-design-dataset/).
+   *
+   * WARNING: Creating an autofilled design from an existing design is a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
    *
    * Available data field types to autofill include:
    *
-   * - Images
+   * - Images (which you can autofill with an image or a video asset)
    * - Text
    * - Charts
+   * - Sheets
    *
-   * WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
+   * WARNING: Chart and sheet data fields and autofilling a video are [preview features](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to these features which won't produce a new API version.
    *
    * NOTE: For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of autofill jobs created with this API using the [Get design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/get-design-autofill-job/).
    */
@@ -407,7 +615,11 @@ export class AutofillService {
   }
 
   /**
-   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * <Availability>
+   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   *
+   * Users on Canva paid plans have access to a limited trial while your integration is under development. For more information, see [Trial quotas](https://www.canva.dev/docs/connect/api-requests-responses/#trial-quotas).
+   * </Availability>
    *
    * Get the result of a design autofill job that was created using the [Create design autofill job
    * API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
@@ -433,7 +645,7 @@ export class BrandTemplateService {
   /**
    * WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
    *
-   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise).
    *
    * Get a list of the [brand templates](https://www.canva.com/help/publish-team-template/) the user has access to.
    */
@@ -452,9 +664,53 @@ export class BrandTemplateService {
   }
 
   /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise). Additionally, the user must have one of the following [roles](https://www.canva.com/help/roles-and-permissions/): Team admin, Brand designer, Organization admin, or Organization designer.
+   *
+   * Publishes a design as a [brand template](https://www.canva.com/help/publish-team-template/). Brand templates are design templates that can be shared across a team for consistent content creation.
+   *
+   * This API supports two workflows:
+   *
+   * - **Initial publish**: If the design is not linked to an existing brand template, a new brand template is created.
+   * - **Republish**: If the design is a draft of an existing brand template (created by editing an existing template), the existing template is updated with the changes.
+   *
+   * The API returns the published brand template immediately.
+   *
+   * <Note>
+   * The `thumbnail` field might be `null` immediately after publishing, as thumbnails are generated asynchronously. You can use the [Get brand template API](https://www.canva.dev/docs/connect/api-reference/brand-templates/get-brand-template/) to retrieve the thumbnail once it's ready. The brand template's `view_url` and `create_url` are available immediately.
+   * </Note>
+   */
+  public static publishBrandTemplate<ThrowOnError extends boolean = false>(
+    options: Options<PublishBrandTemplateData, ThrowOnError>,
+  ) {
+    return (options.client ?? client).post<
+      PublishBrandTemplateResponses,
+      PublishBrandTemplateErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/brand-templates",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
+  }
+
+  /**
    * WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
    *
-   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise).
    *
    * Retrieves the metadata for a brand template.
    */
@@ -475,22 +731,29 @@ export class BrandTemplateService {
   /**
    * WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
    *
-   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise).
    *
    * Gets the dataset definition of a brand template. If the brand
    * template contains autofill data fields, this API returns an object with the data field
    * names and the type of data they accept.
    *
+   * <Note>
+   *
+   * To get the dataset definition of a design, use the
+   * [Get design dataset API](https://www.canva.dev/docs/connect/api-reference/designs/get-design-dataset/).
+   *
+   * </Note>
+   *
    * Available data field types include:
    *
-   * - Images
+   * - Images (which you can autofill with an image or a video asset)
    * - Text
    * - Charts
    *
    * You can autofill a brand template using the [Create a design autofill job
    * API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
    *
-   * WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
+   * WARNING: Chart data fields and autofilling a video are [preview features](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to these features which won't produce a new API version.
    */
   public static getBrandTemplateDataset<ThrowOnError extends boolean = false>(
     options: Options<GetBrandTemplateDatasetData, ThrowOnError>,
@@ -511,17 +774,7 @@ export class CommentService {
   /**
    * <Warning>
    *
-   * This API is deprecated, so you should use the [Create thread](https://www.canva.dev/docs/connect/api-reference/comments/create-thread/) API instead.
-   *
-   * </Warning>
-   *
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * This preview API is deprecated. You should use the [Create thread](https://www.canva.dev/docs/connect/api-reference/comments/create-thread/) API instead.
    *
    * </Warning>
    *
@@ -542,50 +795,6 @@ export class CommentService {
     >({
       security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/comments",
-      ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...options.headers,
-      },
-    });
-  }
-
-  /**
-   * <Warning>
-   *
-   * This API is deprecated, so you should use the [Create reply](https://www.canva.dev/docs/connect/api-reference/comments/create-reply/) API instead.
-   *
-   * </Warning>
-   *
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
-   * Creates a reply to a comment in a design.
-   * To reply to an existing thread of comments, you can use either the `id` of the parent
-   * (original) comment, or the `thread_id` of a comment in the thread. Each comment can
-   * have a maximum of 100 replies created for it.
-   *
-   * For information on comments and how they're used in the Canva UI, see the
-   * [Canva Help Center](https://www.canva.com/help/comments/).
-   *
-   * @deprecated
-   */
-  public static createReplyDeprecated<ThrowOnError extends boolean = false>(
-    options: Options<CreateReplyDeprecatedData, ThrowOnError>,
-  ) {
-    return (options.client ?? client).post<
-      CreateReplyDeprecatedResponses,
-      CreateReplyDeprecatedErrors,
-      ThrowOnError
-    >({
-      security: [{ scheme: "bearer", type: "http" }],
-      url: "/v1/comments/{commentId}/replies",
       ...options,
       headers: {
         "Content-Type": "application/json",
@@ -812,10 +1021,12 @@ export class DesignService {
    *
    * - Use a preset design type.
    * - Set height and width dimensions for a custom design.
-   * - Create a copy of an existing design.
-   * - Create a new design from a brand template.
    *
-   * Additionally, you can also provide the `asset_id` of an asset in the user's [projects](https://www.canva.com/help/find-designs-and-folders/) to add to the new design. Currently, this only supports image assets. To list the assets in a folder in the user's projects, use the [List folder items API](https://www.canva.dev/docs/connect/api-reference/folders/list-folder-items/).
+   * NOTE: Custom designs can have a maximum area of 25,000,000 pixels squared (for example, 5000 × 5000 pixels). Each dimension can be between 40 and 8000 pixels, but the total area must stay within this limit.
+   * - Create a copy of an existing design (currently a [preview feature](https://www.canva.dev/docs/connect/#preview-apis)).
+   * - Create a new design from a brand template (currently a [preview feature](https://www.canva.dev/docs/connect/#preview-apis)).
+   *
+   * For preset and custom designs, you can also provide the `asset_id` of an asset in the user's [projects](https://www.canva.com/help/find-designs-and-folders/) to add to the new design. Currently, this only supports image assets. To list the assets in a folder in the user's projects, use the [List folder items API](https://www.canva.dev/docs/connect/api-reference/folders/list-folder-items/).
    *
    * NOTE: Blank designs created with this API are automatically deleted if they're not edited within 7 days. These blank designs bypass the user's Canva trash and are permanently deleted.
    */
@@ -890,7 +1101,7 @@ export class DesignService {
    *
    * <Note>
    * The available export formats depend on the design type and the types of pages in the design.
-   * In general, the available export formats returned are only those that are supported by every page type in the design.
+   * Each format includes the page numbers that support it. If a format is supported by every page in the design, its `page_numbers` are omitted.
    * </Note>
    */
   public static getDesignExportFormats<ThrowOnError extends boolean = false>(
@@ -903,6 +1114,121 @@ export class DesignService {
     >({
       security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/designs/{designId}/export-formats",
+      ...options,
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Gets the dataset definition of a design. If the design contains autofill data fields, this API
+   * returns an object with the data field names and the type of data they accept.
+   *
+   * <Note>
+   *
+   * To get the dataset definition of a brand template, use the
+   * [Get brand template dataset API](https://www.canva.dev/docs/connect/api-reference/brand-templates/get-brand-template-dataset/).
+   *
+   * </Note>
+   *
+   * Available data field types include:
+   *
+   * - Images (which you can autofill with an image or a video asset)
+   * - Text
+   * - Charts
+   *
+   * Use the returned field names and types to build the `data` payload for the
+   * [Create a design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/)
+   * with `type: create_from_design`.
+   *
+   * WARNING: Chart data fields and autofilling a video are [preview features](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to these features which won't produce a new API version.
+   */
+  public static getDesignDataset<ThrowOnError extends boolean = false>(
+    options: Options<GetDesignDatasetData, ThrowOnError>,
+  ) {
+    return (options.client ?? client).get<
+      GetDesignDatasetResponses,
+      GetDesignDatasetErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/designs/{designId}/dataset",
+      ...options,
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * AVAILABILITY: This API is only available to Print Partners.
+   *
+   * Creates a new Canva design using a Print Partner product ID.
+   *
+   * Print partner proofing information (such as bleed and page constraints) can optionally be provided in the request. The design URLs that are returned include this information, which Canva applies in the editor when opening the design.
+   *
+   * NOTE: Blank designs created with this API are automatically deleted if they're not edited within 7 days. These blank designs bypass the user's Canva trash and are permanently deleted.
+   */
+  public static createPrintPartnerDesign<ThrowOnError extends boolean = false>(
+    options?: Options<CreatePrintPartnerDesignData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).post<
+      CreatePrintPartnerDesignResponses,
+      CreatePrintPartnerDesignErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/print-partner/designs",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * AVAILABILITY: This API is only available to Print Partners.
+   *
+   * Gets the metadata for a design. This includes owner information, URLs for editing and viewing, and thumbnail information.
+   *
+   * Print partner proofing information (such as bleed and page constraints) isn't stored on Canva, so you can optionally provide it in the request. The design URLs that are returned include this information, which Canva applies in the editor when opening the design.
+   */
+  public static getPrintPartnerDesign<ThrowOnError extends boolean = false>(
+    options: Options<GetPrintPartnerDesignData, ThrowOnError>,
+  ) {
+    return (options.client ?? client).get<
+      GetPrintPartnerDesignResponses,
+      GetPrintPartnerDesignErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/print-partner/designs/{designId}",
       ...options,
     });
   }
@@ -1017,7 +1343,7 @@ export class ExportService {
    *
    * The request requires the design ID and the exported file format type.
    *
-   * Supported file formats (and export file type values): JPG (`jpg`), PNG (`png`), GIF (`gif`), Microsoft PowerPoint (`pptx`), MP4 (`mp4`), PDF (`pdf`), HTML bundle (`html_bundle`), and standalone HTML (`html_standalone`).
+   * Supported file formats (and export file type values): JPG (`jpg`), PNG (`png`), GIF (`gif`), Microsoft PowerPoint (`pptx`), MP4 (`mp4`), PDF (`pdf`), CSV (`csv`), HTML bundle (`html_bundle`), and standalone HTML (`html_standalone`).
    *
    * <Note>
    *
@@ -1044,6 +1370,45 @@ export class ExportService {
     >({
       security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/exports",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * AVAILABILITY: This API is only available to Print Partners.
+   *
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to export a Print Partner file from Canva. Once the exported file is generated, you can download
+   * it using the URL(s) provided. The download URLs are only valid for 24 hours.
+   * The request requires the design ID and exports a file as a print-quality PDF.
+   *
+   * <Note>
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/connect/api-reference/exports/get-design-export-job/).
+   * </Note>
+   */
+  public static createPrintPartnerDesignExportJob<
+    ThrowOnError extends boolean = false,
+  >(options?: Options<CreatePrintPartnerDesignExportJobData, ThrowOnError>) {
+    return (options?.client ?? client).post<
+      CreatePrintPartnerDesignExportJobResponses,
+      CreatePrintPartnerDesignExportJobErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/print-partner/exports",
       ...options,
       headers: {
         "Content-Type": "application/json",
@@ -1144,6 +1509,9 @@ export class FolderService {
    * - Other folders.
    * - Designs, such as Instagram posts, Presentations, and Documents ([Canva Docs](https://www.canva.com/create/documents/)).
    * - Image assets.
+   * - Brand templates. To include `brand_template` items in the response, you must explicitly specify it in the `item_types` parameter.
+   *
+   * AVAILABILITY: Brand template items are only returned for users on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise). For more information, see [Brand templates](https://www.canva.dev/docs/connect/api-reference/brand-templates/).
    *
    * Currently, video assets are not returned in the response.
    */
@@ -1212,6 +1580,84 @@ export class FolderService {
         "Content-Type": "application/json",
         ...options.headers,
       },
+    });
+  }
+}
+
+export class MergeService {
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to merge design pages by applying page operations (such as insert, move, or delete) to produce a new design or modify an existing one.
+   *
+   * When the job completes successfully, the job result includes metadata for the created or updated design.
+   *
+   * <Note>
+   *
+   * At this stage, only a single operation per request is supported by default, and passing multiple operations will fail. Contact Canva to enable multi-operation mode for your integration.
+   *
+   * </Note>
+   *
+   * <Note>
+   *
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of jobs created with this API using the [Get design merge job API](https://www.canva.dev/docs/connect/api-reference/merges/get-design-merge-job/).
+   *
+   * </Note>
+   */
+  public static createDesignMergeJob<ThrowOnError extends boolean = false>(
+    options: Options<CreateDesignMergeJobData, ThrowOnError>,
+  ) {
+    return (options.client ?? client).post<
+      CreateDesignMergeJobResponses,
+      CreateDesignMergeJobErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/merges",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Gets the result of a design merge job that was created using the [Create design merge job API](https://www.canva.dev/docs/connect/api-reference/merges/create-design-merge-job/).
+   *
+   * If the job is successful, the response includes the job status and a `result` object with metadata for the created or updated design.
+   *
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   */
+  public static getDesignMergeJob<ThrowOnError extends boolean = false>(
+    options: Options<GetDesignMergeJobData, ThrowOnError>,
+  ) {
+    return (options.client ?? client).get<
+      GetDesignMergeJobResponses,
+      GetDesignMergeJobErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/merges/{jobId}",
+      ...options,
     });
   }
 }
@@ -1355,6 +1801,11 @@ export class OidcService {
   /**
    * Fetches the current UserInfo claims for the authorized user. This is the same fields
    * returned by a id_token returns during authorization.
+   *
+   * The claims returned depend on the granted scopes: `profile` claims (`name`, `given_name`,
+   * `family_name`) are only returned when the `profile` scope is granted, and `email` claims
+   * (`email`, `email_verified`) are only returned when the `email` scope is granted. The
+   * `openid` scope is always required.
    */
   public static userInfo<ThrowOnError extends boolean = false>(
     options?: Options<UserInfoData, ThrowOnError>,
@@ -1373,7 +1824,13 @@ export class OidcService {
 
 export class ResizeService {
   /**
-   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
+   * <Availability>
+   *
+   * To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
+   *
+   * Users on the Canva Free plan have access to a limited trial. For more information, see [Trial quotas](https://www.canva.dev/docs/connect/api-requests-responses/#trial-quotas).
+   *
+   * </Availability>
    *
    * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints)
    * to create a resized copy of a design. The new resized design is
@@ -1418,7 +1875,13 @@ export class ResizeService {
   }
 
   /**
-   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
+   * <Availability>
+   *
+   * To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
+   *
+   * Users on the Canva Free plan have access to a limited trial. For more information, see [Trial quotas](https://www.canva.dev/docs/connect/api-requests-responses/#trial-quotas).
+   *
+   * </Availability>
    *
    * Gets the result of a design resize job that was created using the [Create design resize
    * job API](https://www.canva.dev/docs/connect/api-reference/resizes/create-design-resize-job/).

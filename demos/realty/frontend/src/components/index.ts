@@ -9,4 +9,4 @@ export * from "./image-carousel";
 export * from "./properties";
 export * from "./configure-design";
 export * from "./sidebar";
-export * from "./properties";
+export * from "./skeleton-card";

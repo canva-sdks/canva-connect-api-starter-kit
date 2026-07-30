@@ -35,12 +35,10 @@ export const ImageCarousel = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isFocused, setIsFocused] = useState(false);
 
-  // Return null if no images
   if (!images || images.length === 0) {
     return null;
   }
 
-  // Navigation handlers
   const goToPrevious = () => {
     setCurrentImageIndex((prevIndex) =>
       prevIndex === 0 ? images.length - 1 : prevIndex - 1,
@@ -61,7 +59,6 @@ export const ImageCarousel = ({
     }
   };
 
-  // Keyboard navigation for focused carousel
   useEffect(() => {
     if (!isFocused || images.length <= 1) return;
 
@@ -92,13 +89,12 @@ export const ImageCarousel = ({
 
   return (
     <Box
+      className="carousel-root"
       position="relative"
       tabIndex={hasMultipleImages ? 0 : -1}
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
-      sx={{
-        borderRadius: 1,
-      }}
+      sx={{ borderRadius: 1 }}
     >
       <CardMedia
         component="img"
@@ -108,20 +104,28 @@ export const ImageCarousel = ({
         onClick={handleImageClick}
       />
 
-      {/* Navigation arrows - only show if there are multiple images */}
+      {/* Navigation arrows — hidden by default, revealed on carousel hover or
+          keyboard focus so they don't clutter the image at rest. */}
       {hasMultipleImages && showControls && (
         <>
           <IconButton
             onClick={goToPrevious}
+            aria-label="Previous image"
+            className="carousel-arrow"
             sx={{
               position: "absolute",
-              left: 16,
+              left: 12,
               top: "50%",
               transform: "translateY(-50%)",
-              bgcolor: "rgba(0, 0, 0, 0.5)",
+              bgcolor: "rgba(0, 0, 0, 0.45)",
+              backdropFilter: "blur(4px)",
               color: "white",
-              width: 32,
-              height: 32,
+              width: 34,
+              height: 34,
+              opacity: 0,
+              transition: "opacity 0.25s ease, background-color 0.2s ease",
+              ".carousel-root:hover &": { opacity: 1 },
+              "&:focus-visible": { opacity: 1 },
               "&:hover": {
                 bgcolor: "rgba(0, 0, 0, 0.7)",
               },
@@ -132,15 +136,22 @@ export const ImageCarousel = ({
 
           <IconButton
             onClick={goToNext}
+            aria-label="Next image"
+            className="carousel-arrow"
             sx={{
               position: "absolute",
-              right: 16,
+              right: 12,
               top: "50%",
               transform: "translateY(-50%)",
-              bgcolor: "rgba(0, 0, 0, 0.5)",
+              bgcolor: "rgba(0, 0, 0, 0.45)",
+              backdropFilter: "blur(4px)",
               color: "white",
-              width: 32,
-              height: 32,
+              width: 34,
+              height: 34,
+              opacity: 0,
+              transition: "opacity 0.25s ease, background-color 0.2s ease",
+              ".carousel-root:hover &": { opacity: 1 },
+              "&:focus-visible": { opacity: 1 },
               "&:hover": {
                 bgcolor: "rgba(0, 0, 0, 0.7)",
               },
@@ -151,7 +162,6 @@ export const ImageCarousel = ({
         </>
       )}
 
-      {/* Clickable dot indicators - only show if there are multiple images */}
       {hasMultipleImages && showDots && (
         <Box
           sx={{

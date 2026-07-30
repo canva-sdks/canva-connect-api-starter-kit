@@ -35,6 +35,7 @@
     "baseUrl": "./"
   },
   "include": ["./scripts/*", "../common"],
+  "exclude": ["../common/**/*.test.ts"],
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"

@@ -5,6 +5,7 @@ import {
   OpeningDesignModal,
   PageHeader,
   PropertyCard,
+  SkeletonCard,
 } from "src/components";
 import {
   PropertyFilters,
@@ -24,13 +25,11 @@ export const PropertiesPage = () => {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const navigate = useNavigate();
 
-  // Calculate initial price and square footage ranges
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000]);
   const [sqFootageRange, setSqFootageRange] = useState<[number, number]>([
     0, 5000,
   ]);
 
-  // Initialize filters
   const [filters, setFilters] = useState<PropertyFiltersType>({
     searchQuery: "",
     bedrooms: "",
@@ -50,7 +49,6 @@ export const PropertiesPage = () => {
         } else {
           setProperties(getPropertiesResult.properties);
 
-          // Update price and square footage ranges based on actual data
           const prices = getPropertiesResult.properties.map((p) => p.price);
           const sqFootages = getPropertiesResult.properties.map(
             (p) => p.squareFeet,
@@ -114,32 +112,26 @@ export const PropertiesPage = () => {
     }).format(price);
   };
 
-  // Filter properties based on current filters
   const filteredProperties = useMemo(() => {
     if (!properties) return [];
 
     return properties.filter((property) => {
-      // Search query filter
       const searchMatch = property.address
         .toLowerCase()
         .includes(filters.searchQuery.toLowerCase());
 
-      // Bedroom filter
       const bedroomMatch =
         !filters.bedrooms ||
         property.bedrooms >= parseInt(filters.bedrooms, 10);
 
-      // Bathroom filter
       const bathroomMatch =
         !filters.bathrooms ||
         property.bathrooms >= parseInt(filters.bathrooms, 10);
 
-      // Price range filter
       const priceMatch =
         property.price >= filters.priceRange[0] &&
         property.price <= filters.priceRange[1];
 
-      // Square footage filter
       const sqFootageMatch =
         property.squareFeet >= filters.sqFootageRange[0] &&
         property.squareFeet <= filters.sqFootageRange[1];
@@ -175,6 +167,15 @@ export const PropertiesPage = () => {
           />
         </Box>
       )}
+      {isFetching && (
+        <Grid container={true} spacing={2} paddingTop={2} paddingBottom={2}>
+          {Array.from({ length: 6 }).map((_, idx) => (
+            <Grid item={true} key={idx} xs={12} sm={6} md={4} lg={4}>
+              <SkeletonCard index={idx} />
+            </Grid>
+          ))}
+        </Grid>
+      )}
       {!isFetching && (
         <Box paddingTop={2}>
           <PropertyFilters
@@ -184,12 +185,13 @@ export const PropertiesPage = () => {
             sqFootageRange={sqFootageRange}
           />
           <Grid container={true} spacing={2} paddingTop={2} paddingBottom={2}>
-            {filteredProperties.map((property) => (
+            {filteredProperties.map((property, idx) => (
               <Grid item={true} key={property.id} xs={12} sm={6} md={4} lg={4}>
                 <PropertyCard
                   property={property}
                   formatPrice={formatPrice}
                   onClick={() => onPropertyCardClick(property)}
+                  index={idx}
                 />
               </Grid>
             ))}

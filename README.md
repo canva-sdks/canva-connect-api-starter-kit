@@ -17,6 +17,13 @@ The Canva Connect API doesn't maintain nor publish client SDKs, however, we have
 
 To demonstrate this, we're using [openapi-ts](https://www.npmjs.com/package/@hey-api/openapi-ts) to generate TypeScript SDKs in [client/ts](./client/ts/) which is used in our demo app.
 
+To refresh the checked-in OpenAPI description, then regenerate the TypeScript client:
+
+```bash
+npm run openapi:download
+npm run openapi:generate
+```
+
 ## Demos: E-commerce Shop
 
 ### Prerequisites

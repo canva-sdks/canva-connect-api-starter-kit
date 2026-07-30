@@ -5,6 +5,7 @@ import {
   OpeningDesignModal,
   PageHeader,
   ProductCard,
+  SkeletonCard,
 } from "src/components";
 import { useAppContext } from "src/context";
 import type { Product } from "src/models";
@@ -89,14 +90,24 @@ export const ProductsPage = () => {
         <DeveloperNote info="The 'Edit in Canva' button navigates users to Canva with a 'correlation_state' of where they came from. On return to Nourish, the updated design is fetched and exported." />
       </Box>
       <Box>
+        {isFetching && (
+          <Grid container={true} spacing={8} paddingTop={2} paddingBottom={4}>
+            {Array.from({ length: 6 }).map((_, idx) => (
+              <Grid item={true} key={idx} xs={12} sm={6} md={4} lg={4}>
+                <SkeletonCard index={idx} />
+              </Grid>
+            ))}
+          </Grid>
+        )}
         {!isFetching && (
           <>
             <Grid container={true} spacing={8} paddingTop={2} paddingBottom={4}>
-              {products?.map((product) => (
+              {products?.map((product, idx) => (
                 <Grid item={true} key={product.id} xs={12} sm={6} md={4} lg={4}>
                   <ProductCard
                     product={product}
                     onClick={() => handleEditInCanvaClick(product)}
+                    index={idx}
                   />
                 </Grid>
               ))}

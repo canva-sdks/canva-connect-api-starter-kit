@@ -13,16 +13,18 @@
   "author": "Canva Pty Ltd.",
   "license": "SEE LICENSE IN LICENSE.md in root directory",
   "dependencies": {
-    "@canva/connect-api-ts": "file:../../../client/ts",
+    "@canva/connect-api-ts": "*",
+    "body-parser": "1.20.5",
     "cookie-parser": "1.4.7",
     "cors": "2.8.5",
     "dotenv": "16.6.0",
     "express": "4.22.2",
-    "multer": "2.1.1",
+    "multer": "2.2.0",
     "open": "10.2.0",
     "pug": "3.0.3"
   },
   "devDependencies": {
+    "@types/body-parser": "1.19.6",
     "@types/cookie-parser": "1.4.9",
     "@types/cors": "2.8.19",
     "@types/express": "4.17.25",

@@ -15,9 +15,11 @@
   "license": "SEE LICENSE IN LICENSE.md in root directory",
   "private": true,
   "dependencies": {
-    "@canva/connect-api-ts": "file:../../../client/ts",
+    "@canva/connect-api-ts": "*",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
+    "@fontsource/fraunces": "5.2.9",
+    "@fontsource/inter": "5.2.8",
     "@fontsource/roboto": "5.2.6",
     "@mui/icons-material": "5.18.0",
     "@mui/material": "5.18.0",
@@ -25,7 +27,7 @@
     "canvas-confetti": "1.9.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-router-dom": "7.17.0"
+    "react-router-dom": "7.18.1"
   },
   "devDependencies": {
     "@svgr/webpack": "8.1.0",
@@ -35,6 +37,7 @@
     "@types/webpack": "5.28.5",
     "css-loader": "7.1.2",
     "cssnano": "7.1.1",
+    "postcss": "8.5.23",
     "postcss-loader": "8.1.1",
     "prettier": "3.6.2",
     "style-loader": "4.0.0",
@@ -42,6 +45,7 @@
     "ts-loader": "9.5.4",
     "typescript": "5.9.2",
     "url-loader": "4.1.1",
-    "webpack-dev-server": "5.2.5"
+    "webpack": "5.105.2",
+    "webpack-dev-server": "5.2.6"
   }
 }

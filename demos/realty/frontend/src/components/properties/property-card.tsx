@@ -10,6 +10,8 @@ export type PropertyCardProps = {
   property: Property;
   formatPrice: (price: number) => string;
   onClick: () => void;
+  /** Index used to stagger the card entrance animation. */
+  index?: number;
 };
 
 const getStatusColor = (status: string) => {
@@ -29,9 +31,6 @@ const getStatusColor = (status: string) => {
   }
 };
 
-/**
- * Status badge component that displays property status with appropriate color
- */
 const StatusBadge = ({ status }: { status: string }) => {
   const { color, label } = getStatusColor(status);
 
@@ -39,36 +38,42 @@ const StatusBadge = ({ status }: { status: string }) => {
     <Box
       sx={{
         position: "absolute",
-        top: 30,
-        left: 30,
-        bgcolor: "white",
-        borderRadius: 16,
-        px: 1.5,
+        top: 28,
+        left: 28,
+        bgcolor: "rgba(255, 255, 255, 0.92)",
+        backdropFilter: "blur(6px)",
+        borderRadius: "2px",
+        px: 1.25,
         py: 0.5,
         display: "flex",
         alignItems: "center",
-        gap: 1,
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+        gap: 0.75,
+        boxShadow: "0 4px 14px -4px rgba(26, 31, 43, 0.3)",
       }}
     >
       <Box
         sx={{
-          width: 10,
-          height: 10,
+          width: 7,
+          height: 7,
           borderRadius: "50%",
           bgcolor: color,
         }}
       />
-      <Typography variant="body2" sx={{ fontWeight: 500, fontSize: "0.75rem" }}>
+      <Typography
+        variant="overline"
+        sx={{
+          fontWeight: 700,
+          fontSize: "0.62rem",
+          lineHeight: 1,
+          letterSpacing: "0.12em",
+        }}
+      >
         {label}
       </Typography>
     </Box>
   );
 };
 
-/**
- * Property feature component (bedroom, bathroom, square feet)
- */
 const PropertyFeature = ({
   icon,
   value,
@@ -91,10 +96,10 @@ export const PropertyCard = ({
   property,
   formatPrice,
   onClick,
+  index = 0,
 }: PropertyCardProps) => {
   const { isAuthorized } = useAppContext();
 
-  // Get all available images (prioritize Canva design or use property images)
   const allImages = property.imageUrls.filter((url) => url !== undefined);
 
   const propertyFeatures = (
@@ -115,13 +120,31 @@ export const PropertyCard = ({
     </Box>
   );
 
+  // Price is the hero element — leads the card hierarchy so buyers see the
+  // number at a glance before reading the address.
   const priceSection = (
-    <Box display="flex" justifyContent="space-between" alignItems="center">
-      <Typography variant="h6" fontWeight="bold" noWrap={true}>
-        {property.address}
-      </Typography>
-      <Typography variant="h6" fontWeight="bold">
+    <Box>
+      <Typography
+        variant="h5"
+        sx={{
+          fontFamily: (t) => t.typography.h5.fontFamily,
+          fontWeight: 600,
+          color: "primary.main",
+          lineHeight: 1.1,
+        }}
+      >
         {formatPrice(property.price)}
+      </Typography>
+      <Typography
+        noWrap={true}
+        sx={{
+          mt: 0.75,
+          fontSize: "0.9rem",
+          fontWeight: 600,
+          color: "text.primary",
+        }}
+      >
+        {property.address}
       </Typography>
     </Box>
   );
@@ -135,10 +158,11 @@ export const PropertyCard = ({
       objectFit="cover"
       badge={<StatusBadge status={property.status} />}
       features={propertyFeatures}
+      index={index}
     >
       {isAuthorized && (
         <DemoButton
-          demoVariant="primary"
+          demoVariant="secondary"
           onClick={onClick}
           fullWidth={true}
           startIcon={<CanvaIcon />}

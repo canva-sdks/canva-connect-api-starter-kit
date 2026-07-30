@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ES2019",
     "moduleResolution": "Node",
+    "types": [],
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

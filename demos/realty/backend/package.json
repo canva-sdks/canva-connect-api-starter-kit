@@ -9,7 +9,7 @@
     "format": "prettier . --no-config --write",
     "format:check": "prettier . --no-config --check --ignore-path ./.prettierignore",
     "format:file": "prettier $1 --no-config --write",
-    "properties:read": "ts-node ./scripts/properties.ts read"
+    "properties:read": "tsx ./scripts/properties.ts read"
   },
   "author": "Canva Pty Ltd.",
   "license": "SEE LICENSE IN LICENSE.md in root directory",
@@ -32,6 +32,7 @@
     "@types/multer": "2.0.0",
     "@types/uuid": "10.0.0",
     "prettier": "3.6.2",
+    "tsx": "4.22.4",
     "typescript": "5.9.2"
   }
 }

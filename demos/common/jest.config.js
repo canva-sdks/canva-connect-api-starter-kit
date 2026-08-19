@@ -10,6 +10,6 @@ module.exports = {
   roots: ["<rootDir>"],
   testPathIgnorePatterns: ["/node_modules/", "stories.tsx"],
   transform: {
-    "\\.tsx?$": "ts-jest",
+    "\\.tsx?$": "@swc/jest",
   },
 };

@@ -1,10 +1,14 @@
 #!/usr/bin/env node
-import * as yargs from "yargs";
+import yargs from "yargs";
 import * as env from "envfile";
 import * as fs from "node:fs/promises";
 import { hideBin } from "yargs/helpers";
 
-export async function generateKey(args: yargs.Arguments) {
+type GenerateKeyArgs = {
+  save: boolean;
+};
+
+export async function generateKey(args: GenerateKeyArgs) {
   const key = new Uint8Array(32);
   crypto.getRandomValues(key);
   const encodedKey = Buffer.from(key).toString("base64");

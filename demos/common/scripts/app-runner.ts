@@ -1,9 +1,9 @@
 import { Context } from "./context";
-import * as chalk from "chalk";
-import * as Table from "cli-table3";
-import * as webpack from "webpack";
-import * as WebpackDevServer from "webpack-dev-server";
-import * as nodemon from "nodemon";
+import chalk from "chalk";
+import Table from "cli-table3";
+import webpack from "webpack";
+import WebpackDevServer from "webpack-dev-server";
+import nodemon from "nodemon";
 
 export const infoChalk = chalk.blue.bold;
 export const warnChalk = chalk.bgYellow.bold;
@@ -40,6 +40,10 @@ export class AppRunner {
       const nodemonServer = nodemon({
         script: ctx.backendEntry,
         ext: "ts",
+        // Uses esbuild-register to execute TypeScript without ts-node.
+        execMap: {
+          ts: "node --require esbuild-register",
+        },
       });
 
       nodemonServer.on("start", resolve);

@@ -4,6 +4,7 @@
 .DS_Store
 .env
 node_modules
+.swc
 .pr-train.yml
 yarn-error.log
 dist

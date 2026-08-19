@@ -1,9 +1,9 @@
 import * as path from "path";
-import * as TerserPlugin from "terser-webpack-plugin";
+import TerserPlugin from "terser-webpack-plugin";
 import type { Configuration } from "webpack";
 import type { Configuration as DevServerConfiguration } from "webpack-dev-server";
 import { DefinePlugin } from "webpack";
-import * as cssnano from "cssnano";
+import cssnano from "cssnano";
 
 export function buildConfig({
   appEntry = path.join(__dirname, "src", "index.tsx"),

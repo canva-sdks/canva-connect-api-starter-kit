@@ -24,15 +24,16 @@
     "canvas-confetti": "1.9.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-router-dom": "7.18.1"
+    "react-router-dom": "7.18.2"
   },
   "devDependencies": {
     "@svgr/webpack": "8.1.0",
     "@types/canvas-confetti": "1.9.0",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.1",
-    "css-loader": "7.1.2",
+    "css-loader": "7.1.4",
     "cssnano": "7.1.1",
+    "esbuild-register": "3.6.0",
     "postcss": "8.5.23",
     "postcss-loader": "8.1.1",
     "prettier": "3.6.2",

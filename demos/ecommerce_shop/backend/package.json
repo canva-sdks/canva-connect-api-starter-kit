@@ -9,8 +9,8 @@
     "format": "prettier . --no-config --write",
     "format:check": "prettier . --no-config --check --ignore-path ./.prettierignore",
     "format:file": "prettier $1 --no-config --write",
-    "products:read": "ts-node ./scripts/products.ts read",
-    "products:reset": "ts-node ./scripts/products.ts reset"
+    "products:read": "tsx ./scripts/products.ts read",
+    "products:reset": "tsx ./scripts/products.ts reset"
   },
   "author": "Canva Pty Ltd.",
   "license": "SEE LICENSE IN LICENSE.md in root directory",
@@ -31,6 +31,7 @@
     "@types/multer": "2.0.0",
     "@types/node": "22.19.17",
     "prettier": "3.6.2",
+    "tsx": "4.22.4",
     "typescript": "5.9.2"
   }
 }

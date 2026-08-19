@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import "dotenv/config";
-import * as yargs from "yargs";
+import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { AppRunner } from "../../common/scripts/app-runner";
 import { Context } from "../../common/scripts/context";

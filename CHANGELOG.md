@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-08-19
+
+### 🔧 Changed
+
+- Replaced ts-node with tsx for demo scripts, and esbuild-register for webpack/nodemon.
+- Replaced ts-jest with @swc/jest as the Jest transformer.
+- Upgraded `css-loader` to `7.1.4`.
+
+### 🛡️ Security
+
+- Dependencies audit bringing modules up to date:
+
+```text
+react-router-dom                          7.18.1   ->   7.18.2
+```
+
 ## 2026-07-30
 
 ### 🧰 Added

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-08-26
+
+### 🐞 Fixed
+
+- Fixed `npm run build` failing in a demo's frontend when run in isolation.
+
 ## 2026-08-19
 
 ### 🔧 Changed

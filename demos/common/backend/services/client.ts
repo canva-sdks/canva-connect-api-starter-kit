@@ -8,20 +8,24 @@ import { JSONFileDatabase } from "../database/database";
 export async function getAccessTokenForUser(
   id: string,
   db: JSONFileDatabase,
+  options: { force?: boolean } = {},
 ): Promise<string> {
   const storedToken = await getToken(id, db);
   if (!storedToken) {
     throw new Error("No token found for user");
   }
 
-  // If the access token is not expiring in the next 10 minutes, we can keep using it
-  const claims = jose.decodeJwt(storedToken.access_token);
-  const refreshBufferSeconds = 60 * 10; // 10 minutes;
-  if (claims.exp) {
-    const aBitBeforeExpirationSeconds = claims.exp - refreshBufferSeconds;
-    const nowSeconds = Date.now() / 1000;
-    if (nowSeconds < aBitBeforeExpirationSeconds) {
-      return storedToken.access_token;
+  // If the access token is not expiring in the next 10 minutes, we can keep using it.
+  // Skip this check when force=true so a revoked token is always refreshed.
+  if (!options.force) {
+    const claims = jose.decodeJwt(storedToken.access_token);
+    const refreshBufferSeconds = 60 * 10; // 10 minutes;
+    if (claims.exp) {
+      const aBitBeforeExpirationSeconds = claims.exp - refreshBufferSeconds;
+      const nowSeconds = Date.now() / 1000;
+      if (nowSeconds < aBitBeforeExpirationSeconds) {
+        return storedToken.access_token;
+      }
     }
   }
 

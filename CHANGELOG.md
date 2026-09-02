@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-02
+
+### 🛡️ Security
+
+- Dependencies audit bringing modules up to date:
+
+```text
+body-parser                               1.20.5   ->   1.20.6
+postcss                                   8.5.23   ->   8.5.26
+```
+
 ## 2026-08-26
 
 ### 🐞 Fixed

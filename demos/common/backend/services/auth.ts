@@ -32,14 +32,18 @@ export const cookieAuth = async (
  * You need to set something here, so that when it's returned, you can verify
  * that you started the flow (and this is the correct user etc).
  * @param {string} codeChallenge - The PKCE code-challenge value
+ * @param {string[]} scopes - Optional explicit scope list. When provided, replaces
+ * the default scope set entirely. Omit to use the defaults suitable for demos that
+ * use design, asset, brand template, and profile APIs.
  * @returns {Promise<string>} The authorization URL.
  */
 export function getAuthorizationUrl(
   redirectUri: string,
   state: string,
   codeChallenge: string,
+  scopes?: string[],
 ): string {
-  const scopes = [
+  const resolvedScopes = scopes ?? [
     "asset:read",
     "asset:write",
     "brandtemplate:content:read",
@@ -49,7 +53,7 @@ export function getAuthorizationUrl(
     "design:meta:read",
     "profile:read",
   ];
-  const scopeString = scopes.join(" ");
+  const scopeString = resolvedScopes.join(" ");
 
   const clientId = process.env.CANVA_CLIENT_ID;
   const authBaseUrl = process.env.BASE_CANVA_CONNECT_AUTH_URL;

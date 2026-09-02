@@ -16,7 +16,7 @@
   "dependencies": {
     "@canva/connect-api-ts": "*",
     "@realty-demo/shared-models": "*",
-    "body-parser": "1.20.5",
+    "body-parser": "1.20.6",
     "cors": "2.8.5",
     "dotenv": "16.6.0",
     "express": "4.22.2",

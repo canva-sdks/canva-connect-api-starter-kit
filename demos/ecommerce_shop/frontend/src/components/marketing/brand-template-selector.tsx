@@ -59,7 +59,7 @@ export const BrandTemplateSelector = ({
               <Typography variant="h5">Select Brand Template</Typography>
             </Grid>
             <Grid item={true} xs={12} sm={5} md={3}>
-              <DeveloperNote info="Brand Templates are only available to Canva Enterprise users." />
+              <DeveloperNote info="Brand Templates are available on Canva Pro, Canva Teams, and Canva Enterprise." />
             </Grid>
           </Grid>
         </Grid>

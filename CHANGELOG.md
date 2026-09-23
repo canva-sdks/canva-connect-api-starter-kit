@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-09-23
+
+### 🔧 Changed
+
+- Updated the Nourish demo developer notes to say brand templates and the Autofill API are available on Canva Pro, Canva Teams, and Canva Enterprise, instead of Enterprise only.
+
+### 🛡️ Security
+
+- Dependencies audit bringing modules up to date:
+
+```text
+multer                                     2.2.0   ->   2.3.0
+```
+
 ## 2026-09-02
 
 ### 🛡️ Security

@@ -23,7 +23,7 @@ export const MarketingPage = () => {
         </Grid>
         <Grid item={true} xs={4}>
           <CallToActionPaper
-            devNoteText="Multiple designs are generated using brand templates and autofill APIs which are only available to Canva Enterprise users."
+            devNoteText="Multiple designs are generated using the brand templates and autofill APIs, which are available on Canva Pro, Canva Teams, and Canva Enterprise."
             callToActionText="Multiple Designs"
             callToActionDescription="Create multiple designs at once by adding products to your Brand Templates"
             onClick={() => navigate(Paths.MULTIPLE_DESIGNS_GENERATOR)}

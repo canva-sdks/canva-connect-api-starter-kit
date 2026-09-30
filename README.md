@@ -30,34 +30,31 @@ npm run openapi:generate
 
 Before you can run this demo, you'll need to do some setup beforehand.
 
-1. Open the [Developer Portal](https://www.canva.com/developers/integrations/connect-api), and click `Create an integration`.
+1. Open [Your apps](https://www.canva.com/developers/apps) in the Developer Portal and click **Create an app**. Enter an app name and choose who can use your app.
 
-2. Under `Configuration` → `Configure your integration`.
+2. In your app, go to **Outside Canva** and click **Start integrating**. On **Outside Canva → Configuration**, under **Integration methods**, make sure **Canva REST APIs** is turned on.
 
-- `Integration name`: Add a name.
-- `Client ID`: Make a note of this value; you'll need it in a later step.
-- `Generate secret`: Click this and save the secret in a secure location, as you'll need it for a later step.
+3. Under **Credentials** on the same page, copy the **Client ID**. Click **Generate secret** and store the secret securely. You'll need both values when configuring the demo.
 
-3. Under `Scopes` → `Set the scopes`, check the following boxes:
+4. Under **Integration methods → Canva REST APIs → Scopes**, select:
+   - `asset`: Read and Write.
+   - `brandtemplate:content`: Read.
+   - `brandtemplate:meta`: Read.
+   - `design:content`: Read and Write.
+   - `design:meta`: Read.
+   - `profile`: Read.
 
-- `asset`: Read and Write.
-- `brandtemplate:content`: Read.
-- `brandtemplate:meta`: Read.
-- `design:content`: Read and Write.
-- `design:meta`: Read.
-- `profile`: Read.
+5. On **Outside Canva → Redirect URLs**, enter the following value for **URL 1**:
 
-4. Under `Authentication` → `Add Authentication`, locate `URL 1` and enter the following value:
+   ```
+   http://127.0.0.1:3001/oauth/redirect
+   ```
 
-```
-http://127.0.0.1:3001/oauth/redirect
-```
+6. On **Outside Canva → Configuration**, under **Integration methods → Canva REST APIs → Return navigation**, turn on return navigation and enter the following **Return URL**:
 
-5. Under `Return navigation`, toggle on the `Enable return navigation` switch and enter the following as the `Return Url`:
-
-```
-http://127.0.0.1:3001/return-nav
-```
+   ```
+   http://127.0.0.1:3001/return-nav
+   ```
 
 ### How to run
 
@@ -95,34 +92,31 @@ To get started with Brand Templates in the e-commerce demo, you can install samp
 
 Before you can run this demo, you'll need to do some setup beforehand.
 
-1. Open the [Developer Portal](https://www.canva.com/developers/integrations/connect-api), and click `Create an integration`.
+1. Open [Your apps](https://www.canva.com/developers/apps) in the Developer Portal and click **Create an app**. Enter an app name and choose who can use your app.
 
-2. Under `Configuration` → `Configure your integration`.
+2. In your app, go to **Outside Canva** and click **Start integrating**. On **Outside Canva → Configuration**, under **Integration methods**, make sure **Canva REST APIs** is turned on.
 
-- `Integration name`: Add a name.
-- `Client ID`: Make a note of this value; you'll need it in a later step.
-- `Generate secret`: Click this and save the secret in a secure location, as you'll need it for a later step.
+3. Under **Credentials** on the same page, copy the **Client ID**. Click **Generate secret** and store the secret securely. You'll need both values when configuring the demo.
 
-3. Under `Scopes` → `Set the scopes`, check the following boxes:
+4. Under **Integration methods → Canva REST APIs → Scopes**, select:
+   - `asset`: Read and Write.
+   - `brandtemplate:content`: Read.
+   - `brandtemplate:meta`: Read.
+   - `design:content`: Read and Write.
+   - `design:meta`: Read.
+   - `profile`: Read.
 
-- `asset`: Read and Write.
-- `brandtemplate:content`: Read.
-- `brandtemplate:meta`: Read.
-- `design:content`: Read and Write.
-- `design:meta`: Read.
-- `profile`: Read.
+5. On **Outside Canva → Redirect URLs**, enter the following value for **URL 1**:
 
-4. Under `Authentication` → `Add Authentication`, locate `URL 1` and enter the following value:
+   ```
+   http://127.0.0.1:3001/oauth/redirect
+   ```
 
-```
-http://127.0.0.1:3001/oauth/redirect
-```
+6. On **Outside Canva → Configuration**, under **Integration methods → Canva REST APIs → Return navigation**, turn on return navigation and enter the following **Return URL**:
 
-5. Under `Return navigation`, toggle on the `Enable return navigation` switch and enter the following as the `Return Url`:
-
-```
-http://127.0.0.1:3001/return-nav
-```
+   ```
+   http://127.0.0.1:3001/return-nav
+   ```
 
 ### How to run
 
@@ -160,23 +154,20 @@ To get started with Brand Templates in the real estate demo, you can install sam
 
 Before you can run this demo, you'll need to do some setup beforehand.
 
-1. Open the [Developer Portal](https://www.canva.com/developers/integrations/connect-api), and click `Create an integration`.
+1. Open [Your apps](https://www.canva.com/developers/apps) in the Developer Portal and click **Create an app**. Enter an app name and choose who can use your app.
 
-2. Under `Configuration` → `Configure your integration`.
+2. In your app, go to **Outside Canva** and click **Start integrating**. On **Outside Canva → Configuration**, under **Integration methods**, make sure **Canva REST APIs** is turned on.
 
-- `Integration name`: Add a name.
-- `Client ID`: Make a note of this value; you'll need it in a later step.
-- `Generate secret`: Click this and save the secret in a secure location, as you'll need it for a later step.
+3. Under **Credentials** on the same page, copy the **Client ID**. Click **Generate secret** and store the secret securely. You'll need both values when configuring the demo.
 
-3. Under `Scopes` → `Set the scopes`, select any permissions for endpoints you'd like to experiment with, plus the following:
+4. Under **Integration methods → Canva REST APIs → Scopes**, select any permissions for endpoints you'd like to experiment with, plus:
+   - `profile`: Read.
 
-- `profile`: Read.
+5. On **Outside Canva → Redirect URLs**, enter the following value for **URL 1**:
 
-4. Under `Authentication` → `Add Authentication`, locate `URL 1` and enter the following value:
-
-```
-http://127.0.0.1:3001/oauth/redirect
-```
+   ```
+   http://127.0.0.1:3001/oauth/redirect
+   ```
 
 ### How to run
 

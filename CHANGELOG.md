@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-09-30
+
+### 🔧 Changed
+
+- Updated setup instructions for the three Connect API demos to create an app and enable the REST APIs, following the unification of Integrations under Apps in the Developer Portal.
+
 ## 2026-09-23
 
 ### 🔧 Changed

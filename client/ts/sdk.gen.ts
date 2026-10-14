@@ -22,6 +22,9 @@ import type {
   CreateDesignExportJobData,
   CreateDesignExportJobErrors,
   CreateDesignExportJobResponses,
+  CreateDesignGenerationJobV2Data,
+  CreateDesignGenerationJobV2Errors,
+  CreateDesignGenerationJobV2Responses,
   CreateDesignImportJobData,
   CreateDesignImportJobErrors,
   CreateDesignImportJobResponses,
@@ -35,6 +38,15 @@ import type {
   CreateFolderData,
   CreateFolderErrors,
   CreateFolderResponses,
+  CreateImageGenerationJobData,
+  CreateImageGenerationJobErrors,
+  CreateImageGenerationJobResponses,
+  CreateImageToDesignImportJobData,
+  CreateImageToDesignImportJobErrors,
+  CreateImageToDesignImportJobResponses,
+  CreateImageTransformationJobData,
+  CreateImageTransformationJobErrors,
+  CreateImageTransformationJobResponses,
   CreatePrintPartnerDesignData,
   CreatePrintPartnerDesignErrors,
   CreatePrintPartnerDesignExportJobData,
@@ -106,6 +118,9 @@ import type {
   GetDesignExportJobData,
   GetDesignExportJobErrors,
   GetDesignExportJobResponses,
+  GetDesignGenerationJobV2Data,
+  GetDesignGenerationJobV2Errors,
+  GetDesignGenerationJobV2Responses,
   GetDesignImportJobData,
   GetDesignImportJobErrors,
   GetDesignImportJobResponses,
@@ -122,6 +137,15 @@ import type {
   GetFolderData,
   GetFolderErrors,
   GetFolderResponses,
+  GetImageGenerationJobData,
+  GetImageGenerationJobErrors,
+  GetImageGenerationJobResponses,
+  GetImageToDesignImportJobData,
+  GetImageToDesignImportJobErrors,
+  GetImageToDesignImportJobResponses,
+  GetImageTransformationJobData,
+  GetImageTransformationJobErrors,
+  GetImageTransformationJobResponses,
   GetOidcJwksData,
   GetOidcJwksErrors,
   GetOidcJwksResponses,
@@ -212,13 +236,13 @@ export class AnalyticsService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
    * <Availability>
-   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * To use this API, your app must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
    * </Availability>
    *
    * Gets the aggregated analytics for a design.
@@ -245,13 +269,13 @@ export class AnalyticsService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
    * <Availability>
-   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * To use this API, your app must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
    * </Availability>
    *
    * Lists viewers for a design, ordered by most recent view first.
@@ -276,13 +300,13 @@ export class AnalyticsService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
    * <Availability>
-   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * To use this API, your app must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
    * </Availability>
    *
    * Lists the view counts over time for a design.
@@ -309,13 +333,13 @@ export class AnalyticsService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
    * <Availability>
-   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * To use this API, your app must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
    * </Availability>
    *
    * Lists the page-level view duration data for a design.
@@ -346,13 +370,13 @@ export class AnalyticsService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
    * <Availability>
-   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
+   * To use this API, your app must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
    * </Availability>
    *
    * Lists trackable links and their metrics for a design.
@@ -448,7 +472,7 @@ export class AssetService {
   }
 
   /**
-   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to upload an asset to the user's content library. Supported file types for assets are listed in the [Assets API overview](https://www.canva.dev/docs/connect/api-reference/assets/).
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to upload an asset to the user's content library. Supported file types for assets are listed in the [Assets API overview](https://www.canva.dev/docs/apps/rest-apis/reference/assets/).
    *
    * The request format for this endpoint is an `application/octet-stream` body of bytes. Attach
    * information about the upload using an `Asset-Upload-Metadata` header.
@@ -456,7 +480,7 @@ export class AssetService {
    *
    * <Note>
    *
-   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of asset upload jobs created with this API using the [Get asset upload job API](https://www.canva.dev/docs/connect/api-reference/assets/get-asset-upload-job/).
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of asset upload jobs created with this API using the [Get asset upload job API](https://www.canva.dev/docs/apps/rest-apis/reference/assets/get-asset-upload-job/).
    *
    * </Note>
    */
@@ -480,9 +504,9 @@ export class AssetService {
   }
 
   /**
-   * Get the result of an asset upload job that was created using the [Create asset upload job API](https://www.canva.dev/docs/connect/api-reference/assets/create-asset-upload-job/).
+   * Get the result of an asset upload job that was created using the [Create asset upload job API](https://www.canva.dev/docs/apps/rest-apis/reference/assets/create-asset-upload-job/).
    *
-   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
    */
   public static getAssetUploadJob<ThrowOnError extends boolean = false>(
     options: Options<GetAssetUploadJobData, ThrowOnError>,
@@ -504,19 +528,19 @@ export class AssetService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
-   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to upload an asset from a URL to the user's content library. Supported file types for assets are listed in the [Assets API overview](https://www.canva.dev/docs/connect/api-reference/assets/).
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to upload an asset from a URL to the user's content library. Supported file types for assets are listed in the [Assets API overview](https://www.canva.dev/docs/apps/rest-apis/reference/assets/).
    *
    * <Note>
-   * Uploading a video asset from a URL is limited to a maximum 100MB file size. For importing larger video files, use the [Create asset upload job API](https://www.canva.dev/docs/connect/api-reference/assets/create-asset-upload-job/).
+   * Uploading a video asset from a URL is limited to a maximum 100MB file size. For importing larger video files, use the [Create asset upload job API](https://www.canva.dev/docs/apps/rest-apis/reference/assets/create-asset-upload-job/).
    * </Note>
    *
    * <Note>
-   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of asset upload jobs created with this API using the [Get asset upload job via URL API](https://www.canva.dev/docs/connect/api-reference/assets/get-url-asset-upload-job/).
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of asset upload jobs created with this API using the [Get asset upload job via URL API](https://www.canva.dev/docs/apps/rest-apis/reference/assets/get-url-asset-upload-job/).
    * </Note>
    */
   public static createUrlAssetUploadJob<ThrowOnError extends boolean = false>(
@@ -543,14 +567,14 @@ export class AssetService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
-   * Get the result of an asset upload job that was created using the [Create asset upload job via URL API](https://www.canva.dev/docs/connect/api-reference/assets/create-url-asset-upload-job/).
+   * Get the result of an asset upload job that was created using the [Create asset upload job via URL API](https://www.canva.dev/docs/apps/rest-apis/reference/assets/create-url-asset-upload-job/).
    *
-   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
    */
   public static getUrlAssetUploadJob<ThrowOnError extends boolean = false>(
     options: Options<GetUrlAssetUploadJobData, ThrowOnError>,
@@ -569,21 +593,18 @@ export class AssetService {
 
 export class AutofillService {
   /**
-   * WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
-   *
    * <Availability>
-   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
-   *
-   * Users on Canva paid plans have access to a limited trial while your integration is under development. For more information, see [Trial quotas](https://www.canva.dev/docs/connect/api-requests-responses/#trial-quotas).
+   * Autofill for designs and brand templates is available when your app acts on behalf of a user on Canva Pro (including Canva Education and Canva for Nonprofits), Canva Teams, or Canva Enterprise. Usage limits will be introduced in the future.
    * </Availability>
    *
-   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to autofill a new Canva design using input data. Use the `type` field to choose the source of the design:
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to autofill a Canva design using input data. Use the `type` field to choose the source of the design:
    *
-   * - `create_from_brand_template`: autofill a new design from a brand template. If `type` isn't specified in the request, the request type is assumed to be `create_from_brand_template`. To get a list of input data fields for a brand template, use the [Get brand template dataset API](https://www.canva.dev/docs/connect/api-reference/brand-templates/get-brand-template-dataset/).
+   * - `create_from_brand_template`: autofill a new design from a brand template. If `type` isn't specified in the request, the request type is assumed to be `create_from_brand_template`. To get a list of input data fields for a brand template, use the [Get brand template dataset API](https://www.canva.dev/docs/apps/rest-apis/reference/brand-templates/get-brand-template-dataset/).
    * - `create_from_design`: autofill a new design from an existing design that contains autofill data fields. To get the input data fields for an existing design, use the [Get design dataset
-   * API](https://www.canva.dev/docs/connect/api-reference/designs/get-design-dataset/).
+   * API](https://www.canva.dev/docs/apps/rest-apis/reference/designs/get-design-dataset/).
+   * - `update_design`: autofill an existing design in place, rather than creating a new design. To get the input data fields for the design, use the [Get design dataset API](https://www.canva.dev/docs/apps/rest-apis/reference/designs/get-design-dataset/).
    *
-   * WARNING: Creating an autofilled design from an existing design is a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
+   * Data fields in brand templates or designs might change (for example, they might be renamed or removed). If you provide data for a field name that doesn't exist, it's silently skipped. Use the Get dataset APIs to confirm the current fields before creating an autofill job.
    *
    * Available data field types to autofill include:
    *
@@ -592,9 +613,7 @@ export class AutofillService {
    * - Charts
    * - Sheets
    *
-   * WARNING: Chart and sheet data fields and autofilling a video are [preview features](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to these features which won't produce a new API version.
-   *
-   * NOTE: For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of autofill jobs created with this API using the [Get design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/get-design-autofill-job/).
+   * NOTE: For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of autofill jobs created with this API using the [Get design autofill job API](https://www.canva.dev/docs/apps/rest-apis/reference/autofills/get-design-autofill-job/).
    */
   public static createDesignAutofillJob<ThrowOnError extends boolean = false>(
     options?: Options<CreateDesignAutofillJobData, ThrowOnError>,
@@ -616,15 +635,13 @@ export class AutofillService {
 
   /**
    * <Availability>
-   * To use this API, your integration must act on behalf of a user who is a member of a [Canva Enterprise](https://www.canva.com/enterprise/) organization.
-   *
-   * Users on Canva paid plans have access to a limited trial while your integration is under development. For more information, see [Trial quotas](https://www.canva.dev/docs/connect/api-requests-responses/#trial-quotas).
+   * Autofill for designs and brand templates is available when your app acts on behalf of a user on Canva Pro (including Canva Education and Canva for Nonprofits), Canva Teams, or Canva Enterprise. Usage limits will be introduced in the future.
    * </Availability>
    *
    * Get the result of a design autofill job that was created using the [Create design autofill job
-   * API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
+   * API](https://www.canva.dev/docs/apps/rest-apis/reference/autofills/create-design-autofill-job/).
    *
-   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
    */
   public static getDesignAutofillJob<ThrowOnError extends boolean = false>(
     options: Options<GetDesignAutofillJobData, ThrowOnError>,
@@ -643,9 +660,7 @@ export class AutofillService {
 
 export class BrandTemplateService {
   /**
-   * WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
-   *
-   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise).
+   * AVAILABILITY: To use this API, your app must act on behalf of a user that's on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise).
    *
    * Get a list of the [brand templates](https://www.canva.com/help/publish-team-template/) the user has access to.
    */
@@ -669,12 +684,12 @@ export class BrandTemplateService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
-   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise). Additionally, the user must have one of the following [roles](https://www.canva.com/help/roles-and-permissions/): Team admin, Brand designer, Organization admin, or Organization designer.
+   * AVAILABILITY: To use this API, your app must act on behalf of a user that's on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise). Additionally, the user must have one of the following [roles](https://www.canva.com/help/roles-and-permissions/): Team admin, Brand designer, Organization admin, or Organization designer.
    *
    * Publishes a design as a [brand template](https://www.canva.com/help/publish-team-template/). Brand templates are design templates that can be shared across a team for consistent content creation.
    *
@@ -686,7 +701,7 @@ export class BrandTemplateService {
    * The API returns the published brand template immediately.
    *
    * <Note>
-   * The `thumbnail` field might be `null` immediately after publishing, as thumbnails are generated asynchronously. You can use the [Get brand template API](https://www.canva.dev/docs/connect/api-reference/brand-templates/get-brand-template/) to retrieve the thumbnail once it's ready. The brand template's `view_url` and `create_url` are available immediately.
+   * The `thumbnail` field might be `null` immediately after publishing, as thumbnails are generated asynchronously. You can use the [Get brand template API](https://www.canva.dev/docs/apps/rest-apis/reference/brand-templates/get-brand-template/) to retrieve the thumbnail once it's ready. The brand template's `view_url` and `create_url` are available immediately.
    * </Note>
    */
   public static publishBrandTemplate<ThrowOnError extends boolean = false>(
@@ -708,9 +723,7 @@ export class BrandTemplateService {
   }
 
   /**
-   * WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
-   *
-   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise).
+   * AVAILABILITY: To use this API, your app must act on behalf of a user that's on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise).
    *
    * Retrieves the metadata for a brand template.
    */
@@ -729,9 +742,7 @@ export class BrandTemplateService {
   }
 
   /**
-   * WARNING: Brand templates were migrated to use a new ID format in September 2025. If your integration stores brand template IDs, you'll need to migrate to use the new IDs. Old brand template IDs will continue to be accepted for 6 months to give you time to migrate to the new IDs.
-   *
-   * AVAILABILITY: To use this API, your integration must act on behalf of a user that's on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise).
+   * AVAILABILITY: To use this API, your app must act on behalf of a user that's on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise).
    *
    * Gets the dataset definition of a brand template. If the brand
    * template contains autofill data fields, this API returns an object with the data field
@@ -740,7 +751,7 @@ export class BrandTemplateService {
    * <Note>
    *
    * To get the dataset definition of a design, use the
-   * [Get design dataset API](https://www.canva.dev/docs/connect/api-reference/designs/get-design-dataset/).
+   * [Get design dataset API](https://www.canva.dev/docs/apps/rest-apis/reference/designs/get-design-dataset/).
    *
    * </Note>
    *
@@ -749,11 +760,10 @@ export class BrandTemplateService {
    * - Images (which you can autofill with an image or a video asset)
    * - Text
    * - Charts
+   * - Sheets
    *
    * You can autofill a brand template using the [Create a design autofill job
-   * API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
-   *
-   * WARNING: Chart data fields and autofilling a video are [preview features](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to these features which won't produce a new API version.
+   * API](https://www.canva.dev/docs/apps/rest-apis/reference/autofills/create-design-autofill-job/).
    */
   public static getBrandTemplateDataset<ThrowOnError extends boolean = false>(
     options: Options<GetBrandTemplateDatasetData, ThrowOnError>,
@@ -774,7 +784,7 @@ export class CommentService {
   /**
    * <Warning>
    *
-   * This preview API is deprecated. You should use the [Create thread](https://www.canva.dev/docs/connect/api-reference/comments/create-thread/) API instead.
+   * This preview API is deprecated. You should use the [Create thread](https://www.canva.dev/docs/apps/rest-apis/reference/comments/create-thread/) API instead.
    *
    * </Warning>
    *
@@ -807,8 +817,8 @@ export class CommentService {
    * <Warning>
    * This API is currently provided as a preview. Be aware of the following:
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    * </Warning>
    *
    * Retrieves a list of replies for a comment or suggestion thread on a design.
@@ -836,8 +846,8 @@ export class CommentService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
@@ -874,13 +884,13 @@ export class CommentService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
    * Gets a comment or suggestion thread on a design.
-   * To retrieve a reply to a comment thread, use the [Get reply](https://www.canva.dev/docs/connect/api-reference/comments/get-reply/) API.
+   * To retrieve a reply to a comment thread, use the [Get reply](https://www.canva.dev/docs/apps/rest-apis/reference/comments/get-reply/) API.
    * For information on comments and how they're used in the Canva UI, see the
    * [Canva Help Center](https://www.canva.com/help/comments/).
    */
@@ -904,8 +914,8 @@ export class CommentService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
@@ -931,8 +941,8 @@ export class CommentService {
    * <Warning>
    * This API is currently provided as a preview. Be aware of the following:
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    * </Warning>
    *
    * Creates a new comment thread on a design.
@@ -965,13 +975,13 @@ export class ConnectService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
    * The Keys API (`connect/keys`) is a security measure you can use to verify the authenticity
-   * of webhooks you receive from Canva Connect. The Keys API returns a
+   * of webhooks you receive from the Canva REST APIs. The Keys API returns a
    * [JSON Web Key (JWK)](https://www.rfc-editor.org/rfc/rfc7517#section-2), which you can use to
    * decrypt the webhook signature and verify it came from Canva and not a potentially malicious
    * actor. This helps to protect your systems from
@@ -1023,10 +1033,12 @@ export class DesignService {
    * - Set height and width dimensions for a custom design.
    *
    * NOTE: Custom designs can have a maximum area of 25,000,000 pixels squared (for example, 5000 × 5000 pixels). Each dimension can be between 40 and 8000 pixels, but the total area must stay within this limit.
-   * - Create a copy of an existing design (currently a [preview feature](https://www.canva.dev/docs/connect/#preview-apis)).
-   * - Create a new design from a brand template (currently a [preview feature](https://www.canva.dev/docs/connect/#preview-apis)).
+   * - Create a copy of an existing design (currently a [preview feature](https://www.canva.dev/docs/apps/rest-apis/#preview-apis)).
+   * - Create a new design from a brand template (currently a [preview feature](https://www.canva.dev/docs/apps/rest-apis/#preview-apis)).
    *
-   * For preset and custom designs, you can also provide the `asset_id` of an asset in the user's [projects](https://www.canva.com/help/find-designs-and-folders/) to add to the new design. Currently, this only supports image assets. To list the assets in a folder in the user's projects, use the [List folder items API](https://www.canva.dev/docs/connect/api-reference/folders/list-folder-items/).
+   * For preset and custom designs, you can also provide the `asset_id` of an asset in the user's [projects](https://www.canva.com/help/find-designs-and-folders/) to add to the new design. Currently, this only supports image assets. To list the assets in a folder in the user's projects, use the [List folder items API](https://www.canva.dev/docs/apps/rest-apis/reference/folders/list-folder-items/).
+   *
+   * An asset provided this way is placed in the design as a single flat image, which the user can move, resize, or replace, but not edit as separate elements. If you want the elements of an image to become separate editable layers in the design, use the [Create image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/create-image-to-design-import-job/) instead.
    *
    * NOTE: Blank designs created with this API are automatically deleted if they're not edited within 7 days. These blank designs bypass the user's Canva trash and are permanently deleted.
    */
@@ -1071,8 +1083,8 @@ export class DesignService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
@@ -1097,7 +1109,7 @@ export class DesignService {
   }
 
   /**
-   * Lists the available file formats for [exporting a design](https://www.canva.dev/docs/connect/api-reference/exports/create-design-export-job/).
+   * Lists the available file formats for [exporting a design](https://www.canva.dev/docs/apps/rest-apis/reference/exports/create-design-export-job/).
    *
    * <Note>
    * The available export formats depend on the design type and the types of pages in the design.
@@ -1119,23 +1131,13 @@ export class DesignService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Gets the dataset definition of a design. If the design contains autofill data fields, this API
    * returns an object with the data field names and the type of data they accept.
    *
    * <Note>
    *
    * To get the dataset definition of a brand template, use the
-   * [Get brand template dataset API](https://www.canva.dev/docs/connect/api-reference/brand-templates/get-brand-template-dataset/).
+   * [Get brand template dataset API](https://www.canva.dev/docs/apps/rest-apis/reference/brand-templates/get-brand-template-dataset/).
    *
    * </Note>
    *
@@ -1144,12 +1146,11 @@ export class DesignService {
    * - Images (which you can autofill with an image or a video asset)
    * - Text
    * - Charts
+   * - Sheets
    *
    * Use the returned field names and types to build the `data` payload for the
-   * [Create a design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/)
+   * [Create a design autofill job API](https://www.canva.dev/docs/apps/rest-apis/reference/autofills/create-design-autofill-job/)
    * with `type: create_from_design`.
-   *
-   * WARNING: Chart data fields and autofilling a video are [preview features](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to these features which won't produce a new API version.
    */
   public static getDesignDataset<ThrowOnError extends boolean = false>(
     options: Options<GetDesignDatasetData, ThrowOnError>,
@@ -1171,8 +1172,8 @@ export class DesignService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
@@ -1208,8 +1209,8 @@ export class DesignService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
@@ -1234,18 +1235,98 @@ export class DesignService {
   }
 }
 
+export class DesignGenerationService {
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to generate a Canva design from a text brief. A successful job includes metadata for the generated design, which is saved to the user's Canva account.
+   *
+   * You can generate a document or presentation. For presentations, you can also provide an outline of the slides to generate.
+   *
+   * Requires the `design_generation` capability. You can check whether the user has this capability using the [Get user capabilities API](https://www.canva.dev/docs/apps/rest-apis/reference/users/get-user-capabilities/).
+   *
+   * Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job doesn't consume any of the allowance.
+   *
+   * <Note>
+   *
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of jobs created with this API using the [Get design generation job API](https://www.canva.dev/docs/apps/rest-apis/reference/generations/get-design-generation-job/).
+   *
+   * </Note>
+   */
+  public static createDesignGenerationJobV2<
+    ThrowOnError extends boolean = false,
+  >(options: Options<CreateDesignGenerationJobV2Data, ThrowOnError>) {
+    return (options.client ?? client).post<
+      CreateDesignGenerationJobV2Responses,
+      CreateDesignGenerationJobV2Errors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/generations",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Gets the status and result of a design generation job created using the [Create design generation job API](https://www.canva.dev/docs/apps/rest-apis/reference/generations/create-design-generation-job/).
+   *
+   * You might need to make multiple requests until the job has a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
+   *
+   * Only the user and integration that created the job can retrieve it, and the user must be in the same team. Jobs expire 24 hours after creation.
+   *
+   * Polling doesn't consume the user's [AI credit allowance](https://www.canva.com/help/ai-access/). Reaching the AI allowance limit after job creation doesn't prevent retrieving the result.
+   *
+   * Requires the `design_generation` capability.
+   */
+  public static getDesignGenerationJobV2<ThrowOnError extends boolean = false>(
+    options: Options<GetDesignGenerationJobV2Data, ThrowOnError>,
+  ) {
+    return (options.client ?? client).get<
+      GetDesignGenerationJobV2Responses,
+      GetDesignGenerationJobV2Errors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/generations/{jobId}",
+      ...options,
+    });
+  }
+}
+
 export class DesignImportService {
   /**
-   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to import an external file as a new design in Canva.
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to import an external file as a new design in Canva.
    *
    * The request format for this endpoint has an `application/octet-stream` body of bytes,
    * and the information about the import is provided using an `Import-Metadata` header.
    *
-   * Supported file types for imports are listed in [Design imports overview](https://www.canva.dev/docs/connect/api-reference/design-imports/#supported-file-types).
+   * Supported file types for imports are listed in [Design imports overview](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/#supported-file-types).
    *
    * <Note>
    *
-   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of design import jobs created with this API using the [Get design import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/get-design-import-job/).
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of design import jobs created with this API using the [Get design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-design-import-job/).
    *
    * </Note>
    */
@@ -1269,9 +1350,9 @@ export class DesignImportService {
   }
 
   /**
-   * Gets the result of a design import job created using the [Create design import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/create-design-import-job/).
+   * Gets the result of a design import job created using the [Create design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/create-design-import-job/).
    *
-   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
    */
   public static getDesignImportJob<ThrowOnError extends boolean = false>(
     options: Options<GetDesignImportJobData, ThrowOnError>,
@@ -1288,13 +1369,13 @@ export class DesignImportService {
   }
 
   /**
-   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to import an external file from a URL as a new design in Canva.
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to import an external file from a URL as a new design in Canva.
    *
-   * Supported file types for imports are listed in [Design imports overview](https://www.canva.dev/docs/connect/api-reference/design-imports/#supported-file-types).
+   * Supported file types for imports are listed in [Design imports overview](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/#supported-file-types).
    *
    * <Note>
    *
-   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of design import jobs created with this API using the [Get URL import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/get-url-import-job/).
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of design import jobs created with this API using the [Get URL import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-url-import-job/).
    *
    * </Note>
    */
@@ -1317,9 +1398,9 @@ export class DesignImportService {
   }
 
   /**
-   * Gets the result of a URL import job created using the [Create URL import job API](https://www.canva.dev/docs/connect/api-reference/design-imports/create-url-import-job/).
+   * Gets the result of a URL import job created using the [Create URL import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/create-url-import-job/).
    *
-   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
    */
   public static getUrlImportJob<ThrowOnError extends boolean = false>(
     options: Options<GetUrlImportJobData, ThrowOnError>,
@@ -1334,11 +1415,87 @@ export class DesignImportService {
       ...options,
     });
   }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to convert an image into an editable design in Canva, using [Magic Layers](https://www.canva.com/magic-layers/). Elements in the image become separate editable layers in the resulting design.
+   *
+   * Provide the image as an asset that is already in the user's Canva account.
+   *
+   * The image must be a standard photo or graphic file, such as a PNG or JPEG. Vector-based formats such as SVG, EPS, or AI files, are not supported. Video assets are not supported.
+   *
+   * This conversion is designed for flat, non-photographic images such as posters, flyers, banners, and social graphics.
+   *
+   * Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-image-to-design-import-job/) doesn't consume any of the allowance.
+   *
+   * Use this API when the user wants to edit the contents of the image, such as changing its text, colors, or individual elements. If you only need to place the image into a design as a single flat image, use the [Create design API](https://www.canva.dev/docs/apps/rest-apis/reference/designs/create-design/) with an `asset_id` instead. The Create design API doesn't consume AI credits.
+   *
+   * <Note>
+   *
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of image-to-design import jobs created with this API using the [Get image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-image-to-design-import-job/).
+   *
+   * </Note>
+   */
+  public static createImageToDesignImportJob<
+    ThrowOnError extends boolean = false,
+  >(options: Options<CreateImageToDesignImportJobData, ThrowOnError>) {
+    return (options.client ?? client).post<
+      CreateImageToDesignImportJobResponses,
+      CreateImageToDesignImportJobErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/image-to-design-imports",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Gets the result of an image-to-design import job created using the [Create image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/create-image-to-design-import-job/).
+   *
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
+   */
+  public static getImageToDesignImportJob<ThrowOnError extends boolean = false>(
+    options: Options<GetImageToDesignImportJobData, ThrowOnError>,
+  ) {
+    return (options.client ?? client).get<
+      GetImageToDesignImportJobResponses,
+      GetImageToDesignImportJobErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/image-to-design-imports/{jobId}",
+      ...options,
+    });
+  }
 }
 
 export class ExportService {
   /**
-   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to export a file from Canva. Once the exported file is generated, you can download
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to export a file from Canva. Once the exported file is generated, you can download
    * it using the URL(s) provided. The download URLs are only valid for 24 hours.
    *
    * The request requires the design ID and the exported file format type.
@@ -1349,14 +1506,14 @@ export class ExportService {
    *
    * This endpoint has the following additional rate limits:
    *
-   * - **Integration throttle:** Each integration can export a maximum of 750 times per 5-minute window, and 5,000 times per 24-hour window.
+   * - **App throttle:** Each app can export a maximum of 750 times per 5-minute window, and 5,000 times per 24-hour window.
    * - **Document throttle:** Each document can be exported a maximum of 75 times per 5-minute window.
    * - **User throttle:** Each user can export a maximum of 75 times per 5-minute window, and 500 times per 24-hour window.
    *
    * </Note>
    * <Note>
    *
-   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/connect/api-reference/exports/get-design-export-job/).
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/apps/rest-apis/reference/exports/get-design-export-job/).
    *
    * </Note>
    */
@@ -1384,19 +1541,19 @@ export class ExportService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
    * AVAILABILITY: This API is only available to Print Partners.
    *
-   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to export a Print Partner file from Canva. Once the exported file is generated, you can download
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to export a Print Partner file from Canva. Once the exported file is generated, you can download
    * it using the URL(s) provided. The download URLs are only valid for 24 hours.
    * The request requires the design ID and exports a file as a print-quality PDF.
    *
    * <Note>
-   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/connect/api-reference/exports/get-design-export-job/).
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/apps/rest-apis/reference/exports/get-design-export-job/).
    * </Note>
    */
   public static createPrintPartnerDesignExportJob<
@@ -1418,12 +1575,12 @@ export class ExportService {
   }
 
   /**
-   * Gets the result of a design export job that was created using the [Create design export job API](https://www.canva.dev/docs/connect/api-reference/exports/create-design-export-job/).
+   * Gets the result of a design export job that was created using the [Create design export job API](https://www.canva.dev/docs/apps/rest-apis/reference/exports/create-design-export-job/).
    *
    * If the job is successful, the response includes an array
    * of download URLs. Depending on the design type and export format, there is a download URL for each page in the design. The download URLs are only valid for 24 hours.
    *
-   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
    */
   public static getDesignExportJob<ThrowOnError extends boolean = false>(
     options: Options<GetDesignExportJobData, ThrowOnError>,
@@ -1511,7 +1668,7 @@ export class FolderService {
    * - Image assets.
    * - Brand templates. To include `brand_template` items in the response, you must explicitly specify it in the `item_types` parameter.
    *
-   * AVAILABILITY: Brand template items are only returned for users on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise). For more information, see [Brand templates](https://www.canva.dev/docs/connect/api-reference/brand-templates/).
+   * AVAILABILITY: Brand template items are only returned for users on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise). For more information, see [Brand templates](https://www.canva.dev/docs/apps/rest-apis/reference/brand-templates/).
    *
    * Currently, video assets are not returned in the response.
    */
@@ -1584,6 +1741,164 @@ export class FolderService {
   }
 }
 
+export class ImageGenerationService {
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to generate an image from a plain-text prompt. When the image is generated, you can download it using the URL provided. The download URL is only valid for 24 hours.
+   *
+   * The request requires a prompt and an idempotency key. Call this API with a user access token that has the `asset:write` scope.
+   *
+   * To also save the generated image to the user's Canva account as an image asset, set `asset_upload` to `type: upload`. The job then returns the asset alongside the download URL. Saving the asset requires a user access token.
+   *
+   * Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code.
+   *
+   * <Note>
+   *
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of image generation jobs created with this API using the [Get image generation job API](https://www.canva.dev/docs/apps/rest-apis/reference/generations/get-image-generation-job/).
+   *
+   * </Note>
+   */
+  public static createImageGenerationJob<ThrowOnError extends boolean = false>(
+    options?: Options<CreateImageGenerationJobData, ThrowOnError>,
+  ) {
+    return (options?.client ?? client).post<
+      CreateImageGenerationJobResponses,
+      CreateImageGenerationJobErrors,
+      ThrowOnError
+    >({
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
+      url: "/v1/image-generations",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Gets the result of an image generation job that was created using the [Create image generation job API](https://www.canva.dev/docs/apps/rest-apis/reference/generations/create-image-generation-job/). Only the app and user that created the job can get it.
+   *
+   * If the job is successful, the job's `result` contains a download URL for the generated image. The download URL is only valid for 24 hours. If the job was created with `asset_upload` set to `type: upload`, the `result` also contains the image asset that the image was saved as. These jobs stay `in_progress` until the asset has finished importing, so the returned asset is ready to use.
+   *
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
+   */
+  public static getImageGenerationJob<ThrowOnError extends boolean = false>(
+    options: Options<GetImageGenerationJobData, ThrowOnError>,
+  ) {
+    return (options.client ?? client).get<
+      GetImageGenerationJobResponses,
+      GetImageGenerationJobErrors,
+      ThrowOnError
+    >({
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
+      url: "/v1/image-generations/{jobId}",
+      ...options,
+    });
+  }
+}
+
+export class ImageTransformationService {
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to apply one or more transformations to an image asset. A successful job produces a single new image asset with all of the requested transformations applied. The source asset isn't modified, and intermediate results aren't returned.
+   *
+   * The request requires the ID of the source asset and at least one transformation. The source asset must be an image asset, such as one created using the [Asset upload APIs](https://www.canva.dev/docs/apps/rest-apis/reference/assets/).
+   *
+   * Transformations are applied in the order provided, with each one stacked on the result of the previous one.
+   *
+   * Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image transformation job API](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/) doesn't consume any of the allowance.
+   *
+   * <Note>
+   *
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of image transformation jobs created with this API using the [Get image transformation job API](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/).
+   *
+   * </Note>
+   */
+  public static createImageTransformationJob<
+    ThrowOnError extends boolean = false,
+  >(options?: Options<CreateImageTransformationJobData, ThrowOnError>) {
+    return (options?.client ?? client).post<
+      CreateImageTransformationJobResponses,
+      CreateImageTransformationJobErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/image-transformations",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+    });
+  }
+
+  /**
+   * <Warning>
+   *
+   * This API is currently provided as a preview. Be aware of the following:
+   *
+   * - There might be unannounced breaking changes.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   *
+   * </Warning>
+   *
+   * Gets the result of an image transformation job that was created using the [Create image transformation job API](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/create-image-transformation-job/).
+   *
+   * If the job is successful, the job's `result` contains the new image asset produced by the transformations.
+   *
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
+   */
+  public static getImageTransformationJob<ThrowOnError extends boolean = false>(
+    options: Options<GetImageTransformationJobData, ThrowOnError>,
+  ) {
+    return (options.client ?? client).get<
+      GetImageTransformationJobResponses,
+      GetImageTransformationJobErrors,
+      ThrowOnError
+    >({
+      security: [{ scheme: "bearer", type: "http" }],
+      url: "/v1/image-transformations/{jobId}",
+      ...options,
+    });
+  }
+}
+
 export class MergeService {
   /**
    * <Warning>
@@ -1591,24 +1906,24 @@ export class MergeService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
-   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints) to merge design pages by applying page operations (such as insert, move, or delete) to produce a new design or modify an existing one.
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to merge design pages by applying page operations (such as insert, move, or delete) to produce a new design or modify an existing one.
    *
    * When the job completes successfully, the job result includes metadata for the created or updated design.
    *
    * <Note>
    *
-   * At this stage, only a single operation per request is supported by default, and passing multiple operations will fail. Contact Canva to enable multi-operation mode for your integration.
+   * At this stage, only a single operation per request is supported by default, and passing multiple operations will fail. Contact Canva to enable multi-operation mode for your app.
    *
    * </Note>
    *
    * <Note>
    *
-   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of jobs created with this API using the [Get design merge job API](https://www.canva.dev/docs/connect/api-reference/merges/get-design-merge-job/).
+   * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of jobs created with this API using the [Get design merge job API](https://www.canva.dev/docs/apps/rest-apis/reference/merges/get-design-merge-job/).
    *
    * </Note>
    */
@@ -1636,16 +1951,16 @@ export class MergeService {
    * This API is currently provided as a preview. Be aware of the following:
    *
    * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
-   * - Public integrations that use preview APIs will not pass the review process, and can't be made available to all Canva users.
+   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
    *
    * </Warning>
    *
-   * Gets the result of a design merge job that was created using the [Create design merge job API](https://www.canva.dev/docs/connect/api-reference/merges/create-design-merge-job/).
+   * Gets the result of a design merge job that was created using the [Create design merge job API](https://www.canva.dev/docs/apps/rest-apis/reference/merges/create-design-merge-job/).
    *
    * If the job is successful, the response includes the job status and a `result` object with metadata for the created or updated design.
    *
-   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
    */
   public static getDesignMergeJob<ThrowOnError extends boolean = false>(
     options: Options<GetDesignMergeJobData, ThrowOnError>,
@@ -1664,14 +1979,14 @@ export class MergeService {
 
 export class OauthService {
   /**
-   * This endpoint implements the OAuth 2.0 `token` endpoint, as part of the Authorization Code flow with Proof Key for Code Exchange (PKCE). For more information, see [Authentication](https://www.canva.dev/docs/connect/authentication/).
+   * This endpoint implements the OAuth 2.0 `token` endpoint, as part of the Authorization Code flow with Proof Key for Code Exchange (PKCE). For more information, see [Authentication](https://www.canva.dev/docs/apps/rest-apis/authentication/).
    *
    * To generate an access token, you must provide one of the following:
    *
    * - An authorization code
    * - A refresh token
    *
-   * Generating a token using either an authorization code or a refresh token allows your integration to act on behalf of a user. You must first [obtain user authorization and get an authorization code](https://www.canva.dev/docs/connect/authentication/#obtain-user-authorization).
+   * Generating a token using either an authorization code or a refresh token allows your app to act on behalf of a user. You must first [obtain user authorization and get an authorization code](https://www.canva.dev/docs/apps/rest-apis/authentication/#obtain-user-authorization).
    *
    * Access tokens may be up to 4 KB in size, and are only valid for a specified period of time. The expiry time (currently 4 hours) is shown in the endpoint response and is subject to change.
    *
@@ -1680,9 +1995,9 @@ export class OauthService {
    * Requests to this endpoint require authentication with your client ID and client secret, using _one_ of the following methods:
    *
    * - **Basic access authentication** (Recommended): For [basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication), the `{credentials}` string must be a Base64 encoded value of `{client id}:{client secret}`.
-   * - **Body parameters**: Provide your integration's credentials using the `client_id` and `client_secret` body parameters.
+   * - **Body parameters**: Provide your app's credentials using the `client_id` and `client_secret` body parameters.
    *
-   * This endpoint can't be called from a user's web-browser client because it uses client authentication with client secrets. Requests must come from your integration's backend, otherwise they'll be blocked by Canva's [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) policy.
+   * This endpoint can't be called from a user's web-browser client because it uses client authentication with client secrets. Requests must come from your app's backend, otherwise they'll be blocked by Canva's [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) policy.
    *
    * **Generate an access token using an authorization code**
    *
@@ -1690,7 +2005,7 @@ export class OauthService {
    *
    * - Set `grant_type` to `authorization_code`.
    * - Provide the `code_verifier` value that you generated when creating the user authorization URL.
-   * - Provide the authorization code you received after the user authorized the integration.
+   * - Provide the authorization code you received after the user authorized the app.
    *
    * **Generate an access token using a refresh token**
    *
@@ -1726,9 +2041,9 @@ export class OauthService {
    * Requests to this endpoint require authentication with your client ID and client secret, using _one_ of the following methods:
    *
    * - **Basic access authentication** (Recommended): For [basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication), the `{credentials}` string must be a Base64 encoded value of `{client id}:{client secret}`.
-   * - **Body parameters**: Provide your integration's credentials using the `client_id` and `client_secret` body parameters.
+   * - **Body parameters**: Provide your app's credentials using the `client_id` and `client_secret` body parameters.
    *
-   * This endpoint can't be called from a user's web-browser client because it uses client authentication with client secrets. Requests must come from your integration's backend, otherwise they'll be blocked by Canva's [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) policy.
+   * This endpoint can't be called from a user's web-browser client because it uses client authentication with client secrets. Requests must come from your app's backend, otherwise they'll be blocked by Canva's [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) policy.
    */
   public static introspectToken<ThrowOnError extends boolean = false>(
     options: Options<IntrospectTokenData, ThrowOnError>,
@@ -1755,14 +2070,14 @@ export class OauthService {
    * If you revoke a _refresh token_, be aware that:
    *
    * - The refresh token's lineage is also revoked. This means that access tokens created from that refresh token are also revoked.
-   * - The user's consent for your integration is also revoked. This means that the user must go through the OAuth process again to use your integration.
+   * - The user's consent for your app is also revoked. This means that the user must go through the OAuth process again to use your app.
    *
    * Requests to this endpoint require authentication with your client ID and client secret, using _one_ of the following methods:
    *
    * - **Basic access authentication** (Recommended): For [basic access authentication](https://en.wikipedia.org/wiki/Basic_access_authentication), the `{credentials}` string must be a Base64 encoded value of `{client id}:{client secret}`.
-   * - **Body parameters**: Provide your integration's credentials using the `client_id` and `client_secret` body parameters.
+   * - **Body parameters**: Provide your app's credentials using the `client_id` and `client_secret` body parameters.
    *
-   * This endpoint can't be called from a user's web-browser client because it uses client authentication with client secrets. Requests must come from your integration's backend, otherwise they'll be blocked by Canva's [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) policy.
+   * This endpoint can't be called from a user's web-browser client because it uses client authentication with client secrets. Requests must come from your app's backend, otherwise they'll be blocked by Canva's [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) policy.
    */
   public static revokeTokens<ThrowOnError extends boolean = false>(
     options: Options<RevokeTokensData, ThrowOnError>,
@@ -1826,13 +2141,13 @@ export class ResizeService {
   /**
    * <Availability>
    *
-   * To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
+   * To use this API, your app must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
    *
-   * Users on the Canva Free plan have access to a limited trial. For more information, see [Trial quotas](https://www.canva.dev/docs/connect/api-requests-responses/#trial-quotas).
+   * Users on the Canva Free plan have access to a limited trial. For more information, see [Trial quotas](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#trial-quotas).
    *
    * </Availability>
    *
-   * Starts a new [asynchronous job](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints)
+   * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints)
    * to create a resized copy of a design. The new resized design is
    * added to the top level of the user's
    * [projects](https://www.canva.com/help/find-designs-and-folders/) (`root` folder).
@@ -1844,16 +2159,16 @@ export class ResizeService {
    *
    * Note the following behaviors and restrictions when resizing designs:
    * - Designs can be resized to a maximum area of 25,000,000 pixels squared.
-   * - Resizing designs using the Connect API always creates a new design. In-place resizing is currently not available in the Connect API, but can be done in the Canva UI.
+   * - Resizing designs using the Canva REST APIs always creates a new design. In-place resizing is currently not available in the Canva REST APIs, but can be done in the Canva UI.
    * - Resizing a multi-page design results in all pages of the design being resized. Resizing a section of a design is only available in the Canva UI.
    * - [Canva docs](https://www.canva.com/create/documents/) and [emails](https://www.canva.com/emails/) can't be resized, and other design types can't be resized to a Canva doc or email.
    * - Canva Code designs can't be resized, and other design types can't be resized to a Canva Code design.
    *
    * <Note>
    * For more information on the workflow for using asynchronous jobs,
-   * see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   * see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
    * You can check the status and get the results of resize jobs created with this API using the
-   * [Get design resize job API](https://www.canva.dev/docs/connect/api-reference/resizes/get-design-resize-job/).
+   * [Get design resize job API](https://www.canva.dev/docs/apps/rest-apis/reference/resizes/get-design-resize-job/).
    * </Note>
    */
   public static createDesignResizeJob<ThrowOnError extends boolean = false>(
@@ -1877,20 +2192,20 @@ export class ResizeService {
   /**
    * <Availability>
    *
-   * To use this API, your integration must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
+   * To use this API, your app must act on behalf of a user that's on a Canva plan with premium features (such as Canva Pro).
    *
-   * Users on the Canva Free plan have access to a limited trial. For more information, see [Trial quotas](https://www.canva.dev/docs/connect/api-requests-responses/#trial-quotas).
+   * Users on the Canva Free plan have access to a limited trial. For more information, see [Trial quotas](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#trial-quotas).
    *
    * </Availability>
    *
    * Gets the result of a design resize job that was created using the [Create design resize
-   * job API](https://www.canva.dev/docs/connect/api-reference/resizes/create-design-resize-job/).
+   * job API](https://www.canva.dev/docs/apps/rest-apis/reference/resizes/create-design-resize-job/).
    *
    * If the job is successful, the response includes a summary of the new resized design, including its metadata.
    *
    * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status.
    * For more information on the workflow for using asynchronous jobs,
-   * see [API requests and responses](https://www.canva.dev/docs/connect/api-requests-responses/#asynchronous-job-endpoints).
+   * see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
    */
   public static getDesignResizeJob<ThrowOnError extends boolean = false>(
     options: Options<GetDesignResizeJobData, ThrowOnError>,
@@ -1927,7 +2242,7 @@ export class UserService {
   }
 
   /**
-   * Lists the API capabilities for the user account associated with the provided access token. For more information, see [Capabilities](https://www.canva.dev/docs/connect/capabilities/).
+   * Lists the API capabilities for the user account associated with the provided access token. For more information, see [Capabilities](https://www.canva.dev/docs/apps/rest-apis/capabilities/).
    */
   public static getUserCapabilities<ThrowOnError extends boolean = false>(
     options?: Options<GetUserCapabilitiesData, ThrowOnError>,

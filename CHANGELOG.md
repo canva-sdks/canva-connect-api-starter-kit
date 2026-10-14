@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-14
+
+### 🔧 Changed
+
+- Updated the OpenAPI spec and generated TypeScript client to match the latest REST API.
+
 ## 2026-09-30
 
 ### 🔧 Changed

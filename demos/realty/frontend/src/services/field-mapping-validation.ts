@@ -1,8 +1,8 @@
 import { getBrandTemplateDataset } from "src/services";
 import type { Property, Broker } from "@realty-demo/shared-models";
-import type { BrandTemplate } from "@canva/connect-api-ts/types.gen";
+import type { BrandTemplate, DataField } from "@canva/connect-api-ts/types.gen";
 
-type FieldType = "text" | "image" | "chart";
+type FieldType = DataField["type"];
 
 export type FieldMapping = {
   canvaField: string;

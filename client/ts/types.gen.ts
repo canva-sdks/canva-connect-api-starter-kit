@@ -15,42 +15,42 @@ export type ClientOptions = {
 };
 
 /**
- * A summary of the caller's AI credit quota usage at the time of the request.
+ * A summary of the caller's credit quota usage at the time of the request.
  */
-export type AiCreditQuotaUsageSummary = {
+export type CreditQuotaUsageSummary = {
   /**
-   * The percentage of the caller's AI credit quota that has been consumed in the current
+   * The percentage of the caller's credit quota that has been consumed in the current
    * billing interval, from 0 to 100.
    */
   used_percentage?: number;
   /**
-   * Unix timestamp (seconds from the Unix epoch) of when the AI credit quota resets for
+   * Unix timestamp (seconds from the Unix epoch) of when the credit quota resets for
    * the caller.
    */
   resets_at?: number;
   /**
-   * Whether the caller is currently consuming bonus AI credits (credits beyond their base
+   * Whether the caller is currently consuming bonus credits (credits beyond their base
    * plan allocation).
    */
   using_bonus_credits?: boolean;
 };
 
 /**
- * AI credit quota usage information returned on a successful generation request.
+ * Credit quota usage information returned on a successful generation request.
  */
-export type AiCreditQuotaSuccessInfo = AiCreditQuotaUsageSummary & {
+export type CreditQuotaSuccessInfo = CreditQuotaUsageSummary & {
   /**
-   * A URL to the Canva AI credit usage dashboard where the caller can review their
-   * current AI credit consumption. Not present if unavailable.
+   * A URL to the Canva credit usage dashboard where the caller can review their
+   * current credit consumption. Not present if unavailable.
    */
   usage_review_link?: string;
 };
 
 /**
- * AI credit quota information returned when a request is rejected due to quota exhaustion
+ * Credit quota information returned when a request is rejected due to quota exhaustion
  * or a cooldown period.
  */
-export type AiCreditQuotaErrorInfo = AiCreditQuotaUsageSummary & {
+export type CreditQuotaErrorInfo = CreditQuotaUsageSummary & {
   /**
    * URL built from the user's current plan and eligibility for an AI pass. Not present
    * if no upgrade path is available (e.g. already on highest plan or ineligible for AI pass).
@@ -58,7 +58,7 @@ export type AiCreditQuotaErrorInfo = AiCreditQuotaUsageSummary & {
   upgrade_url?: string;
   /**
    * Unix timestamp (seconds from the Unix epoch) of when the cooldown period ends. Only
-   * set when `code` is `ai_credit_quota_cooldown`. Not present for `ai_credit_quota_exceeded`
+   * set when `code` is `credit_quota_cooldown`. Not present for `credit_quota_exceeded`
    * errors.
    */
   cooldown_ends_at?: number;
@@ -76,14 +76,14 @@ export type AiCreditQuotaErrorInfo = AiCreditQuotaUsageSummary & {
 };
 
 /**
- * Returned when a request is rejected because the caller has exceeded their AI credit quota
+ * Returned when a request is rejected because the caller has exceeded their credit quota
  * or is in a cooldown period after heavy usage.
  */
-export type AiCreditQuotaError = Error & {
+export type CreditQuotaError = Error & {
   /**
-   * AI credit quota usage at the time of the error. Not present if quota data is unavailable.
+   * Credit quota usage at the time of the error. Not present if quota data is unavailable.
    */
-  quota_usage?: AiCreditQuotaErrorInfo;
+  quota_usage?: CreditQuotaErrorInfo;
 };
 
 /**
@@ -751,7 +751,10 @@ export type CreateDesignAutofillJobRequest =
     } & CreateFromBrandTemplateAutofillJobRequest)
   | ({
       type: "create_from_design";
-    } & CreateFromDesignAutofillJobRequest);
+    } & CreateFromDesignAutofillJobRequest)
+  | ({
+      type: "update_design";
+    } & UpdateDesignAutofillJobRequest);
 
 /**
  * Create a new autofilled design from a brand template.
@@ -781,8 +784,6 @@ export type CreateFromBrandTemplateAutofillJobRequest = {
 
 /**
  * Create a new autofilled design from an existing design that contains autofill data fields.
- *
- * WARNING: Creating an autofilled design from an existing design is a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
  */
 export type CreateFromDesignAutofillJobRequest = {
   type: "create_from_design";
@@ -796,6 +797,23 @@ export type CreateFromDesignAutofillJobRequest = {
    * If no design title is provided, the autofilled design will have the same title as the source design.
    */
   title?: string;
+  /**
+   * Data object containing the data fields and values to autofill.
+   */
+  data: {
+    [key: string]: DatasetValue;
+  };
+};
+
+/**
+ * Autofill an existing design in place with the provided data.
+ */
+export type UpdateDesignAutofillJobRequest = {
+  type: "update_design";
+  /**
+   * ID of the design to autofill in place.
+   */
+  design_id: string;
   /**
    * Data object containing the data fields and values to autofill.
    */
@@ -848,8 +866,6 @@ export type DatasetImageValue = {
 
 /**
  * If autofilling a video into an image data field.
- *
- * WARNING: Autofilling a video is a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
  */
 export type DatasetVideoValue = {
   type: "video";
@@ -878,8 +894,6 @@ export type DatasetTextValue = {
  * - Chart autofill supports a maximum of 100 rows and 20 columns.
  * - `number` cells with formatting metadata are not currently supported for autofill and will result in an error response.
  * - `media` cells are not supported for chart autofill and will result in an error response.
- *
- * WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
  */
 export type DatasetChartValue = {
   type: "chart";
@@ -892,8 +906,6 @@ export type DatasetChartValue = {
  * Note the following behavior:
  * - `number` cells with formatting metadata are not currently supported for autofill and will result in an error response.
  * - `media` cells are not supported for sheet autofill and will result in an error response.
- *
- * WARNING: Sheet element data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
  */
 export type DatasetSheetValue = {
   type: "sheet";
@@ -920,9 +932,13 @@ export type DesignAutofillJob = {
 /**
  * Result of the design autofill job. Only present if job status is `success`.
  */
-export type DesignAutofillJobResult = {
-  type: "create_design";
-} & CreateDesignAutofillJobResult;
+export type DesignAutofillJobResult =
+  | ({
+      type: "create_design";
+    } & CreateDesignAutofillJobResult)
+  | ({
+      type: "update_design";
+    } & UpdateDesignAutofillJobResult);
 
 /**
  * A new autofilled design has been created and saved to the user's root folder.
@@ -931,6 +947,14 @@ export type CreateDesignAutofillJobResult = {
   type: "create_design";
   design: DesignSummary;
   trial_information?: AutofillTrialInformation;
+};
+
+/**
+ * The existing design has been autofilled in place.
+ */
+export type UpdateDesignAutofillJobResult = {
+  type: "update_design";
+  design: DesignSummary;
 };
 
 /**
@@ -969,6 +993,10 @@ export const AutofillErrorCode = {
    * The user has exceeded their autofill trial quota.
    */
   TRIAL_QUOTA_EXCEEDED: "trial_quota_exceeded",
+  /**
+   * The service encountered an error when saving the updated design.
+   */
+  DESIGN_UPDATE_ERROR: "design_update_error",
 } as const;
 
 export type AutofillErrorCode =
@@ -986,12 +1014,13 @@ export type AutofillError = {
 };
 
 /**
- * WARNING: Trials and trial information are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis).
+ * WARNING: Trials and trial information are a [preview feature](https://www.canva.dev/docs/apps/rest-apis/#preview-apis).
  * There might be unannounced breaking changes to this feature which won't produce a new API version.
  *
- * Trial information for non-enterprise users. Non-enterprise users have a limited number of
- * autofill uses. Once the trial is exhausted, users must upgrade to
- * [Canva Enterprise](https://www.canva.com/enterprise/) to continue using the Autofill API.
+ * Trial information for users on a Canva plan that doesn't include autofill access. These
+ * users have a limited number of autofill uses. Once the trial is exhausted, users must
+ * upgrade their Canva plan (such as to Canva Pro, Canva Teams, or Canva Enterprise) to
+ * continue using the Autofill API.
  */
 export type AutofillTrialInformation = {
   /**
@@ -999,7 +1028,7 @@ export type AutofillTrialInformation = {
    */
   uses_remaining: number;
   /**
-   * The URL for a user to upgrade their Canva account to Canva Enterprise.
+   * The URL for a user to upgrade their Canva account to a plan with autofill access.
    */
   upgrade_url: string;
 };
@@ -1111,7 +1140,7 @@ export type BrandTemplateSummary = {
 export type GetBrandTemplateDatasetResponse = {
   /**
    * The dataset definition. It contains the data inputs available for use with the
-   * [Create design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
+   * [Create design autofill job API](https://www.canva.dev/docs/apps/rest-apis/reference/autofills/create-design-autofill-job/).
    */
   dataset?: {
     [key: string]: DataField;
@@ -1145,17 +1174,29 @@ export const Capability = {
    */
   ANALYTICS: "analytics",
   /**
-   * Capability required to call autofill APIs Users that are members of a [Canva Enterprise](https://www.canva.com/enterprise/) organization have this capability.
+   * Capability required to call autofill APIs. Users on a Canva plan with access to autofill (such as Canva Pro, Canva Teams, or Canva Enterprise) have this capability.
    */
   AUTOFILL: "autofill",
+  /**
+   * Capability required to apply the `background_removal` transformation using the Image transformation APIs. Users on a Canva plan with premium features (such as Canva Pro) have this capability.
+   */
+  BACKGROUND_REMOVAL: "background_removal",
   /**
    * Capability required to use brand template APIs. Users on a Canva plan with access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise) have this capability.
    */
   BRAND_TEMPLATE: "brand_template",
   /**
+   * Capability required to call the Design Generation APIs. Users whose feature eligibility and team permissions allow design generation have this capability.
+   */
+  DESIGN_GENERATION: "design_generation",
+  /**
    * Capability required to export designs in PNG with a transparent background. Users on a paid Canva plan (such as Canva Pro) have this capability.
    */
   EXPORT_PNG_TRANSPARENCY: "export_png_transparency",
+  /**
+   * Capability required to call the Image to Design Import APIs. Users whose [team permission settings](https://www.canva.com/en_au/help/setting-up-team-permissions/) allow "[Magic Layers](https://www.canva.com/magic-layers/)" have this capability.
+   */
+  IMAGE_TO_DESIGN_IMPORTS: "image_to_design_imports",
   /**
    * Capability required to create design resize jobs. Users on a Canva plan with premium features (such as Canva Pro) have this capability.
    */
@@ -1270,7 +1311,7 @@ export type ParentComment = {
   /**
    * The ID of the comment.
    *
-   * You can use this ID to create replies to the comment using the [Create reply API](https://www.canva.dev/docs/connect/api-reference/comments/create-reply/).
+   * You can use this ID to create replies to the comment using the [Create reply API](https://www.canva.dev/docs/apps/rest-apis/reference/comments/create-reply/).
    */
   id: string;
   attached_to?: CommentObject;
@@ -1566,7 +1607,7 @@ export type Thread = {
   /**
    * The ID of the thread.
    *
-   * You can use this ID to create replies to the thread using the [Create reply API](https://www.canva.dev/docs/connect/api-reference/comments/create-reply/).
+   * You can use this ID to create replies to the thread using the [Create reply API](https://www.canva.dev/docs/apps/rest-apis/reference/comments/create-reply/).
    */
   id: string;
   /**
@@ -1918,8 +1959,6 @@ export type EdDsaJwk = {
  * - Each cell must have a data type configured.
  * - All rows must have the same number of cells.
  * - The number of entries in `column_configs` must match the number of columns in the data.
- *
- * WARNING: Chart and sheet data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
  */
 export type DataTable = {
   /**
@@ -2265,8 +2304,8 @@ export type GetListDesignResponse = {
  * Body parameters for creating a new design. Use the `type` discriminator to choose the creation mode:
  *
  * - Use `type_and_asset` to create a design by specifying the design type and/or an asset.
- * - Use `design` to create a copy of an existing design (currently a [preview feature](https://www.canva.dev/docs/connect/#preview-apis)).
- * - Use `brand_template` to create a design from a brand template (currently a [preview feature](https://www.canva.dev/docs/connect/#preview-apis)).
+ * - Use `design` to create a copy of an existing design (currently a [preview feature](https://www.canva.dev/docs/apps/rest-apis/#preview-apis)).
+ * - Use `brand_template` to create a design from a brand template (currently a [preview feature](https://www.canva.dev/docs/apps/rest-apis/#preview-apis)).
  *
  * NOTE: For backward compatibility, if `type` isn't specified in the request,
  * the request type will be assumed to be `type_and_asset`.
@@ -2308,8 +2347,8 @@ export type DesignTypeCreateDesignRequest = {
  * Creating a copy of an existing design is currently provided as a preview. Be aware of the following:
  *
  * - There might be unannounced breaking changes.
- * - Any breaking changes to preview features won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
- * - Public integrations that use preview features will not pass the review process, and can't be made available to all Canva users.
+ * - Any breaking changes to preview features won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+ * - Public apps that use preview features will not pass the review process, and can't be made available to all Canva users.
  *
  * </Warning>
  *
@@ -2334,8 +2373,8 @@ export type DesignCreateDesignRequest = {
  * Creating a copy from a brand template is currently provided as a preview. Be aware of the following:
  *
  * - There might be unannounced breaking changes.
- * - Any breaking changes to preview features won't produce a new [API version](https://www.canva.dev/docs/connect/versions/).
- * - Public integrations that use preview features will not pass the review process, and can't be made available to all Canva users.
+ * - Any breaking changes to preview features won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
+ * - Public apps that use preview features will not pass the review process, and can't be made available to all Canva users.
  *
  * </Warning>
  *
@@ -2402,11 +2441,11 @@ export type CreatePrintPartnerDesignResponse = {
  */
 export type PrintPartnerDesignSource =
   | ({
-      type: "partner_product_id";
-    } & PrintPartnerProductIdDesignSource)
-  | ({
       type: "dimensions";
-    } & PrintPartnerDimensionsDesignSource);
+    } & PrintPartnerDimensionsDesignSource)
+  | ({
+      type: "partner_product_id";
+    } & PrintPartnerProductIdDesignSource);
 
 /**
  * Creates a design using an external partner product ID.
@@ -2552,13 +2591,13 @@ export type PageDimensions = {
  */
 export type DesignLinks = {
   /**
-   * A temporary editing URL for the design. This URL is only accessible to the user that made the API request, and is designed to support [return navigation](https://www.canva.dev/docs/connect/return-navigation-guide/) workflows.
+   * A temporary editing URL for the design. This URL is only accessible to the user that made the API request, and is designed to support [return navigation](https://www.canva.dev/docs/apps/rest-apis/return-navigation-guide/) workflows.
    *
    * NOTE: This is not a permanent URL, it is only valid for 30 days.
    */
   edit_url: string;
   /**
-   * A temporary viewing URL for the design. This URL is only accessible to the user that made the API request, and is designed to support [return navigation](https://www.canva.dev/docs/connect/return-navigation-guide/) workflows.
+   * A temporary viewing URL for the design. This URL is only accessible to the user that made the API request, and is designed to support [return navigation](https://www.canva.dev/docs/apps/rest-apis/return-navigation-guide/) workflows.
    *
    * NOTE: This is not a permanent URL, it is only valid for 30 days.
    *
@@ -2634,7 +2673,7 @@ export type DesignPage = {
 export type GetDesignDatasetResponse = {
   /**
    * The dataset definition. It contains the data inputs available for use with the
-   * [Create design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
+   * [Create design autofill job API](https://www.canva.dev/docs/apps/rest-apis/reference/autofills/create-design-autofill-job/).
    */
   dataset?: {
     [key: string]: DataField;
@@ -2643,7 +2682,7 @@ export type GetDesignDatasetResponse = {
 
 /**
  * The dataset definition. It contains the data inputs available for use with the
- * [Create design autofill job API](https://www.canva.dev/docs/connect/api-reference/autofills/create-design-autofill-job/).
+ * [Create design autofill job API](https://www.canva.dev/docs/apps/rest-apis/reference/autofills/create-design-autofill-job/).
  */
 export type DatasetDefinition = {
   [key: string]: DataField;
@@ -2661,12 +2700,15 @@ export type DataField =
     } & TextDataField)
   | ({
       type: "chart";
-    } & ChartDataField);
+    } & ChartDataField)
+  | ({
+      type: "sheet";
+    } & SheetDataField);
 
 /**
  * An image data field. You can autofill it with an image by providing its `asset_id`.
  *
- * You can also autofill it with a video asset. Autofilling a video is currently a [preview feature](https://www.canva.dev/docs/connect/#preview-apis).
+ * You can also autofill it with a video asset.
  */
 export type ImageDataField = {
   type: "image";
@@ -2681,12 +2723,197 @@ export type TextDataField = {
 
 /**
  * A chart data field. You can autofill it with tabular data.
- *
- * WARNING: Chart data fields are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis). There might be unannounced breaking changes to this feature which won't produce a new API version.
  */
 export type ChartDataField = {
   type: "chart";
 };
+
+/**
+ * A sheet data field. You can autofill it with tabular sheet data.
+ */
+export type SheetDataField = {
+  type: "sheet";
+};
+
+/**
+ * The brief, design type, and optional presentation outline for generation.
+ */
+export type CreateDesignGenerationJobRequestV2 = {
+  /**
+   * A description of the design to generate, including its subject, purpose,
+   * required wording, tone, and visual direction.
+   */
+  brief: string;
+  /**
+   * The preset Canva design type to generate. Supports `doc` and `presentation`.
+   */
+  design_type: DesignGenerationDesignTypeInputV2;
+  /**
+   * The slide structure to follow. This property is supported only when
+   * `design_type.name` is `presentation`.
+   */
+  outline?: DesignGenerationOutlineV2;
+};
+
+/**
+ * The preset Canva design type to generate.
+ */
+export type DesignGenerationDesignTypeInputV2 = {
+  type: DesignGenerationDesignTypeV2;
+  name: DesignGenerationDesignTypeNameV2;
+};
+
+/**
+ * The kind of design type to generate.
+ */
+export const DesignGenerationDesignTypeV2 = {
+  /**
+   * A preset Canva design type.
+   */
+  PRESET: "preset",
+} as const;
+
+/**
+ * The kind of design type to generate.
+ */
+export type DesignGenerationDesignTypeV2 =
+  (typeof DesignGenerationDesignTypeV2)[keyof typeof DesignGenerationDesignTypeV2];
+
+/**
+ * The name of the design type to generate.
+ */
+export const DesignGenerationDesignTypeNameV2 = {
+  /**
+   * A [Canva doc](https://www.canva.com/docs/); a document for Canva's online text editor.
+   */
+  DOC: "doc" /**
+   * A [presentation](https://www.canva.com/presentations/); lets you create and collaborate for presenting to an audience.
+   */,
+  PRESENTATION: "presentation",
+} as const;
+
+/**
+ * The name of the design type to generate.
+ */
+export type DesignGenerationDesignTypeNameV2 =
+  (typeof DesignGenerationDesignTypeNameV2)[keyof typeof DesignGenerationDesignTypeNameV2];
+
+/**
+ * The ordered slide structure for a generated presentation.
+ */
+export type DesignGenerationOutlineV2 = {
+  sections: Array<DesignGenerationOutlineSectionV2>;
+};
+
+/**
+ * One slide in a presentation outline.
+ */
+export type DesignGenerationOutlineSectionV2 = {
+  /**
+   * The slide title.
+   */
+  title: string;
+  /**
+   * A short description of what the slide should cover.
+   */
+  description?: string;
+  /**
+   * Optional individual points the slide should make.
+   */
+  points?: Array<string>;
+};
+
+export type CreateDesignGenerationJobResponseV2 = {
+  job: DesignGenerationJobV2;
+  /**
+   * Credit quota usage after reserving credits for this job. Omitted if unavailable.
+   */
+  quota_usage?: CreditQuotaSuccessInfo;
+};
+
+export type GetDesignGenerationJobResponseV2 = {
+  job: DesignGenerationJobV2;
+  /**
+   * Credit quota snapshot when available. Polling does not reserve or consume credits; omitted if unavailable.
+   */
+  quota_usage?: CreditQuotaSuccessInfo;
+};
+
+/**
+ * The status and result of a public design generation job.
+ */
+export type DesignGenerationJobV2 = {
+  /**
+   * The public design generation job ID.
+   */
+  id: string;
+  status: DesignGenerationJobStatusV2;
+  result?: DesignGenerationJobResultV2;
+  error?: DesignGenerationJobErrorV2;
+};
+
+/**
+ * The public status of the job. `result` is present only for `success`, and
+ * `error` is present only for `failed`.
+ */
+export const DesignGenerationJobStatusV2 = {
+  /**
+   * The design couldn't be generated.
+   */
+  FAILED: "failed",
+  /**
+   * The design is still being generated.
+   */
+  IN_PROGRESS: "in_progress",
+  /**
+   * The design was generated and saved to the user's Canva account.
+   */
+  SUCCESS: "success",
+} as const;
+
+/**
+ * The public status of the job. `result` is present only for `success`, and
+ * `error` is present only for `failed`.
+ */
+export type DesignGenerationJobStatusV2 =
+  (typeof DesignGenerationJobStatusV2)[keyof typeof DesignGenerationJobStatusV2];
+
+/**
+ * Present only when the job status is `success`.
+ */
+export type DesignGenerationJobResultV2 = {
+  design: DesignSummary;
+};
+
+/**
+ * Details about a failed design generation job.
+ */
+export type DesignGenerationJobErrorV2 = {
+  code: DesignGenerationJobErrorCodeV2;
+  /**
+   * A human-readable description of what went wrong.
+   */
+  message: string;
+};
+
+/**
+ * The reason the design generation job failed.
+ */
+export const DesignGenerationJobErrorCodeV2 = {
+  /**
+   * The brief or generated content didn't pass Canva's content-safety checks.
+   */
+  CONTENT_NOT_ALLOWED: "content_not_allowed" /**
+   * Canva couldn't complete the design generation job.
+   */,
+  GENERATION_FAILED: "generation_failed",
+} as const;
+
+/**
+ * The reason the design generation job failed.
+ */
+export type DesignGenerationJobErrorCodeV2 =
+  (typeof DesignGenerationJobErrorCodeV2)[keyof typeof DesignGenerationJobErrorCodeV2];
 
 /**
  * Metadata about the design that you include as a header parameter when importing a design.
@@ -2806,6 +3033,83 @@ export type CreateUrlImportJobResponse = {
 export type GetUrlImportJobResponse = {
   job: DesignImportJob;
 };
+
+export type CreateImageToDesignImportJobRequest = {
+  image: ImageSource;
+  /**
+   * A title for the created design. If not provided, Canva generates a title.
+   */
+  title?: string;
+};
+
+/**
+ * The image to convert into a design.
+ */
+export type ImageSource = {
+  /**
+   * The ID of an image asset in the user's Canva account.
+   *
+   * The asset must be one of the following image types: `png`, `jpeg`, `gif`,
+   * `webp`, `heic`, `heif`, `avif`, `tiff`, `jp2`, `jpx`, `jpm`, or `jxr`. Video
+   * assets are not supported.
+   */
+  asset_id: string;
+};
+
+export type CreateImageToDesignImportJobResponse = {
+  job: ImageToDesignImportJob;
+};
+
+export type GetImageToDesignImportJobResponse = {
+  job: ImageToDesignImportJob;
+};
+
+/**
+ * The status and result of an image-to-design import job.
+ */
+export type ImageToDesignImportJob = {
+  /**
+   * The ID of the image-to-design import job.
+   */
+  id: string;
+  status: DesignImportStatus;
+  result?: ImageToDesignImportJobResult;
+  error?: ImageToDesignImportError;
+};
+
+export type ImageToDesignImportJobResult = {
+  design: DesignSummary;
+};
+
+/**
+ * If the import job fails, this object provides details about the error.
+ */
+export type ImageToDesignImportError = {
+  code: ImageToDesignImportErrorCode;
+  /**
+   * A human-readable description of what went wrong.
+   */
+  message: string;
+};
+
+/**
+ * A short string about why the import failed. This field can be used to handle errors
+ * programmatically.
+ */
+export const ImageToDesignImportErrorCode = {
+  BAD_INPUT: "bad_input",
+  MODERATION_ERROR: "moderation_error",
+  QUOTA_EXCEEDED: "quota_exceeded",
+  DESIGN_CREATION_THROTTLED: "design_creation_throttled",
+  INTERNAL_ERROR: "internal_error",
+} as const;
+
+/**
+ * A short string about why the import failed. This field can be used to handle errors
+ * programmatically.
+ */
+export type ImageToDesignImportErrorCode =
+  (typeof ImageToDesignImportErrorCode)[keyof typeof ImageToDesignImportErrorCode];
 
 /**
  * The desired design type.
@@ -2951,13 +3255,15 @@ export const ErrorCode = {
   INVALID_BASIC_HEADER: "invalid_basic_header",
   INVALID_FILE_FORMAT: "invalid_file_format",
   QUOTA_EXCEEDED: "quota_exceeded",
-  AI_CREDIT_QUOTA_EXCEEDED: "ai_credit_quota_exceeded",
-  AI_CREDIT_QUOTA_COOLDOWN: "ai_credit_quota_cooldown",
+  CREDIT_QUOTA_EXCEEDED: "credit_quota_exceeded",
+  CREDIT_QUOTA_COOLDOWN: "credit_quota_cooldown",
   UNSUPPORTED_CONTENT_TYPE: "unsupported_content_type",
   REQUEST_TOO_LARGE: "request_too_large",
   FOLDER_NOT_FOUND: "folder_not_found",
   ITEM_IN_MULTIPLE_FOLDERS: "item_in_multiple_folders",
   ASSET_NOT_FOUND: "asset_not_found",
+  UNSUPPORTED_ASSET: "unsupported_asset",
+  ASSET_NOT_READY: "asset_not_ready",
   MAX_LIMIT_REACHED: "max_limit_reached",
   PERMISSION_NOT_FOUND: "permission_not_found",
   PERMISSION_EXISTS: "permission_exists",
@@ -2977,7 +3283,6 @@ export const ErrorCode = {
   DESIGN_OR_COMMENT_NOT_FOUND: "design_or_comment_not_found",
   DESIGN_OR_THREAD_NOT_FOUND: "design_or_thread_not_found",
   REVIEW_DISMISSED: "review_dismissed",
-  DESIGN_CONTENT_CHANGED: "design_content_changed",
   DESIGN_TYPE_NOT_FOUND: "design_type_not_found",
   TEAM_NOT_FOUND: "team_not_found",
   TEAM_IS_DEFAULT: "team_is_default",
@@ -2992,6 +3297,7 @@ export const ErrorCode = {
   FEATURE_NOT_AVAILABLE: "feature_not_available",
   UNSUPPORTED_DESIGN_TYPE: "unsupported_design_type",
   DESIGN_GENERATION_NOT_ENABLED: "design_generation_not_enabled",
+  DESIGN_GENERATION_REJECTED: "design_generation_rejected",
   LICENSE_REQUIRED: "license_required",
   INPUT_UNSAFE: "input_unsafe",
   DISPLAY_NAME_UNAVAILABLE: "display_name_unavailable",
@@ -3002,6 +3308,8 @@ export const ErrorCode = {
   USER_NOT_ACTIVE: "user_not_active",
   USER_PENDING_CONSENT: "user_pending_consent",
   ACCOUNT_EXISTS: "account_exists",
+  DOMAIN_RESTRICTED: "domain_restricted",
+  USER_ALREADY_MEMBER: "user_already_member",
 } as const;
 
 /**
@@ -3323,9 +3631,16 @@ export type PrintPartnerExportDimensionsUnits =
 /**
  * Details about the desired export format.
  */
-export type PrintPartnerExportFormat = {
-  type: "pdf";
-} & PrintPartnerPdfExportFormat;
+export type PrintPartnerExportFormat =
+  | ({
+      type: "pdf";
+    } & PrintPartnerPdfExportFormat)
+  | ({
+      type: "jpg";
+    } & PrintPartnerJpgExportFormat)
+  | ({
+      type: "png";
+    } & PrintPartnerPngExportFormat);
 
 /**
  * Export the design as a Print-quality PDF.
@@ -3333,7 +3648,7 @@ export type PrintPartnerExportFormat = {
 export type PrintPartnerPdfExportFormat = {
   type: "pdf";
   /**
-   * The size of the bleed that should be added to the design. The units of the bleed must be microns. This should match the bleed value used when creating the design with the [Create print partner design API](https://www.canva.dev/docs/connect/api-reference/print-partner/create-print-partner-design/). Use 0 for no bleed. If bleed is not specified, a default of 3000 microns is used.
+   * The size of the bleed that should be added to the design. The units of the bleed must be microns. This should match the bleed value used when creating the design with the [Create print partner design API](https://www.canva.dev/docs/apps/rest-apis/reference/print-partner/create-print-partner-design/). Use 0 for no bleed. If bleed is not specified, a default of 3000 microns is used.
    */
   bleed?: number;
   /**
@@ -3349,6 +3664,20 @@ export type PrintPartnerPdfExportFormat = {
    * standard.
    */
   pdfx?: boolean;
+};
+
+/**
+ * Export the design as a print-quality JPEG.
+ */
+export type PrintPartnerJpgExportFormat = {
+  type: "jpg";
+};
+
+/**
+ * Export the design as a print-quality PNG.
+ */
+export type PrintPartnerPngExportFormat = {
+  type: "png";
 };
 
 export type CreatePrintPartnerDesignExportJobResponse = {
@@ -3429,8 +3758,21 @@ export type ExportHeight = number;
 export type ExportWidth = number;
 
 /**
- * The orientation and resolution of the exported video. Orientation is either `horizontal` or
- * `vertical`, and resolution is one of `480p`, `720p`, `1080p` or `4k`.
+ * The resolution of the exported video, as a target number of pixels. The resolution is one of
+ * `480p`, `720p`, `1080p` or `4k`.
+ *
+ * The exported video always has the same aspect ratio as the design, which matches creating a
+ * download from the Canva editor. The resolution sets how many pixels to target, and the
+ * design's aspect ratio decides how they're split between width and height, so the
+ * `horizontal` and `vertical` values of a given resolution produce the same output:
+ *
+ * - A 2160x3840 portrait design exported as `horizontal_4k` is 2160x3840, not 3840x2160. The
+ * orientation in the value's name doesn't rotate or crop the design.
+ * - A 1000x2000 design exported as `horizontal_720p` is 678x1357, the 1:2 size closest to the
+ * 921,600 pixels of 1280x720. Aspect ratios that don't match a standard video size aren't
+ * rounded to one.
+ * - A square design exported as `horizontal_4k` or `vertical_4k` is 2880x2880, the square with
+ * the same number of pixels as 3840x2160.
  */
 export const Mp4ExportQuality = {
   HORIZONTAL_480P: "horizontal_480p",
@@ -3444,8 +3786,21 @@ export const Mp4ExportQuality = {
 } as const;
 
 /**
- * The orientation and resolution of the exported video. Orientation is either `horizontal` or
- * `vertical`, and resolution is one of `480p`, `720p`, `1080p` or `4k`.
+ * The resolution of the exported video, as a target number of pixels. The resolution is one of
+ * `480p`, `720p`, `1080p` or `4k`.
+ *
+ * The exported video always has the same aspect ratio as the design, which matches creating a
+ * download from the Canva editor. The resolution sets how many pixels to target, and the
+ * design's aspect ratio decides how they're split between width and height, so the
+ * `horizontal` and `vertical` values of a given resolution produce the same output:
+ *
+ * - A 2160x3840 portrait design exported as `horizontal_4k` is 2160x3840, not 3840x2160. The
+ * orientation in the value's name doesn't rotate or crop the design.
+ * - A 1000x2000 design exported as `horizontal_720p` is 678x1357, the 1:2 size closest to the
+ * 921,600 pixels of 1280x720. Aspect ratios that don't match a standard video size aren't
+ * rounded to one.
+ * - A square design exported as `horizontal_4k` or `vertical_4k` is 2880x2880, the square with
+ * the same number of pixels as 3840x2160.
  */
 export type Mp4ExportQuality =
   (typeof Mp4ExportQuality)[keyof typeof Mp4ExportQuality];
@@ -3901,6 +4256,387 @@ export type Group = {
   external: boolean;
 };
 
+export type CreateImageGenerationJobRequest = {
+  /**
+   * A plain-text description of the image to generate.
+   */
+  prompt: string;
+  aspect_ratio?: ImageGenerationAspectRatio;
+  model?: ImageGenerationModel;
+  /**
+   * A key to make create requests idempotent. Retrying with the same key returns the
+   * original job without creating a duplicate, even if the other request parameters
+   * differ. Keys are held for 24 hours from job creation.
+   */
+  idempotency_key: string;
+  asset_upload?: ImageGenerationAssetUpload;
+};
+
+/**
+ * Whether to save the generated image as an image asset in the user's Canva account.
+ * Omitting `asset_upload` (or using `type: none`) returns only a download URL.
+ *
+ * Saving the asset (`type: upload`) requires a user access token.
+ */
+export type ImageGenerationAssetUpload =
+  | ({
+      type: "none";
+    } & NoneImageGenerationAssetUpload)
+  | ({
+      type: "upload";
+    } & UploadImageGenerationAssetUpload);
+
+/**
+ * Don't save the generated image. The result contains only its download URL.
+ */
+export type NoneImageGenerationAssetUpload = {
+  type: "none";
+};
+
+/**
+ * Save the generated image as an image asset in the user's Canva account. The asset appears
+ * in the user's Uploads, and the generated image in the result includes the `asset`
+ * alongside its download `url`.
+ */
+export type UploadImageGenerationAssetUpload = {
+  type: "upload";
+  /**
+   * A name for the image asset. Canva doesn't localize this value, so provide a name in
+   * the user's language. If omitted, Canva generates a name for the asset.
+   */
+  asset_name?: string;
+};
+
+export type CreateImageGenerationJobResponse = {
+  job: ImageGenerationJob;
+  /**
+   * Credit quota usage after reserving credits for this job. Not present if quota data is unavailable.
+   */
+  quota_usage?: CreditQuotaSuccessInfo;
+};
+
+export type GetImageGenerationJobResponse = {
+  job: ImageGenerationJob;
+};
+
+/**
+ * Details about the image generation job. If the job status is `success`, the job's
+ * `result` is present.
+ */
+export type ImageGenerationJob = {
+  /**
+   * The image generation job ID.
+   */
+  id: string;
+  status: ImageGenerationJobStatus;
+  result?: ImageGenerationJobResult;
+  error?: ImageGenerationError;
+};
+
+/**
+ * Result of the image generation job. Only present if job status is `success`.
+ */
+export type ImageGenerationJobResult = {
+  image: GeneratedImage;
+};
+
+/**
+ * A generated image.
+ */
+export type GeneratedImage = {
+  /**
+   * A download URL for the generated image. The download URL is only valid for 24
+   * hours.
+   */
+  url: string;
+  /**
+   * The image asset the generated image was saved as. Only present if the job was created
+   * with `asset_upload` set to `type: upload` and the asset still exists (for example, it's
+   * absent if the user has since deleted the asset).
+   */
+  asset?: AssetSummary;
+  /**
+   * The width of the generated image in pixels.
+   */
+  width: number;
+  /**
+   * The height of the generated image in pixels.
+   */
+  height: number;
+};
+
+/**
+ * The status of the image generation job. A newly created job will be `in_progress` and
+ * will eventually become `success` or `failed`. If the status is `success`, the job's
+ * `result` is present.
+ */
+export const ImageGenerationJobStatus = {
+  FAILED: "failed",
+  IN_PROGRESS: "in_progress",
+  SUCCESS: "success",
+} as const;
+
+/**
+ * The status of the image generation job. A newly created job will be `in_progress` and
+ * will eventually become `success` or `failed`. If the status is `success`, the job's
+ * `result` is present.
+ */
+export type ImageGenerationJobStatus =
+  (typeof ImageGenerationJobStatus)[keyof typeof ImageGenerationJobStatus];
+
+/**
+ * The model to use for image generation. We recommend omitting this parameter: Canva
+ * then selects the best available model for the request and falls back to another
+ * model if one is temporarily unavailable. Set it only if you need a specific model's
+ * output. If the requested model can't serve the request, the job fails. Canva never
+ * uses a different model to serve the request.
+ *
+ * The model strengths below are based on Canva's evaluations. Results vary by
+ * prompt, so test with your own prompts before pinning a model.
+ */
+export const ImageGenerationModel = {
+  /**
+   * Lucid Origin. Pick this for architecture, logos, posters, or sci-fi and fantasy
+   * scenes.
+   */
+  LUCID_ORIGIN: "lucid_origin" /**
+   * Z Image Turbo. Pick this if the image includes text, or for food, drink, and
+   * general-purpose imagery.
+   */,
+  Z_IMAGE_TURBO: "z_image_turbo",
+} as const;
+
+/**
+ * The model to use for image generation. We recommend omitting this parameter: Canva
+ * then selects the best available model for the request and falls back to another
+ * model if one is temporarily unavailable. Set it only if you need a specific model's
+ * output. If the requested model can't serve the request, the job fails. Canva never
+ * uses a different model to serve the request.
+ *
+ * The model strengths below are based on Canva's evaluations. Results vary by
+ * prompt, so test with your own prompts before pinning a model.
+ */
+export type ImageGenerationModel =
+  (typeof ImageGenerationModel)[keyof typeof ImageGenerationModel];
+
+/**
+ * The aspect ratio of the generated image.
+ */
+export const ImageGenerationAspectRatio = {
+  /**
+   * A square (1:1) image.
+   */
+  SQUARE: "square",
+  /**
+   * A wide (16:9) image, suitable for landscape-oriented content.
+   */
+  LANDSCAPE: "landscape",
+  /**
+   * A tall (9:16) image, suitable for portrait-oriented content.
+   */
+  PORTRAIT: "portrait",
+} as const;
+
+/**
+ * The aspect ratio of the generated image.
+ */
+export type ImageGenerationAspectRatio =
+  (typeof ImageGenerationAspectRatio)[keyof typeof ImageGenerationAspectRatio];
+
+/**
+ * Error code indicating what went wrong with the image generation.
+ */
+export const ImageGenerationErrorCode = {
+  /**
+   * Content safety checks rejected the prompt.
+   */
+  UNSAFE_INPUT: "unsafe_input",
+  /**
+   * The generation did not complete in time.
+   */
+  TIMEOUT: "timeout",
+  /**
+   * The requested model can't currently serve this request, and Canva doesn't retry the job
+   * with another model. This is usually temporary. Retry later, retry without the `model`
+   * parameter to use automatic model selection, or retry with a different model.
+   */
+  MODEL_NOT_AVAILABLE: "model_not_available",
+  /**
+   * The requested model has been permanently retired from this version of the API, and you
+   * can't use it again in this version. Use a different model. The API documentation lists
+   * retired models, which keep their enum value for the lifetime of this API version.
+   */
+  MODEL_RETIRED: "model_retired",
+  /**
+   * An unexpected error occurred during generation.
+   */
+  INTERNAL_ERROR: "internal_error",
+} as const;
+
+/**
+ * Error code indicating what went wrong with the image generation.
+ */
+export type ImageGenerationErrorCode =
+  (typeof ImageGenerationErrorCode)[keyof typeof ImageGenerationErrorCode];
+
+/**
+ * If the image generation job fails, this object provides details about the error. Only present if status is `failed`.
+ */
+export type ImageGenerationError = {
+  code: ImageGenerationErrorCode;
+  /**
+   * A human-readable description of what went wrong.
+   */
+  message: string;
+};
+
+export type CreateImageTransformationJobRequest = {
+  /**
+   * The ID of the source asset to transform. The asset must be an image asset;
+   * referencing any other asset type (such as a video) fails with an
+   * `unsupported_content_type` error.
+   *
+   * The asset must also have finished uploading. An asset that is still uploading has no
+   * image to transform yet and fails with an `asset_not_ready` error. If you've just
+   * created the asset, poll its upload job — for example with the
+   * [Get asset upload job](https://www.canva.dev/docs/apps/rest-apis/reference/assets/get-asset-upload-job/)
+   * endpoint — until it returns a `success` status before starting a transformation.
+   */
+  asset_id: string;
+  /**
+   * A name for the new image asset that the job produces. Canva doesn't localize this
+   * value, so provide a name in the user's language. When omitted, the new asset inherits
+   * the name of the source asset.
+   */
+  name?: string;
+  /**
+   * The transformations to apply, in order. Must contain at least one transformation.
+   * Each transformation is stacked on the result of the previous one. The job's result
+   * is a single new image asset with all of the transformations applied; intermediate
+   * results are not returned.
+   */
+  transformations: Array<ImageTransformationType>;
+};
+
+/**
+ * A transformation to apply to the image asset. Each transformation type is identified
+ * by its `type` value and declares its own parameters; `background_removal` takes no
+ * parameters.
+ */
+export type ImageTransformationType = {
+  type: "background_removal";
+} & BackgroundRemovalImageTransformation;
+
+/**
+ * Removes the background from an image, keeping the foreground subject. The resulting
+ * image has a transparent background. This transformation takes no parameters.
+ *
+ * The output image is limited to a maximum of 10 megapixels. If the source image is
+ * larger, the output image is scaled down to stay within this limit.
+ *
+ * Requires the user to have the `background_removal` capability. To check this before
+ * creating a job, use the
+ * [Get user capabilities API](https://www.canva.dev/docs/apps/rest-apis/reference/users/get-user-capabilities/).
+ */
+export type BackgroundRemovalImageTransformation = {
+  /**
+   * The type of transformation to apply. Currently, the only supported value is
+   * `background_removal`.
+   */
+  type: "background_removal";
+};
+
+export type CreateImageTransformationJobResponse = {
+  job: ImageTransformationJob;
+};
+
+export type GetImageTransformationJobResponse = {
+  job: ImageTransformationJob;
+};
+
+/**
+ * Details about the image transformation job. If the job status is `success`, the job's
+ * `result` is present.
+ */
+export type ImageTransformationJob = {
+  /**
+   * The image transformation job ID. Only present if the job status is `in_progress`.
+   * A job that completes immediately returns its `result` or `error` directly and has
+   * no ID to poll.
+   */
+  id?: string;
+  status: ImageTransformationJobStatus;
+  result?: ImageTransformationJobResult;
+  error?: ImageTransformationError;
+};
+
+/**
+ * The status of the image transformation job. A newly created job will be `in_progress`
+ * and will eventually become `success` or `failed`. A job may also complete
+ * immediately, returning `success` or `failed` from job creation. If the status is
+ * `success`, the job's `result` is present.
+ */
+export const ImageTransformationJobStatus = {
+  FAILED: "failed",
+  IN_PROGRESS: "in_progress",
+  SUCCESS: "success",
+} as const;
+
+/**
+ * The status of the image transformation job. A newly created job will be `in_progress`
+ * and will eventually become `success` or `failed`. A job may also complete
+ * immediately, returning `success` or `failed` from job creation. If the status is
+ * `success`, the job's `result` is present.
+ */
+export type ImageTransformationJobStatus =
+  (typeof ImageTransformationJobStatus)[keyof typeof ImageTransformationJobStatus];
+
+/**
+ * Result of the image transformation job. Only present if the job status is `success`.
+ */
+export type ImageTransformationJobResult = {
+  /**
+   * The new image asset produced by applying all of the requested transformations.
+   */
+  asset: Asset;
+};
+
+/**
+ * Error code indicating what went wrong with the image transformation.
+ */
+export const ImageTransformationErrorCode = {
+  /**
+   * No foreground subject was found in the image, so there is no background to remove.
+   */
+  NO_FOREGROUND_FOUND: "no_foreground_found",
+  /**
+   * The user has run out of quota, such as their AI credit quota. The quota isn't necessarily specific to the requested transformations.
+   */
+  QUOTA_EXCEEDED: "quota_exceeded",
+  /**
+   * An unexpected error occurred during the transformation.
+   */
+  INTERNAL_ERROR: "internal_error",
+} as const;
+
+/**
+ * Error code indicating what went wrong with the image transformation.
+ */
+export type ImageTransformationErrorCode =
+  (typeof ImageTransformationErrorCode)[keyof typeof ImageTransformationErrorCode];
+
+/**
+ * If the image transformation job fails, this object provides details about the error.
+ * Only present if the job status is `failed`.
+ */
+export type ImageTransformationError = {
+  code: ImageTransformationErrorCode;
+  /**
+   * A human-readable description of what went wrong.
+   */
+  message: string;
+};
+
 export type JsonWebKeySet = {
   /**
    * An array of JSON Web Key values. The order of keys has no meaning.
@@ -4169,25 +4905,25 @@ export type ExchangeAuthCodeRequest = {
    */
   code_verifier: string;
   /**
-   * The authorization code you received after the user authorized the integration.
+   * The authorization code you received after the user authorized the app.
    */
   code: string;
   /**
-   * Your integration's unique ID, for authenticating the request.
+   * Your app's unique ID, for authenticating the request.
    *
    * NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
    *
    */
   client_id?: string;
   /**
-   * Your integration's client secret, for authenticating the request. Begins with `cnvca`.
+   * Your app's client secret, for authenticating the request. Begins with `cnvca`.
    *
    * NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
    *
    */
   client_secret?: string;
   /**
-   * Only required if a redirect URL was supplied when you [created the user authorization URL](https://www.canva.dev/docs/connect/authentication/#create-the-authorization-url).
+   * Only required if a redirect URL was supplied when you [created the user authorization URL](https://www.canva.dev/docs/apps/rest-apis/authentication/#create-the-authorization-url).
    *
    * Must be one of those already specified by the client. If not supplied, the first redirect_uri defined for the client will be used by default.
    *
@@ -4201,14 +4937,14 @@ export type ExchangeRefreshTokenRequest = {
    */
   grant_type: "refresh_token";
   /**
-   * Your integration's unique ID, for authenticating the request.
+   * Your app's unique ID, for authenticating the request.
    *
    * NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
    *
    */
   client_id?: string;
   /**
-   * Your integration's client secret, for authenticating the request. Begins with `cnvca`.
+   * Your app's client secret, for authenticating the request. Begins with `cnvca`.
    *
    * NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
    *
@@ -4219,7 +4955,7 @@ export type ExchangeRefreshTokenRequest = {
    */
   refresh_token: string;
   /**
-   * Optional scope value when refreshing an access token. Separate multiple [scopes](https://www.canva.dev/docs/connect/appendix/scopes/) with a single space between each scope.
+   * Optional scope value when refreshing an access token. Separate multiple [scopes](https://www.canva.dev/docs/apps/rest-apis/scopes/) with a single space between each scope.
    *
    * The requested scope cannot include any permissions not already granted, so this parameter allows you to limit the scope when refreshing a token. If omitted, the scope for the token remains unchanged.
    *
@@ -4232,7 +4968,7 @@ export type ExchangeRefreshTokenRequest = {
  */
 export type ExchangeAccessTokenResponse = {
   /**
-   * The bearer access token to use to authenticate to Canva Connect API endpoints. If requested using a `authorization_code` or `refresh_token`, this allows you to act on behalf of a user.
+   * The bearer access token to use to authenticate to Canva REST API endpoints. If requested using a `authorization_code` or `refresh_token`, this allows you to act on behalf of a user.
    */
   access_token: string;
   /**
@@ -4248,7 +4984,7 @@ export type ExchangeAccessTokenResponse = {
    */
   expires_in: number;
   /**
-   * The [scopes](https://www.canva.dev/docs/connect/appendix/scopes/) that the token has been granted.
+   * The [scopes](https://www.canva.dev/docs/apps/rest-apis/scopes/) that the token has been granted.
    */
   scope?: string;
 };
@@ -4259,14 +4995,14 @@ export type IntrospectTokenRequest = {
    */
   token: string;
   /**
-   * Your integration's unique ID, for authenticating the request.
+   * Your app's unique ID, for authenticating the request.
    *
    * NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
    *
    */
   client_id?: string;
   /**
-   * Your integration's client secret, for authenticating the request. Begins with `cnvca`.
+   * Your app's client secret, for authenticating the request. Begins with `cnvca`.
    *
    * NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
    *
@@ -4286,7 +5022,7 @@ export type IntrospectTokenResponse = {
    */
   active: boolean;
   /**
-   * The [scopes](https://www.canva.dev/docs/connect/appendix/scopes/) that the token has been granted.
+   * The [scopes](https://www.canva.dev/docs/apps/rest-apis/scopes/) that the token has been granted.
    */
   scope?: string;
   /**
@@ -4312,7 +5048,7 @@ export type IntrospectTokenResponse = {
   /**
    * The subject of the claim. This is the ID of the Canva user that the access token acts on behalf of.
    *
-   * This is an obfuscated value, so a single user has a unique ID for each integration. If the same user authorizes another integration, their ID in that other integration is different.
+   * This is an obfuscated value, so a single user has a unique ID for each app. If the same user authorizes another app, their ID in that other app is different.
    *
    */
   sub?: string;
@@ -4327,14 +5063,14 @@ export type RevokeTokensRequest = {
    */
   token: string;
   /**
-   * Your integration's unique ID, for authenticating the request.
+   * Your app's unique ID, for authenticating the request.
    *
    * NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
    *
    */
   client_id?: string;
   /**
-   * Your integration's client secret, for authenticating the request. Begins with `cnvca`.
+   * Your app's client secret, for authenticating the request. Begins with `cnvca`.
    *
    * NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
    *
@@ -4350,12 +5086,12 @@ export type RevokeTokensResponse = {
 };
 
 /**
- * The [scopes](https://www.canva.dev/docs/connect/appendix/scopes/) that the token has been granted.
+ * The [scopes](https://www.canva.dev/docs/apps/rest-apis/scopes/) that the token has been granted.
  */
 export type ScopeResponse = string;
 
 /**
- * Your integration's unique ID, for authenticating the request.
+ * Your app's unique ID, for authenticating the request.
  *
  * NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
  *
@@ -4363,7 +5099,7 @@ export type ScopeResponse = string;
 export type ClientId = string;
 
 /**
- * Your integration's client secret, for authenticating the request. Begins with `cnvca`.
+ * Your app's client secret, for authenticating the request. Begins with `cnvca`.
  *
  * NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
  *
@@ -4516,7 +5252,7 @@ export type DesignResizeError = {
 };
 
 /**
- * WARNING: Trials and trial information are a [preview feature](https://www.canva.dev/docs/connect/#preview-apis).
+ * WARNING: Trials and trial information are a [preview feature](https://www.canva.dev/docs/apps/rest-apis/#preview-apis).
  * There might be unannounced breaking changes to this feature which won't produce a new API version.
  *
  * Trial information for non-qualifying users. Non-qualifying users have a limited number of
@@ -5276,6 +6012,10 @@ export type GetAppJwksData = {
 
 export type GetAppJwksErrors = {
   /**
+   * Not Found
+   */
+  404: Error;
+  /**
    * Error Response
    */
   default: Error;
@@ -5671,7 +6411,7 @@ export type ListBrandTemplatesData = {
     sort_by?: SortByType;
     /**
      * Filter the list of brand templates based on the brand templates' dataset definitions.
-     * Brand templates with dataset definitions are mainly used with the [Autofill APIs](https://www.canva.dev/docs/connect/api-reference/autofills/).
+     * Brand templates with dataset definitions are mainly used with the [Autofill APIs](https://www.canva.dev/docs/apps/rest-apis/reference/autofills/).
      */
     dataset?: DatasetFilter;
   };
@@ -5679,6 +6419,10 @@ export type ListBrandTemplatesData = {
 };
 
 export type ListBrandTemplatesErrors = {
+  /**
+   * Bad Request
+   */
+  400: Error;
   /**
    * Forbidden
    */
@@ -6153,6 +6897,14 @@ export type ListDesignsData = {
 
 export type ListDesignsErrors = {
   /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
    * Error Response
    */
   default: Error;
@@ -6191,6 +6943,10 @@ export type CreateDesignErrors = {
    */
   404: Error;
   /**
+   * Too Many Requests
+   */
+  429: Error;
+  /**
    * Error Response
    */
   default: Error;
@@ -6221,6 +6977,14 @@ export type GetDesignData = {
 };
 
 export type GetDesignErrors = {
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
   /**
    * Error Response
    */
@@ -6264,6 +7028,18 @@ export type GetDesignPagesData = {
 
 export type GetDesignPagesErrors = {
   /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
    * Error Response
    */
   default: Error;
@@ -6295,6 +7071,14 @@ export type GetDesignExportFormatsData = {
 };
 
 export type GetDesignExportFormatsErrors = {
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
   /**
    * Error Response
    */
@@ -6363,6 +7147,10 @@ export type CreatePrintPartnerDesignData = {
 
 export type CreatePrintPartnerDesignErrors = {
   /**
+   * Bad Request
+   */
+  400: Error;
+  /**
    * Forbidden
    */
   403: Error;
@@ -6370,6 +7158,10 @@ export type CreatePrintPartnerDesignErrors = {
    * Not Found
    */
   404: Error;
+  /**
+   * Too Many Requests
+   */
+  429: Error;
   /**
    * Error Response
    */
@@ -6426,6 +7218,10 @@ export type GetPrintPartnerDesignErrors = {
    */
   403: Error;
   /**
+   * Not Found
+   */
+  404: Error;
+  /**
    * Error Response
    */
   default: Error;
@@ -6443,6 +7239,105 @@ export type GetPrintPartnerDesignResponses = {
 
 export type GetPrintPartnerDesignResponse2 =
   GetPrintPartnerDesignResponses[keyof GetPrintPartnerDesignResponses];
+
+export type CreateDesignGenerationJobV2Data = {
+  body: CreateDesignGenerationJobRequestV2;
+  path?: never;
+  query?: never;
+  url: "/v1/generations";
+};
+
+export type CreateDesignGenerationJobV2Errors = {
+  /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Unauthorized
+   */
+  401: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
+   * Credit Quota Exceeded
+   */
+  429: CreditQuotaError;
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type CreateDesignGenerationJobV2Error =
+  CreateDesignGenerationJobV2Errors[keyof CreateDesignGenerationJobV2Errors];
+
+export type CreateDesignGenerationJobV2Responses = {
+  /**
+   * OK
+   */
+  200: CreateDesignGenerationJobResponseV2;
+};
+
+export type CreateDesignGenerationJobV2Response =
+  CreateDesignGenerationJobV2Responses[keyof CreateDesignGenerationJobV2Responses];
+
+export type GetDesignGenerationJobV2Data = {
+  body?: never;
+  path: {
+    /**
+     * The public design generation job ID.
+     */
+    jobId: string;
+  };
+  query?: never;
+  url: "/v1/generations/{jobId}";
+};
+
+export type GetDesignGenerationJobV2Errors = {
+  /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Unauthorized
+   */
+  401: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
+   * Too Many Requests
+   */
+  429: Error;
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type GetDesignGenerationJobV2Error =
+  GetDesignGenerationJobV2Errors[keyof GetDesignGenerationJobV2Errors];
+
+export type GetDesignGenerationJobV2Responses = {
+  /**
+   * OK
+   */
+  200: GetDesignGenerationJobResponseV2;
+};
+
+export type GetDesignGenerationJobV2Response =
+  GetDesignGenerationJobV2Responses[keyof GetDesignGenerationJobV2Responses];
 
 export type CreateDesignImportJobData = {
   /**
@@ -6600,6 +7495,97 @@ export type GetUrlImportJobResponses = {
 export type GetUrlImportJobResponse2 =
   GetUrlImportJobResponses[keyof GetUrlImportJobResponses];
 
+export type CreateImageToDesignImportJobData = {
+  body: CreateImageToDesignImportJobRequest;
+  path?: never;
+  query?: never;
+  url: "/v1/image-to-design-imports";
+};
+
+export type CreateImageToDesignImportJobErrors = {
+  /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
+   * Too Many Requests
+   */
+  429: Error;
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type CreateImageToDesignImportJobError =
+  CreateImageToDesignImportJobErrors[keyof CreateImageToDesignImportJobErrors];
+
+export type CreateImageToDesignImportJobResponses = {
+  /**
+   * OK
+   */
+  200: CreateImageToDesignImportJobResponse;
+};
+
+export type CreateImageToDesignImportJobResponse2 =
+  CreateImageToDesignImportJobResponses[keyof CreateImageToDesignImportJobResponses];
+
+export type GetImageToDesignImportJobData = {
+  body?: never;
+  path: {
+    /**
+     * The ID of the image-to-design import job.
+     */
+    jobId: string;
+  };
+  query?: never;
+  url: "/v1/image-to-design-imports/{jobId}";
+};
+
+export type GetImageToDesignImportJobErrors = {
+  /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
+   * Too Many Requests
+   */
+  429: Error;
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type GetImageToDesignImportJobError =
+  GetImageToDesignImportJobErrors[keyof GetImageToDesignImportJobErrors];
+
+export type GetImageToDesignImportJobResponses = {
+  /**
+   * OK
+   */
+  200: GetImageToDesignImportJobResponse;
+};
+
+export type GetImageToDesignImportJobResponse2 =
+  GetImageToDesignImportJobResponses[keyof GetImageToDesignImportJobResponses];
+
 export type CreateDesignExportJobData = {
   body?: CreateDesignExportJobRequest;
   path?: never;
@@ -6740,6 +7726,10 @@ export type DeleteFolderData = {
 
 export type DeleteFolderErrors = {
   /**
+   * Bad Request
+   */
+  400: Error;
+  /**
    * Forbidden
    */
   403: Error;
@@ -6779,6 +7769,10 @@ export type GetFolderData = {
 
 export type GetFolderErrors = {
   /**
+   * Bad Request
+   */
+  400: Error;
+  /**
    * Forbidden
    */
   403: Error;
@@ -6816,6 +7810,10 @@ export type UpdateFolderData = {
 };
 
 export type UpdateFolderErrors = {
+  /**
+   * Bad Request
+   */
+  400: Error;
   /**
    * Forbidden
    */
@@ -6886,6 +7884,10 @@ export type ListFolderItemsData = {
 };
 
 export type ListFolderItemsErrors = {
+  /**
+   * Bad Request
+   */
+  400: Error;
   /**
    * Forbidden
    */
@@ -6961,6 +7963,10 @@ export type CreateFolderData = {
 
 export type CreateFolderErrors = {
   /**
+   * Bad Request
+   */
+  400: Error;
+  /**
    * Forbidden
    */
   403: Error;
@@ -6985,6 +7991,188 @@ export type CreateFolderResponses = {
 
 export type CreateFolderResponse2 =
   CreateFolderResponses[keyof CreateFolderResponses];
+
+export type CreateImageGenerationJobData = {
+  body?: CreateImageGenerationJobRequest;
+  path?: never;
+  query?: never;
+  url: "/v1/image-generations";
+};
+
+export type CreateImageGenerationJobErrors = {
+  /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Unauthorized
+   */
+  401: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Credit Quota Exceeded
+   */
+  429: CreditQuotaError;
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type CreateImageGenerationJobError =
+  CreateImageGenerationJobErrors[keyof CreateImageGenerationJobErrors];
+
+export type CreateImageGenerationJobResponses = {
+  /**
+   * OK
+   */
+  200: CreateImageGenerationJobResponse;
+};
+
+export type CreateImageGenerationJobResponse2 =
+  CreateImageGenerationJobResponses[keyof CreateImageGenerationJobResponses];
+
+export type GetImageGenerationJobData = {
+  body?: never;
+  path: {
+    /**
+     * The image generation job ID.
+     */
+    jobId: string;
+  };
+  query?: never;
+  url: "/v1/image-generations/{jobId}";
+};
+
+export type GetImageGenerationJobErrors = {
+  /**
+   * Unauthorized
+   */
+  401: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
+   * Too Many Requests
+   */
+  429: Error;
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type GetImageGenerationJobError =
+  GetImageGenerationJobErrors[keyof GetImageGenerationJobErrors];
+
+export type GetImageGenerationJobResponses = {
+  /**
+   * OK
+   */
+  200: GetImageGenerationJobResponse;
+};
+
+export type GetImageGenerationJobResponse2 =
+  GetImageGenerationJobResponses[keyof GetImageGenerationJobResponses];
+
+export type CreateImageTransformationJobData = {
+  body?: CreateImageTransformationJobRequest;
+  path?: never;
+  query?: never;
+  url: "/v1/image-transformations";
+};
+
+export type CreateImageTransformationJobErrors = {
+  /**
+   * Bad Request
+   */
+  400: Error;
+  /**
+   * Unauthorized
+   */
+  401: Error;
+  /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
+   * Credit Quota Exceeded
+   */
+  429: CreditQuotaError;
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type CreateImageTransformationJobError =
+  CreateImageTransformationJobErrors[keyof CreateImageTransformationJobErrors];
+
+export type CreateImageTransformationJobResponses = {
+  /**
+   * OK
+   */
+  200: CreateImageTransformationJobResponse;
+};
+
+export type CreateImageTransformationJobResponse2 =
+  CreateImageTransformationJobResponses[keyof CreateImageTransformationJobResponses];
+
+export type GetImageTransformationJobData = {
+  body?: never;
+  path: {
+    /**
+     * The image transformation job ID.
+     */
+    jobId: string;
+  };
+  query?: never;
+  url: "/v1/image-transformations/{jobId}";
+};
+
+export type GetImageTransformationJobErrors = {
+  /**
+   * Unauthorized
+   */
+  401: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
+   * Too Many Requests
+   */
+  429: Error;
+  /**
+   * Error Response
+   */
+  default: Error;
+};
+
+export type GetImageTransformationJobError =
+  GetImageTransformationJobErrors[keyof GetImageTransformationJobErrors];
+
+export type GetImageTransformationJobResponses = {
+  /**
+   * OK
+   */
+  200: GetImageTransformationJobResponse;
+};
+
+export type GetImageTransformationJobResponse2 =
+  GetImageTransformationJobResponses[keyof GetImageTransformationJobResponses];
 
 export type CreateDesignMergeJobData = {
   body: CreateDesignMergeJobRequest;
@@ -7245,6 +8433,14 @@ export type CreateDesignResizeJobErrors = {
    */
   400: Error;
   /**
+   * Forbidden
+   */
+  403: Error;
+  /**
+   * Not Found
+   */
+  404: Error;
+  /**
    * Too Many Requests
    */
   429: FeatureQuotaExceededError;
@@ -7280,6 +8476,10 @@ export type GetDesignResizeJobData = {
 };
 
 export type GetDesignResizeJobErrors = {
+  /**
+   * Not Found
+   */
+  404: Error;
   /**
    * Error Response
    */
@@ -7359,6 +8559,10 @@ export type GetUserProfileData = {
 };
 
 export type GetUserProfileErrors = {
+  /**
+   * Not Found
+   */
+  404: Error;
   /**
    * Error Response
    */

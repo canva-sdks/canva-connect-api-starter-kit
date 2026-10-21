@@ -1775,10 +1775,7 @@ export class ImageGenerationService {
       CreateImageGenerationJobErrors,
       ThrowOnError
     >({
-      security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/image-generations",
       ...options,
       headers: {
@@ -1813,10 +1810,7 @@ export class ImageGenerationService {
       GetImageGenerationJobErrors,
       ThrowOnError
     >({
-      security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
-      ],
+      security: [{ scheme: "bearer", type: "http" }],
       url: "/v1/image-generations/{jobId}",
       ...options,
     });

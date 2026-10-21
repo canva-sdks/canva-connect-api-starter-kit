@@ -25,7 +25,7 @@
     "dotenv": "16.6.0",
     "envfile": "7.1.0",
     "esbuild-register": "3.6.0",
-    "express": "4.22.2",
+    "express": "4.22.3",
     "jest": "30.2.0",
     "jose": "5.10.0",
     "nodemon": "3.0.1",

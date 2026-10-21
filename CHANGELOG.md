@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-10-21
+
+### 🔧 Changed
+
+- Updated the OpenAPI spec and generated TypeScript client to match the latest REST API.
+
+### 🛡️ Security
+
+- Dependencies audit bringing modules up to date:
+
+```text
+axios                                     1.18.0   ->   1.20.0
+body-parser                               1.20.6   ->   1.20.8
+express                                   4.22.2   ->   4.22.3
+multer                                     2.3.0   ->   2.4.0
+```
+
 ## 2026-10-14
 
 ### 🔧 Changed

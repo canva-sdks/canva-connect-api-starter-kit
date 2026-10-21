@@ -3304,6 +3304,7 @@ export const ErrorCode = {
   USER_NOT_MANAGED: "user_not_managed",
   SAML_TEAM_ID_CONFLICT: "saml_team_id_conflict",
   SAML_NAME_ID_NOT_AVAILABLE: "saml_name_id_not_available",
+  USER_LINKED_TO_ANOTHER_IDP: "user_linked_to_another_idp",
   USER_EMAIL_UNVERIFIED: "user_email_unverified",
   USER_NOT_ACTIVE: "user_not_active",
   USER_PENDING_CONSENT: "user_pending_consent",
@@ -4420,7 +4421,10 @@ export type ImageGenerationModel =
   (typeof ImageGenerationModel)[keyof typeof ImageGenerationModel];
 
 /**
- * The aspect ratio of the generated image.
+ * The aspect ratio of the generated image. Every aspect ratio is supported by every model
+ * you can select with `model`, so the choice of model never limits the aspect ratios you
+ * can use. The pixel dimensions of the output depend on the model. The job result reports
+ * the actual `width` and `height`.
  */
 export const ImageGenerationAspectRatio = {
   /**
@@ -4435,10 +4439,25 @@ export const ImageGenerationAspectRatio = {
    * A tall (9:16) image, suitable for portrait-oriented content.
    */
   PORTRAIT: "portrait",
+  /**
+   * A wide (3:2) image, suitable for photos and print.
+   */
+  LANDSCAPE_3_2: "landscape_3_2",
+  /**
+   * A tall (2:3) image, suitable for posters and portrait photos.
+   */
+  PORTRAIT_2_3: "portrait_2_3",
+  /**
+   * A tall (4:5) image, suitable for social media feed posts.
+   */
+  PORTRAIT_4_5: "portrait_4_5",
 } as const;
 
 /**
- * The aspect ratio of the generated image.
+ * The aspect ratio of the generated image. Every aspect ratio is supported by every model
+ * you can select with `model`, so the choice of model never limits the aspect ratios you
+ * can use. The pixel dimensions of the output depend on the model. The job result reports
+ * the actual `width` and `height`.
  */
 export type ImageGenerationAspectRatio =
   (typeof ImageGenerationAspectRatio)[keyof typeof ImageGenerationAspectRatio];

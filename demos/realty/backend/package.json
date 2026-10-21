@@ -16,11 +16,11 @@
   "dependencies": {
     "@canva/connect-api-ts": "*",
     "@realty-demo/shared-models": "*",
-    "body-parser": "1.20.6",
+    "body-parser": "1.20.8",
     "cors": "2.8.5",
     "dotenv": "16.6.0",
-    "express": "4.22.2",
-    "multer": "2.3.0",
+    "express": "4.22.3",
+    "multer": "2.4.0",
     "open": "10.2.0",
     "pug": "3.0.3",
     "uuid": "11.1.1"

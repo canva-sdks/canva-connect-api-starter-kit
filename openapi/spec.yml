@@ -4532,7 +4532,6 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
-      - oauthClientCredentials: []
       - oauthAuthCode:
         - asset:write
       tags:
@@ -4642,7 +4641,6 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
-      - oauthClientCredentials: []
       - oauthAuthCode:
         - asset:write
       tags:
@@ -11873,6 +11871,7 @@ components:
       - user_not_managed
       - saml_team_id_conflict
       - saml_name_id_not_available
+      - user_linked_to_another_idp
       - user_email_unverified
       - user_not_active
       - user_pending_consent
@@ -13096,7 +13095,7 @@ components:
       properties:
         prompt:
           description: A plain-text description of the image to generate.
-          maxLength: 2000
+          maxLength: 5000
           minLength: 1
           type: string
         aspect_ratio:
@@ -13273,16 +13272,26 @@ components:
         general-purpose imagery.
     ImageGenerationAspectRatio:
       default: square
-      description: The aspect ratio of the generated image.
+      description: |-
+        The aspect ratio of the generated image. Every aspect ratio is supported by every model
+        you can select with `model`, so the choice of model never limits the aspect ratios you
+        can use. The pixel dimensions of the output depend on the model. The job result reports
+        the actual `width` and `height`.
       enum:
       - square
       - landscape
       - portrait
+      - landscape_3_2
+      - portrait_2_3
+      - portrait_4_5
       type: string
       x-enum-descriptions:
       - A square (1:1) image.
       - "A wide (16:9) image, suitable for landscape-oriented content."
       - "A tall (9:16) image, suitable for portrait-oriented content."
+      - "A wide (3:2) image, suitable for photos and print."
+      - "A tall (2:3) image, suitable for posters and portrait photos."
+      - "A tall (4:5) image, suitable for social media feed posts."
     ImageGenerationErrorCode:
       description: Error code indicating what went wrong with the image generation.
       enum:
@@ -14746,12 +14755,6 @@ components:
     basicAuth:
       scheme: basic
       type: http
-    oauthClientCredentials:
-      flows:
-        clientCredentials:
-          scopes: {}
-          tokenUrl: https://api.canva.com/auth/v1/oauth/token
-      type: oauth2
     oauthAuthCode:
       flows:
         authorizationCode:

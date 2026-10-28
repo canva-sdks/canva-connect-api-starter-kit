@@ -14,8 +14,7 @@ import type { Middleware } from "./utils.gen";
 export type ResponseStyle = "data" | "fields";
 
 export interface Config<T extends ClientOptions = ClientOptions>
-  extends Omit<RequestInit, "body" | "headers" | "method">,
-    CoreConfig {
+  extends Omit<RequestInit, "body" | "headers" | "method">, CoreConfig {
   /**
    * Base URL for all requests made by this client.
    */
@@ -43,13 +42,7 @@ export interface Config<T extends ClientOptions = ClientOptions>
    * @default 'auto'
    */
   parseAs?:
-    | "arrayBuffer"
-    | "auto"
-    | "blob"
-    | "formData"
-    | "json"
-    | "stream"
-    | "text";
+    "arrayBuffer" | "auto" | "blob" | "formData" | "json" | "stream" | "text";
   /**
    * Should we return only data or multiple fields (data, error, response, etc.)?
    *
@@ -69,7 +62,9 @@ export interface RequestOptions<
   TResponseStyle extends ResponseStyle = "fields",
   ThrowOnError extends boolean = boolean,
   Url extends string = string,
-> extends Config<{
+>
+  extends
+    Config<{
       responseStyle: TResponseStyle;
       throwOnError: ThrowOnError;
     }>,
@@ -127,11 +122,8 @@ export type RequestResult<
     >
   : Promise<
       TResponseStyle extends "data"
-        ?
-            | (TData extends Record<string, unknown>
-                ? TData[keyof TData]
-                : TData)
-            | undefined
+        ? | (TData extends Record<string, unknown> ? TData[keyof TData] : TData)
+          | undefined
         : (
             | {
                 data: TData extends Record<string, unknown>

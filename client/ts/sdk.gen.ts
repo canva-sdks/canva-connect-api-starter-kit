@@ -523,16 +523,6 @@ export class AssetService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
-   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to upload an asset from a URL to the user's content library. Supported file types for assets are listed in the [Assets API overview](https://www.canva.dev/docs/apps/rest-apis/reference/assets/).
    *
    * <Note>
@@ -562,16 +552,6 @@ export class AssetService {
   }
 
   /**
-   * <Warning>
-   *
-   * This API is currently provided as a preview. Be aware of the following:
-   *
-   * - There might be unannounced breaking changes.
-   * - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
-   * - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-   *
-   * </Warning>
-   *
    * Get the result of an asset upload job that was created using the [Create asset upload job via URL API](https://www.canva.dev/docs/apps/rest-apis/reference/assets/create-url-asset-upload-job/).
    *
    * You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).

@@ -1186,7 +1186,7 @@ export const Capability = {
    */
   BRAND_TEMPLATE: "brand_template",
   /**
-   * Capability required to call the Design Generation APIs. Users whose feature eligibility and team permissions allow design generation have this capability.
+   * Capability required to call the Design Generation APIs. Users whose feature eligibility and [team permission settings](https://www.canva.com/en_au/help/setting-up-team-permissions/) allow both "Canva AI" and "[Magic Design](https://www.canva.com/magic-design/)" have this capability.
    */
   DESIGN_GENERATION: "design_generation",
   /**
@@ -1194,7 +1194,11 @@ export const Capability = {
    */
   EXPORT_PNG_TRANSPARENCY: "export_png_transparency",
   /**
-   * Capability required to call the Image to Design Import APIs. Users whose [team permission settings](https://www.canva.com/en_au/help/setting-up-team-permissions/) allow "[Magic Layers](https://www.canva.com/magic-layers/)" have this capability.
+   * Capability required to call the Image Generation APIs. Users whose feature eligibility and [team permission settings](https://www.canva.com/en_au/help/setting-up-team-permissions/) allow both "Canva AI" and "Magic Media" have this capability.
+   */
+  IMAGE_GENERATION: "image_generation",
+  /**
+   * Capability required to call the Image to Design Import APIs. Users whose [team permission settings](https://www.canva.com/en_au/help/setting-up-team-permissions/) allow both "Canva AI" and "[Magic Layers](https://www.canva.com/magic-layers/)" have this capability.
    */
   IMAGE_TO_DESIGN_IMPORTS: "image_to_design_imports",
   /**
@@ -4397,13 +4401,20 @@ export type ImageGenerationJobStatus =
  */
 export const ImageGenerationModel = {
   /**
+   * CRAFT-1 2K, Canva's first-party image generation model. Pick this model for the best
+   * image quality for infographics, posters, slides, people and portraits, abstract art,
+   * patterns, landscapes, nature, products, and marketing materials.
+   */
+  CRAFT_V1_2K: "craft_v1_2k",
+  /**
    * Lucid Origin. Pick this for architecture, logos, posters, or sci-fi and fantasy
    * scenes.
    */
-  LUCID_ORIGIN: "lucid_origin" /**
+  LUCID_ORIGIN: "lucid_origin",
+  /**
    * Z Image Turbo. Pick this if the image includes text, or for food, drink, and
    * general-purpose imagery.
-   */,
+   */
   Z_IMAGE_TURBO: "z_image_turbo",
 } as const;
 

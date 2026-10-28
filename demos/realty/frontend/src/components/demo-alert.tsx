@@ -16,8 +16,10 @@ import type { JSX } from "react";
 /**
  * Props for the DemoAlert component
  */
-export interface DemoAlertProps
-  extends Omit<MUIAlertProps, "title" | "children"> {
+export interface DemoAlertProps extends Omit<
+  MUIAlertProps,
+  "title" | "children"
+> {
   /** The title displayed at the top of the alert */
   alertTitle: React.ReactNode;
   /** Optional body content for the alert */

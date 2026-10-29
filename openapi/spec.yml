@@ -990,16 +990,6 @@ paths:
   /v1/url-asset-uploads:
     post:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
-        - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
         Starts a new [asynchronous job](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints) to upload an asset from a URL to the user's content library. Supported file types for assets are listed in the [Assets API overview](https://www.canva.dev/docs/apps/rest-apis/reference/assets/).
 
         <Note>
@@ -1065,16 +1055,6 @@ paths:
   /v1/url-asset-uploads/{jobId}:
     get:
       description: |-
-        <Warning>
-
-        This API is currently provided as a preview. Be aware of the following:
-
-        - There might be unannounced breaking changes.
-        - Any breaking changes to preview APIs won't produce a new [API version](https://www.canva.dev/docs/apps/rest-apis/versions/).
-        - Public apps that use preview APIs will not pass the review process, and can't be made available to all Canva users.
-
-        </Warning>
-
         Get the result of an asset upload job that was created using the [Create asset upload job via URL API](https://www.canva.dev/docs/apps/rest-apis/reference/assets/create-url-asset-upload-job/).
 
         You might need to make multiple requests to this endpoint until you get a `success` or `failed` status. For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints).
@@ -4536,6 +4516,8 @@ paths:
         - asset:write
       tags:
       - image_generation
+      x-required-capabilities:
+      - image_generation
       x-rate-limit-per-client-user: 20
   /v1/image-generations/{jobId}:
     get:
@@ -4644,6 +4626,8 @@ paths:
       - oauthAuthCode:
         - asset:write
       tags:
+      - image_generation
+      x-required-capabilities:
       - image_generation
       x-rate-limit-per-client-user: 120
   /v1/image-transformations:
@@ -9268,6 +9252,7 @@ components:
       - brand_template
       - design_generation
       - export_png_transparency
+      - image_generation
       - image_to_design_imports
       - resize
       - team_restricted_app
@@ -9285,14 +9270,19 @@ components:
       - "Capability required to use brand template APIs. Users on a Canva plan with\
         \ access to brand templates (such as Canva Pro, Canva Teams, or Canva Enterprise)\
         \ have this capability."
-      - Capability required to call the Design Generation APIs. Users whose feature
-        eligibility and team permissions allow design generation have this capability.
+      - "Capability required to call the Design Generation APIs. Users whose feature\
+        \ eligibility and [team permission settings](https://www.canva.com/en_au/help/setting-up-team-permissions/)\
+        \ allow both \"Canva AI\" and \"[Magic Design](https://www.canva.com/magic-design/)\"\
+        \ have this capability."
       - Capability required to export designs in PNG with a transparent background.
         Users on a paid Canva plan (such as Canva Pro) have this capability.
+      - "Capability required to call the Image Generation APIs. Users whose feature\
+        \ eligibility and [team permission settings](https://www.canva.com/en_au/help/setting-up-team-permissions/)\
+        \ allow both \"Canva AI\" and \"Magic Media\" have this capability."
       - "Capability required to call the Image to Design Import APIs. Users whose\
         \ [team permission settings](https://www.canva.com/en_au/help/setting-up-team-permissions/)\
-        \ allow \"[Magic Layers](https://www.canva.com/magic-layers/)\" have this\
-        \ capability."
+        \ allow both \"Canva AI\" and \"[Magic Layers](https://www.canva.com/magic-layers/)\"\
+        \ have this capability."
       - Capability required to create design resize jobs. Users on a Canva plan with
         premium features (such as Canva Pro) have this capability.
       - "Capability required to create a team-restricted app. Users that are members\
@@ -13095,7 +13085,7 @@ components:
       properties:
         prompt:
           description: A plain-text description of the image to generate.
-          maxLength: 5000
+          maxLength: 10000
           minLength: 1
           type: string
         aspect_ratio:
@@ -13260,10 +13250,15 @@ components:
         The model strengths below are based on Canva's evaluations. Results vary by
         prompt, so test with your own prompts before pinning a model.
       enum:
+      - craft_v1_2k
       - lucid_origin
       - z_image_turbo
       type: string
       x-enum-descriptions:
+      - |-
+        CRAFT-1 2K, Canva's first-party image generation model. Pick this model for the best
+        image quality for infographics, posters, slides, people and portraits, abstract art,
+        patterns, landscapes, nature, products, and marketing materials.
       - |-
         Lucid Origin. Pick this for architecture, logos, posters, or sci-fi and fantasy
         scenes.

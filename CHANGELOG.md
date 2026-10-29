@@ -1,5 +1,52 @@
 # Changelog
 
+## 2026-10-28
+
+### 🔧 Changed
+
+- Updated the OpenAPI spec and generated TypeScript client to match the latest REST API, including the `craft_v1_2k` image generation model and the `image_generation` capability.
+- Dependencies audit bringing modules up to date:
+
+```text
+@eslint/js                                9.34.0   ->   9.39.5
+@fontsource/fraunces                       5.2.9   ->   5.3.0
+@fontsource/inter                          5.2.8   ->   5.3.0
+@fontsource/open-sans                      5.2.7   ->   5.3.0
+@fontsource/roboto                         5.2.6   ->   5.3.0
+@mui/x-charts                             8.14.0   ->   8.28.2
+@swc/core                                 1.15.1   ->   1.16.20
+@types/cookie-parser                       1.4.9   ->   1.4.10
+@types/multer                              2.0.0   ->   2.3.0
+@types/node                             22.19.17   ->   22.20.5
+@types/react                              19.2.2   ->   19.3.0
+@types/react-dom                          19.2.1   ->   19.3.0
+@types/yargs                             17.0.33   ->   17.0.35
+@typescript-eslint/eslint-plugin          8.41.0   ->   8.72.0
+@typescript-eslint/parser                 8.41.0   ->   8.72.0
+body-parser                               1.20.8   ->   1.20.9
+canvas-confetti                            1.9.3   ->   1.9.4
+cors                                       2.8.5   ->   2.8.6
+css-loader                                 7.1.4   ->   7.1.5
+cssnano                                    7.1.1   ->   7.1.9
+dotenv                                    16.6.0   ->   16.6.1
+eslint                                    9.34.0   ->   9.39.5
+html-webpack-plugin                        5.6.7   ->   5.6.8
+jest                                      30.2.0   ->   30.5.2
+multer                                     2.4.0   ->   2.5.0
+postcss                                   8.5.26   ->   8.5.31
+postcss-loader                             8.1.1   ->   8.2.1
+prettier                                   3.6.2   ->   3.9.10
+pug                                        3.0.3   ->   3.0.4
+react-router-dom                          7.18.2   ->   7.18.4
+terser-webpack-plugin                      5.4.0   ->   5.6.1
+ts-loader                                  9.5.4   ->   9.6.2
+tsx                                       4.22.4   ->   4.23.15
+typescript                                 5.9.2   ->   5.9.3
+typescript-eslint                         8.57.1   ->   8.72.0
+webpack                                  5.105.2   ->   5.112.2
+webpack-dev-server                         5.2.6   ->   5.2.7
+```
+
 ## 2026-10-21
 
 ### 🔧 Changed

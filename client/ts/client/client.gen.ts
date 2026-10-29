@@ -67,8 +67,7 @@ export const createClient = (config: Config = {}): Client => {
 
     if (opts.body !== undefined && opts.bodySerializer) {
       opts.serializedBody = opts.bodySerializer(opts.body) as
-        | string
-        | undefined;
+        string | undefined;
     }
 
     // remove Content-Type header if body is empty to avoid sending invalid requests
@@ -263,9 +262,7 @@ export const createClient = (config: Config = {}): Client => {
           return request;
         },
         serializedBody: getValidRequestBody(opts) as
-          | BodyInit
-          | null
-          | undefined,
+          BodyInit | null | undefined,
         url,
       });
     };

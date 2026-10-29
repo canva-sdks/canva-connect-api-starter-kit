@@ -19,7 +19,7 @@
     "importHelpers": true,
     "noImplicitOverride": true,
     "moduleResolution": "bundler",
-    "rootDir": "../..",
+    "rootDir": "../../..",
     "outDir": "dist",
     "noEmit": true,
     "strict": true,

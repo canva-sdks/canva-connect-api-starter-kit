@@ -13,9 +13,9 @@ interface Database<T> {
   write(data: T): Promise<void>;
 }
 
-export class JSONFileDatabase<T extends BaseDatabaseSchema = BaseDatabaseSchema>
-  implements Database<T>
-{
+export class JSONFileDatabase<
+  T extends BaseDatabaseSchema = BaseDatabaseSchema,
+> implements Database<T> {
   constructor(
     private readonly seedData: T,
     private readonly rootDir: string,

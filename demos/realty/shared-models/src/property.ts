@@ -27,12 +27,7 @@ export type Property = {
   squareFeet: number;
   description: string;
   type:
-    | "single-family"
-    | "condo"
-    | "townhouse"
-    | "multi-family"
-    | "land"
-    | "other";
+    "single-family" | "condo" | "townhouse" | "multi-family" | "land" | "other";
   status: "for-sale" | "for-rent" | "pending" | "sold" | "leased";
   imageUrls: string[];
 };

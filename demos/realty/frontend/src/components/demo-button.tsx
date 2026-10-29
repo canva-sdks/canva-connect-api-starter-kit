@@ -10,10 +10,7 @@ import type { JSX } from "react";
  * - destructive: error-coloured button — destructive actions
  */
 export type DemoButtonVariant =
-  | "primary"
-  | "primaryOutlined"
-  | "secondary"
-  | "destructive";
+  "primary" | "primaryOutlined" | "secondary" | "destructive";
 
 export interface DemoButtonProps extends Omit<MUIButtonProps, "variant"> {
   demoVariant: DemoButtonVariant;

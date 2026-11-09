@@ -1233,7 +1233,7 @@ export class DesignGenerationService {
    *
    * Requires the `design_generation` capability. You can check whether the user has this capability using the [Get user capabilities API](https://www.canva.dev/docs/apps/rest-apis/reference/users/get-user-capabilities/).
    *
-   * Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job doesn't consume any of the allowance.
+   * Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code. Polling for the result of a job doesn't consume any of the allowance.
    *
    * <Note>
    *
@@ -1415,7 +1415,7 @@ export class DesignImportService {
    *
    * This conversion is designed for flat, non-photographic images such as posters, flyers, banners, and social graphics.
    *
-   * Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-image-to-design-import-job/) doesn't consume any of the allowance.
+   * Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-image-to-design-import-job/) doesn't consume any of the allowance.
    *
    * Use this API when the user wants to edit the contents of the image, such as changing its text, colors, or individual elements. If you only need to place the image into a design as a single flat image, use the [Create design API](https://www.canva.dev/docs/apps/rest-apis/reference/designs/create-design/) with an `asset_id` instead. The Create design API doesn't consume AI credits.
    *
@@ -1532,6 +1532,15 @@ export class ExportService {
    * it using the URL(s) provided. The download URLs are only valid for 24 hours.
    * The request requires the design ID and exports a file as a print-quality PDF.
    *
+   * <Note>
+   *
+   * This endpoint has the following additional rate limits:
+   *
+   * - **Integration throttle:** Each integration can export a maximum of 750 times per 5-minute window, and 5,000 times per 24-hour window.
+   * - **Document throttle:** Each document can be exported a maximum of 75 times per 5-minute window.
+   * - **User throttle:** Each user can export a maximum of 75 times per 5-minute window, and 500 times per 24-hour window.
+   *
+   * </Note>
    * <Note>
    * For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/apps/rest-apis/reference/exports/get-design-export-job/).
    * </Note>
@@ -1739,7 +1748,7 @@ export class ImageGenerationService {
    *
    * To also save the generated image to the user's Canva account as an image asset, set `asset_upload` to `type: upload`. The job then returns the asset alongside the download URL. Saving the asset requires a user access token.
    *
-   * Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code.
+   * Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code.
    *
    * <Note>
    *
@@ -1815,7 +1824,7 @@ export class ImageTransformationService {
    *
    * Transformations are applied in the order provided, with each one stacked on the result of the previous one.
    *
-   * Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image transformation job API](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/) doesn't consume any of the allowance.
+   * Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image transformation job API](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/) doesn't consume any of the allowance.
    *
    * <Note>
    *

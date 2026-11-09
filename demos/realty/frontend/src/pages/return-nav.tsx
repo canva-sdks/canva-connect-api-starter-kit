@@ -272,7 +272,7 @@ export const ReturnNavPage = (): JSX.Element => {
             {STEPS.map((step, index) => (
               <Step key={step.label} expanded={true}>
                 <StepLabel
-                  StepIconComponent={StepIcon}
+                  slots={{ stepIcon: StepIcon }}
                   sx={{ opacity: activeStep >= index ? "1" : "0.4" }}
                 >
                   <Typography fontSize={18} fontWeight={600}>

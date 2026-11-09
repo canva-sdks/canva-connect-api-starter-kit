@@ -63,7 +63,7 @@ export const SingleDesignGeneratorPage = () => {
         title="Single Design"
         description="Create a single design in your chosen size from an existing product"
       />
-      <Grid item={true} xs={8}>
+      <Grid size={8}>
         {createdSingleDesign && selectedCampaignProduct ? (
           <SingleDesignResult
             createdDesign={createdSingleDesign}

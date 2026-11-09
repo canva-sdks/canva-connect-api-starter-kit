@@ -26,8 +26,8 @@ export const BrandTemplateSelectionModal = ({
     maxWidth="xl"
     open={isOpen}
     onClose={() => setIsOpen(false)}
-    TransitionComponent={Transition}
-    PaperProps={{ sx: { bgcolor: "black" } }}
+    slots={{ transition: Transition }}
+    slotProps={{ paper: { sx: { bgcolor: "black" } } }}
     scroll="paper"
   >
     <BrandTemplateSelector

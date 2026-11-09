@@ -113,7 +113,7 @@ export const DesignsPage = () => {
       <Grid container={true} spacing={2} paddingBottom={2} paddingTop={2}>
         {designs.map((flyer) => {
           return (
-            <Grid item={true} xs={12} sm={6} md={4} key={flyer.id}>
+            <Grid key={flyer.id} size={{ xs: 12, sm: 6, md: 4 }}>
               <GenericCard
                 title={flyer.title}
                 alt={flyer.title}

@@ -2477,6 +2477,10 @@ export type PrintPartnerDimensionsDesignSource = {
 /**
  * Dimensions of the design. Used to match a product type, or to create a custom-size design if
  * no product matches.
+ *
+ * When no matching product is found, the dimensions of each side, converted to pixels, must be
+ * between 40 and 8000, and the total area (width × height) must not exceed 25,000,000 pixels
+ * squared.
  */
 export type PrintPartnerDesignDimensions = {
   /**
@@ -2829,18 +2833,10 @@ export type DesignGenerationOutlineSectionV2 = {
 
 export type CreateDesignGenerationJobResponseV2 = {
   job: DesignGenerationJobV2;
-  /**
-   * Credit quota usage after reserving credits for this job. Omitted if unavailable.
-   */
-  quota_usage?: CreditQuotaSuccessInfo;
 };
 
 export type GetDesignGenerationJobResponseV2 = {
   job: DesignGenerationJobV2;
-  /**
-   * Credit quota snapshot when available. Polling does not reserve or consume credits; omitted if unavailable.
-   */
-  quota_usage?: CreditQuotaSuccessInfo;
 };
 
 /**
@@ -3261,6 +3257,7 @@ export const ErrorCode = {
   QUOTA_EXCEEDED: "quota_exceeded",
   CREDIT_QUOTA_EXCEEDED: "credit_quota_exceeded",
   CREDIT_QUOTA_COOLDOWN: "credit_quota_cooldown",
+  APP_CREDIT_QUOTA_EXCEEDED: "app_credit_quota_exceeded",
   UNSUPPORTED_CONTENT_TYPE: "unsupported_content_type",
   REQUEST_TOO_LARGE: "request_too_large",
   FOLDER_NOT_FOUND: "folder_not_found",
@@ -4314,10 +4311,6 @@ export type UploadImageGenerationAssetUpload = {
 
 export type CreateImageGenerationJobResponse = {
   job: ImageGenerationJob;
-  /**
-   * Credit quota usage after reserving credits for this job. Not present if quota data is unavailable.
-   */
-  quota_usage?: CreditQuotaSuccessInfo;
 };
 
 export type GetImageGenerationJobResponse = {
@@ -4462,6 +4455,26 @@ export const ImageGenerationAspectRatio = {
    * A tall (4:5) image, suitable for social media feed posts.
    */
   PORTRAIT_4_5: "portrait_4_5",
+  /**
+   * A wide (4:3) image, suitable for presentations and classic photos.
+   */
+  LANDSCAPE_4_3: "landscape_4_3",
+  /**
+   * A tall (3:4) image, suitable for portrait prints and social media.
+   */
+  PORTRAIT_3_4: "portrait_3_4",
+  /**
+   * A wide (5:4) image, suitable for prints and framed photos.
+   */
+  LANDSCAPE_5_4: "landscape_5_4",
+  /**
+   * A wide (2:1) image, suitable for banners and panoramic headers.
+   */
+  LANDSCAPE_2_1: "landscape_2_1",
+  /**
+   * A tall (1:2) image, suitable for tall banners and pins.
+   */
+  PORTRAIT_1_2: "portrait_1_2",
 } as const;
 
 /**
@@ -4561,7 +4574,7 @@ export type ImageTransformationType = {
  * Removes the background from an image, keeping the foreground subject. The resulting
  * image has a transparent background. This transformation takes no parameters.
  *
- * The output image is limited to a maximum of 10 megapixels. If the source image is
+ * The output image is limited to a maximum of 25 megapixels. If the source image is
  * larger, the output image is scaled down to stay within this limit.
  *
  * Requires the user to have the `background_removal` capability. To check this before
@@ -7287,6 +7300,10 @@ export type CreateDesignGenerationJobV2Errors = {
    */
   401: Error;
   /**
+   * Payment Required
+   */
+  402: Error;
+  /**
    * Forbidden
    */
   403: Error;
@@ -7294,10 +7311,6 @@ export type CreateDesignGenerationJobV2Errors = {
    * Not Found
    */
   404: Error;
-  /**
-   * Credit Quota Exceeded
-   */
-  429: CreditQuotaError;
   /**
    * Error Response
    */
@@ -7538,6 +7551,10 @@ export type CreateImageToDesignImportJobErrors = {
    */
   400: Error;
   /**
+   * Payment Required
+   */
+  402: Error;
+  /**
    * Forbidden
    */
   403: Error;
@@ -7545,10 +7562,6 @@ export type CreateImageToDesignImportJobErrors = {
    * Not Found
    */
   404: Error;
-  /**
-   * Too Many Requests
-   */
-  429: Error;
   /**
    * Error Response
    */
@@ -8039,13 +8052,13 @@ export type CreateImageGenerationJobErrors = {
    */
   401: Error;
   /**
+   * Payment Required
+   */
+  402: Error;
+  /**
    * Forbidden
    */
   403: Error;
-  /**
-   * Credit Quota Exceeded
-   */
-  429: CreditQuotaError;
   /**
    * Error Response
    */
@@ -8130,6 +8143,10 @@ export type CreateImageTransformationJobErrors = {
    */
   401: Error;
   /**
+   * Payment Required
+   */
+  402: Error;
+  /**
    * Forbidden
    */
   403: Error;
@@ -8137,10 +8154,6 @@ export type CreateImageTransformationJobErrors = {
    * Not Found
    */
   404: Error;
-  /**
-   * Credit Quota Exceeded
-   */
-  429: CreditQuotaError;
   /**
    * Error Response
    */
@@ -8216,6 +8229,10 @@ export type CreateDesignMergeJobErrors = {
    * Bad Request
    */
   400: Error;
+  /**
+   * Payment Required
+   */
+  402: Error;
   /**
    * Forbidden
    */
@@ -8462,6 +8479,10 @@ export type CreateDesignResizeJobErrors = {
    * Bad Request
    */
   400: Error;
+  /**
+   * Payment Required
+   */
+  402: Error;
   /**
    * Forbidden
    */

@@ -20,13 +20,13 @@
     "@emotion/styled": "11.14.1",
     "@fontsource/open-sans": "5.3.0",
     "@fontsource/roboto": "5.3.0",
-    "@mui/icons-material": "5.18.0",
-    "@mui/material": "5.18.0",
+    "@mui/icons-material": "7.3.11",
+    "@mui/material": "7.3.11",
     "@realty-demo/shared-models": "*",
-    "axios": "1.20.0",
+    "axios": "1.21.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-router-dom": "7.18.4"
+    "react-router-dom": "7.18.5"
   },
   "devDependencies": {
     "@svgr/webpack": "8.1.0",
@@ -36,7 +36,7 @@
     "css-loader": "7.1.5",
     "cssnano": "7.1.9",
     "esbuild-register": "3.6.0",
-    "postcss": "8.5.31",
+    "postcss": "8.5.32",
     "postcss-loader": "8.2.1",
     "prettier": "3.9.10",
     "style-loader": "4.0.0",

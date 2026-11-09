@@ -2886,7 +2886,7 @@ paths:
 
         Requires the `design_generation` capability. You can check whether the user has this capability using the [Get user capabilities API](https://www.canva.dev/docs/apps/rest-apis/reference/users/get-user-capabilities/).
 
-        Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job doesn't consume any of the allowance.
+        Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code. Polling for the result of a job doesn't consume any of the allowance.
 
         <Note>
 
@@ -2951,6 +2951,18 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Unauthorized
           x-http-status-code: 401
+        "402":
+          content:
+            application/json:
+              examples:
+                user_payment_required:
+                  $ref: '#/components/examples/UserPaymentRequiredError'
+                app_payment_required:
+                  $ref: '#/components/examples/AppPaymentRequiredError'
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Payment Required
+          x-http-status-code: 402
         "403":
           content:
             application/json:
@@ -2971,18 +2983,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Not Found
-        "429":
-          content:
-            application/json:
-              examples:
-                credit_quota_exceeded:
-                  $ref: '#/components/examples/CreditQuotaExceededError'
-                credit_quota_cooldown:
-                  $ref: '#/components/examples/CreditQuotaCooldownError'
-              schema:
-                $ref: '#/components/schemas/CreditQuotaError'
-          description: Credit Quota Exceeded
-          x-http-status-code: 429
         default:
           content:
             application/json:
@@ -3418,7 +3418,7 @@ paths:
 
         This conversion is designed for flat, non-photographic images such as posters, flyers, banners, and social graphics.
 
-        Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-image-to-design-import-job/) doesn't consume any of the allowance.
+        Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image-to-design import job API](https://www.canva.dev/docs/apps/rest-apis/reference/design-imports/get-image-to-design-import-job/) doesn't consume any of the allowance.
 
         Use this API when the user wants to edit the contents of the image, such as changing its text, colors, or individual elements. If you only need to place the image into a design as a single flat image, use the [Create design API](https://www.canva.dev/docs/apps/rest-apis/reference/designs/create-design/) with an `asset_id` instead. The Create design API doesn't consume AI credits.
 
@@ -3457,6 +3457,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Bad Request
+        "402":
+          content:
+            application/json:
+              examples:
+                user_payment_required:
+                  $ref: '#/components/examples/UserPaymentRequiredError'
+                app_payment_required:
+                  $ref: '#/components/examples/AppPaymentRequiredError'
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Payment Required
+          x-http-status-code: 402
         "403":
           content:
             application/json:
@@ -3475,15 +3487,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Not Found
-        "429":
-          content:
-            application/json:
-              examples:
-                image_to_design_credit_quota_exceeded:
-                  $ref: '#/components/examples/ImageToDesignCreditQuotaExceededError'
-              schema:
-                $ref: '#/components/schemas/Error'
-          description: Too Many Requests
         default:
           content:
             application/json:
@@ -3725,6 +3728,15 @@ paths:
         it using the URL(s) provided. The download URLs are only valid for 24 hours.
         The request requires the design ID and exports a file as a print-quality PDF.
 
+        <Note>
+
+        This endpoint has the following additional rate limits:
+
+          - **Integration throttle:** Each integration can export a maximum of 750 times per 5-minute window, and 5,000 times per 24-hour window.
+          - **Document throttle:** Each document can be exported a maximum of 75 times per 5-minute window.
+          - **User throttle:** Each user can export a maximum of 75 times per 5-minute window, and 500 times per 24-hour window.
+
+        </Note>
         <Note>
         For more information on the workflow for using asynchronous jobs, see [API requests and responses](https://www.canva.dev/docs/apps/rest-apis/requests-responses/#asynchronous-job-endpoints). You can check the status and get the results of export jobs created with this API using the [Get design export job API](https://www.canva.dev/docs/apps/rest-apis/reference/exports/get-design-export-job/).
         </Note>
@@ -4384,7 +4396,7 @@ paths:
 
         To also save the generated image to the user's Canva account as an image asset, set `asset_upload` to `type: upload`. The job then returns the asset alongside the download URL. Saving the asset requires a user access token.
 
-        Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code.
+        Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code.
 
         <Note>
 
@@ -4480,6 +4492,18 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Unauthorized
           x-http-status-code: 401
+        "402":
+          content:
+            application/json:
+              examples:
+                user_payment_required:
+                  $ref: '#/components/examples/UserPaymentRequiredError'
+                app_payment_required:
+                  $ref: '#/components/examples/AppPaymentRequiredError'
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Payment Required
+          x-http-status-code: 402
         "403":
           content:
             application/json:
@@ -4493,18 +4517,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Forbidden
-        "429":
-          content:
-            application/json:
-              examples:
-                credit_quota_exceeded:
-                  $ref: '#/components/examples/CreditQuotaExceededError'
-                credit_quota_cooldown:
-                  $ref: '#/components/examples/CreditQuotaCooldownError'
-              schema:
-                $ref: '#/components/schemas/CreditQuotaError'
-          description: Credit Quota Exceeded
-          x-http-status-code: 429
         default:
           content:
             application/json:
@@ -4649,7 +4661,7 @@ paths:
 
         Transformations are applied in the order provided, with each one stacked on the result of the previous one.
 
-        Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `429` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image transformation job API](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/) doesn't consume any of the allowance.
+        Starting a job consumes the user's [AI credit allowance](https://www.canva.com/help/ai-access/). If the user has reached their AI allowance limit, the request returns a `402` error with the `credit_quota_exceeded` code. Polling for the result of a job using the [Get image transformation job API](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/) doesn't consume any of the allowance.
 
         <Note>
 
@@ -4715,6 +4727,18 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Unauthorized
           x-http-status-code: 401
+        "402":
+          content:
+            application/json:
+              examples:
+                user_payment_required:
+                  $ref: '#/components/examples/UserPaymentRequiredError'
+                app_payment_required:
+                  $ref: '#/components/examples/AppPaymentRequiredError'
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Payment Required
+          x-http-status-code: 402
         "403":
           content:
             application/json:
@@ -4733,18 +4757,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Not Found
-        "429":
-          content:
-            application/json:
-              examples:
-                credit_quota_exceeded:
-                  $ref: '#/components/examples/CreditQuotaExceededError'
-                credit_quota_cooldown:
-                  $ref: '#/components/examples/CreditQuotaCooldownError'
-              schema:
-                $ref: '#/components/schemas/CreditQuotaError'
-          description: Credit Quota Exceeded
-          x-http-status-code: 429
         default:
           content:
             application/json:
@@ -4921,6 +4933,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Bad Request
+        "402":
+          content:
+            application/json:
+              examples:
+                user_payment_required:
+                  $ref: '#/components/examples/UserPaymentRequiredError'
+                app_payment_required:
+                  $ref: '#/components/examples/AppPaymentRequiredError'
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Payment Required
+          x-http-status-code: 402
         "403":
           content:
             application/json:
@@ -5465,6 +5489,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Bad Request
+        "402":
+          content:
+            application/json:
+              examples:
+                user_payment_required:
+                  $ref: '#/components/examples/UserPaymentRequiredError'
+                app_payment_required:
+                  $ref: '#/components/examples/AppPaymentRequiredError'
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Payment Required
+          x-http-status-code: 402
         "403":
           content:
             application/json:
@@ -5661,6 +5697,16 @@ paths:
       x-rate-limit-per-client-user: 10
 components:
   examples:
+    UserPaymentRequiredError:
+      summary: User has reached their credit quota limit
+      value:
+        code: credit_quota_exceeded
+        message: User has exceeded their credit quota
+    AppPaymentRequiredError:
+      summary: App has reached its credit quota limit
+      value:
+        code: app_credit_quota_exceeded
+        message: App has exceeded its credit quota
     CreditQuotaExceededError:
       summary: User has reached their credit quota limit
       value:
@@ -6269,10 +6315,6 @@ components:
               created_at: 1788768000
               updated_at: 1788768000
               page_count: 3
-        quota_usage:
-          used_percentage: 25
-          resets_at: 1789257600
-          using_bonus_credits: false
     ContentNotAllowedDesignGenerationJobExampleV2:
       summary: Design generation rejected by content-safety checks
       value:
@@ -6345,15 +6387,11 @@ components:
         code: not_found
         message: The design generation job wasn't found.
     AcceptedDesignGenerationJobExampleV2:
-      summary: Accepted job with available credit quota information
+      summary: Accepted job
       value:
         job:
           id: f81b26fd-a33d-4c2d-9e8c-4a7aca798b17
           status: in_progress
-        quota_usage:
-          used_percentage: 25
-          resets_at: 1789257600
-          using_bonus_credits: false
     JobIdInvalidError:
       summary: The job ID is invalid
       value:
@@ -6404,11 +6442,6 @@ components:
       value:
         code: too_many_requests
         message: You have reached the design creation throttling threshold.
-    ImageToDesignCreditQuotaExceededError:
-      summary: User has reached their credit quota limit
-      value:
-        code: credit_quota_exceeded
-        message: User has exceeded their credit quota
     InProgressDesignImportJobExample:
       summary: In progress job
       value:
@@ -7409,6 +7442,18 @@ components:
             $ref: '#/components/schemas/CreditQuotaError'
       description: Credit Quota Exceeded
       x-http-status-code: 429
+    CommonPaymentRequiredError:
+      content:
+        application/json:
+          examples:
+            user_payment_required:
+              $ref: '#/components/examples/UserPaymentRequiredError'
+            app_payment_required:
+              $ref: '#/components/examples/AppPaymentRequiredError'
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Payment Required
+      x-http-status-code: 402
     CommonBadRequest:
       content:
         application/json:
@@ -10900,6 +10945,10 @@ components:
       description: |-
         Dimensions of the design. Used to match a product type, or to create a custom-size design if
         no product matches.
+
+        When no matching product is found, the dimensions of each side, converted to pixels, must be
+        between 40 and 8000, and the total area (width × height) must not exceed 25,000,000 pixels
+        squared.
       properties:
         width:
           description: The width of the design.
@@ -11342,11 +11391,6 @@ components:
       properties:
         job:
           $ref: '#/components/schemas/DesignGenerationJobV2'
-        quota_usage:
-          allOf:
-          - $ref: '#/components/schemas/CreditQuotaSuccessInfo'
-          description: Credit quota usage after reserving credits for this job. Omitted
-            if unavailable.
       required:
       - job
       type: object
@@ -11354,11 +11398,6 @@ components:
       properties:
         job:
           $ref: '#/components/schemas/DesignGenerationJobV2'
-        quota_usage:
-          allOf:
-          - $ref: '#/components/schemas/CreditQuotaSuccessInfo'
-          description: Credit quota snapshot when available. Polling does not reserve
-            or consume credits; omitted if unavailable.
       required:
       - job
       type: object
@@ -11814,6 +11853,7 @@ components:
       - quota_exceeded
       - credit_quota_exceeded
       - credit_quota_cooldown
+      - app_credit_quota_exceeded
       - unsupported_content_type
       - request_too_large
       - folder_not_found
@@ -13156,11 +13196,6 @@ components:
       properties:
         job:
           $ref: '#/components/schemas/ImageGenerationJob'
-        quota_usage:
-          allOf:
-          - $ref: '#/components/schemas/CreditQuotaSuccessInfo'
-          description: Credit quota usage after reserving credits for this job. Not
-            present if quota data is unavailable.
       required:
       - job
       type: object
@@ -13279,6 +13314,11 @@ components:
       - landscape_3_2
       - portrait_2_3
       - portrait_4_5
+      - landscape_4_3
+      - portrait_3_4
+      - landscape_5_4
+      - landscape_2_1
+      - portrait_1_2
       type: string
       x-enum-descriptions:
       - A square (1:1) image.
@@ -13287,6 +13327,11 @@ components:
       - "A wide (3:2) image, suitable for photos and print."
       - "A tall (2:3) image, suitable for posters and portrait photos."
       - "A tall (4:5) image, suitable for social media feed posts."
+      - "A wide (4:3) image, suitable for presentations and classic photos."
+      - "A tall (3:4) image, suitable for portrait prints and social media."
+      - "A wide (5:4) image, suitable for prints and framed photos."
+      - "A wide (2:1) image, suitable for banners and panoramic headers."
+      - "A tall (1:2) image, suitable for tall banners and pins."
     ImageGenerationErrorCode:
       description: Error code indicating what went wrong with the image generation.
       enum:
@@ -13377,7 +13422,7 @@ components:
         Removes the background from an image, keeping the foreground subject. The resulting
         image has a transparent background. This transformation takes no parameters.
 
-        The output image is limited to a maximum of 10 megapixels. If the source image is
+        The output image is limited to a maximum of 25 megapixels. If the source image is
         larger, the output image is scaled down to stay within this limit.
 
         Requires the user to have the `background_removal` capability. To check this before

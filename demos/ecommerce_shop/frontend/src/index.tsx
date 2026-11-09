@@ -8,7 +8,7 @@ import "@fontsource/fraunces/600.css";
 import "@fontsource/fraunces/700.css";
 import { RouterProvider, createHashRouter } from "react-router-dom";
 import { createRoot } from "react-dom/client";
-import { ThemeProvider } from "@emotion/react";
+import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline, GlobalStyles } from "@mui/material";
 import { ContextProvider } from "./context";
 import { routes } from "./routes";

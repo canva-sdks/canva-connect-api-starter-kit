@@ -1,5 +1,34 @@
 # Changelog
 
+## 2026-11-09
+
+### 🔧 Changed
+
+- Upgraded the ecommerce_shop, realty, print and playground demos to MUI v7 and migrated their `Grid` layouts to the v7 `size` API:
+
+```text
+@mui/x-charts                             8.28.2   ->   8.29.3
+@mui/material                             5.18.0   ->   7.3.11
+@mui/icons-material                       5.18.0   ->   7.3.11
+```
+
+- Updated the OpenAPI spec and generated TypeScript client to match the latest REST API - added more landscape and portrait aspect ratio options for image generation and the `402` credit quota error.
+- Dependencies audit bringing modules up to date:
+
+```text
+@swc/core                                1.16.20   ->   1.16.21
+@typescript-eslint/eslint-plugin          8.72.0   ->   8.72.1
+@typescript-eslint/parser                 8.72.0   ->   8.72.1
+typescript-eslint                         8.72.0   ->   8.72.1
+react-router-dom                          7.18.4   ->   7.18.5
+postcss                                   8.5.31   ->   8.5.32
+axios                                     1.20.0   ->   1.21.0
+```
+
+### 🐞 Fixed
+
+- Corrected an instance of @types/jest being a dependency instead of a devDependency
+
 ## 2026-10-28
 
 ### 🔧 Changed

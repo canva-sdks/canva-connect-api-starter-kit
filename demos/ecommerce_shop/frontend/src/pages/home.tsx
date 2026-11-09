@@ -76,7 +76,7 @@ const HomeTiles = () => (
     justifyContent="stretch"
   >
     {placeholderStats.map(({ icon, title, label, number, changePct }, i) => (
-      <Grid key={title} item={true} xs={12} sm={4}>
+      <Grid key={title} size={{ xs: 12, sm: 4 }}>
         <StatTile
           icon={icon}
           title={title}
@@ -87,7 +87,7 @@ const HomeTiles = () => (
         />
       </Grid>
     ))}
-    <Grid item={true} xs={12} md={8}>
+    <Grid size={{ xs: 12, md: 8 }}>
       <InfoPaper
         icon={<BarChart fontSize="small" />}
         label="This year"
@@ -95,7 +95,7 @@ const HomeTiles = () => (
         Content={<DemoSalesChart />}
       />
     </Grid>
-    <Grid item={true} xs={12} md={4} display="flex">
+    <Grid size={{ xs: 12, md: 4 }} display="flex">
       <ConnectToCanvaCta />
     </Grid>
   </Grid>

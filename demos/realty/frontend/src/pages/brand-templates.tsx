@@ -151,7 +151,7 @@ export const BrandTemplatesPage = () => {
       {!isFetching && (
         <Grid container={true} spacing={2} paddingTop={2} paddingBottom={2}>
           {templates?.map((template) => (
-            <Grid item={true} key={template.id} xs={12} sm={6} md={4} lg={4}>
+            <Grid key={template.id} size={{ xs: 12, sm: 6, md: 4, lg: 4 }}>
               <BrandTemplateCard
                 template={template}
                 onClick={() => handleUseTemplateClick(template)}

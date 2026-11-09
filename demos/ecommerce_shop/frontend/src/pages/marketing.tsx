@@ -13,7 +13,7 @@ export const MarketingPage = () => {
         Marketing
       </Typography>
       <Grid container={true} spacing={2}>
-        <Grid item={true} xs={4}>
+        <Grid size={4}>
           <CallToActionPaper
             devNoteText="Single designs are generated using the create design API which is available to Canva users from all tiers and subscriptions."
             callToActionText="Single Design"
@@ -21,7 +21,7 @@ export const MarketingPage = () => {
             onClick={() => navigate(Paths.SINGLE_DESIGN_GENERATOR)}
           />
         </Grid>
-        <Grid item={true} xs={4}>
+        <Grid size={4}>
           <CallToActionPaper
             devNoteText="Multiple designs are generated using the brand templates and autofill APIs, which are available on Canva Pro, Canva Teams, and Canva Enterprise."
             callToActionText="Multiple Designs"
@@ -63,18 +63,10 @@ const CallToActionPaper = ({
       >
         <Box display="flex" flexDirection="column" alignItems="center">
           <AddIcon color="info" fontSize="large" />
-          <Typography
-            variant="h6"
-            color={(theme) => theme.palette.success.main}
-            marginY={2}
-          >
+          <Typography variant="h6" color="success.main" marginY={2}>
             {callToActionText}
           </Typography>
-          <Typography
-            variant="subtitle2"
-            color={(theme) => theme.palette.success.main}
-            align="center"
-          >
+          <Typography variant="subtitle2" color="success.main" align="center">
             {callToActionDescription}
           </Typography>
         </Box>

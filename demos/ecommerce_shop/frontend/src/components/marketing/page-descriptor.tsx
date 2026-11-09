@@ -8,7 +8,7 @@ export const PageDescriptor = ({
   title: string;
   description: string;
 }) => (
-  <Grid item={true} xs={4}>
+  <Grid size={4}>
     <Stack spacing={4}>
       <BreadcrumbLinks currentPageTitle={title} />
       <Typography variant="h4">{title}</Typography>

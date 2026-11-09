@@ -160,7 +160,7 @@ export const PropertyFilters = memo(
     return (
       <Box paddingBottom={2}>
         <Grid container={true} spacing={3}>
-          <Grid item={true} xs={12}>
+          <Grid size={12}>
             <TextField
               fullWidth={true}
               placeholder="Search by address or location"
@@ -177,7 +177,7 @@ export const PropertyFilters = memo(
               }}
             />
           </Grid>
-          <Grid item={true} xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <FormControl fullWidth={true} sx={inputStyles}>
               <InputLabel id="bedrooms-label">Bedrooms</InputLabel>
               <Select
@@ -195,7 +195,7 @@ export const PropertyFilters = memo(
               </Select>
             </FormControl>
           </Grid>
-          <Grid item={true} xs={12} sm={6} md={3}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <FormControl fullWidth={true} sx={inputStyles}>
               <InputLabel id="bathrooms-label">Bathrooms</InputLabel>
               <Select
@@ -213,7 +213,7 @@ export const PropertyFilters = memo(
               </Select>
             </FormControl>
           </Grid>
-          <Grid item={true} xs={12} md={3}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <Typography gutterBottom={true} fontWeight="medium">
               Price range
             </Typography>
@@ -237,7 +237,7 @@ export const PropertyFilters = memo(
               </Typography>
             </Box>
           </Grid>
-          <Grid item={true} xs={12} md={3}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <Typography gutterBottom={true} fontWeight="medium">
               Square footage
             </Typography>

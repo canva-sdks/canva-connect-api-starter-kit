@@ -176,7 +176,7 @@ export const MultipleDesignsGeneratorPage = () => {
         title="Multiple Designs"
         description="Create multiple designs at once by adding products to your Brand Templates"
       />
-      <Grid item={true} xs={8}>
+      <Grid size={8}>
         {marketingMultiDesignResults.length ? (
           <Stack spacing={4}>
             <AutofillResults

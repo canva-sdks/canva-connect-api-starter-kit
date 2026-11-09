@@ -53,17 +53,17 @@ export const BrandTemplateSelector = ({
       height="100%"
     >
       <Grid container={true} spacing={3} overflow="auto">
-        <Grid item={true} xs={12}>
+        <Grid size={12}>
           <Grid container={true} spacing={2}>
-            <Grid item={true} xs={12} sm={7} md={9}>
+            <Grid size={{ xs: 12, sm: 7, md: 9 }}>
               <Typography variant="h5">Select Brand Template</Typography>
             </Grid>
-            <Grid item={true} xs={12} sm={5} md={3}>
+            <Grid size={{ xs: 12, sm: 5, md: 3 }}>
               <DeveloperNote info="Brand Templates are available on Canva Pro, Canva Teams, and Canva Enterprise." />
             </Grid>
           </Grid>
         </Grid>
-        <Grid item={true} xs={12}>
+        <Grid size={12}>
           <Paper
             variant="outlined"
             sx={{ padding: 2, bgcolor: "background.default" }}
@@ -126,7 +126,7 @@ export const BrandTemplateSelector = ({
 };
 
 const EmptyState = ({ onClose }: { onClose: () => void }) => (
-  <Grid item={true} xs={12}>
+  <Grid size={12}>
     <Box
       padding={8}
       display="flex"
@@ -165,7 +165,7 @@ const BrandTemplateCard = ({
   brandTemplateSet: Set<BrandTemplate>;
   handleSelectBrandTemplate: (brandTemplate: BrandTemplate) => void;
 }) => (
-  <Grid item={true} xs={12} sm={6} md={4} lg={4}>
+  <Grid size={{ xs: 12, sm: 6, md: 4, lg: 4 }}>
     <Paper
       variant="outlined"
       sx={{

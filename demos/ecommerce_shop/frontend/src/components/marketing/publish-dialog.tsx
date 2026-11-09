@@ -16,7 +16,7 @@ export const PublishDialog = ({
       open={isOpen}
       onClose={() => onOpenChange(false)}
       maxWidth="sm"
-      PaperProps={{ sx: { bgcolor: "black" } }}
+      slotProps={{ paper: { sx: { bgcolor: "black" } } }}
     >
       <Box
         display="flex"

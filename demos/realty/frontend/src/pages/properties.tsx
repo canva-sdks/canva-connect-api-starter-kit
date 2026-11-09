@@ -170,7 +170,7 @@ export const PropertiesPage = () => {
       {isFetching && (
         <Grid container={true} spacing={2} paddingTop={2} paddingBottom={2}>
           {Array.from({ length: 6 }).map((_, idx) => (
-            <Grid item={true} key={idx} xs={12} sm={6} md={4} lg={4}>
+            <Grid key={idx} size={{ xs: 12, sm: 6, md: 4, lg: 4 }}>
               <SkeletonCard index={idx} />
             </Grid>
           ))}
@@ -186,7 +186,7 @@ export const PropertiesPage = () => {
           />
           <Grid container={true} spacing={2} paddingTop={2} paddingBottom={2}>
             {filteredProperties.map((property, idx) => (
-              <Grid item={true} key={property.id} xs={12} sm={6} md={4} lg={4}>
+              <Grid key={property.id} size={{ xs: 12, sm: 6, md: 4, lg: 4 }}>
                 <PropertyCard
                   property={property}
                   formatPrice={formatPrice}

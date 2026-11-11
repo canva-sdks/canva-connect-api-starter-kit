@@ -300,6 +300,7 @@ export {
   type ExchangeAccessTokenResponse2,
   type ExchangeAccessTokenResponses,
   type ExchangeAuthCodeRequest,
+  type ExchangeClientCredentialsRequest,
   type ExchangeRefreshTokenRequest,
   type ExportError,
   ExportErrorCode,

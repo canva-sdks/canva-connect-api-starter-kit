@@ -915,6 +915,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:asset:write
       - oauthAuthCode:
         - asset:write
       tags:
@@ -982,6 +984,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:asset:read
       - oauthAuthCode:
         - asset:read
       tags:
@@ -1047,6 +1051,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:asset:write
       - oauthAuthCode:
         - asset:write
       tags:
@@ -1108,6 +1114,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:asset:read
       - oauthAuthCode:
         - asset:read
       tags:
@@ -1214,6 +1222,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:write
       - oauthAuthCode:
         - design:content:write
       tags:
@@ -1280,6 +1290,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:meta:read
       - oauthAuthCode:
         - design:meta:read
       tags:
@@ -1393,6 +1405,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:brandtemplate:meta:read
       - oauthAuthCode:
         - brandtemplate:meta:read
       tags:
@@ -1532,6 +1546,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:brandtemplate:meta:read
       - oauthAuthCode:
         - brandtemplate:meta:read
       tags:
@@ -1605,6 +1621,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:brandtemplate:content:read
       - oauthAuthCode:
         - brandtemplate:content:read
       tags:
@@ -2599,6 +2617,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:read
       - oauthAuthCode:
         - design:content:read
       tags:
@@ -2670,6 +2690,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:read
       - oauthAuthCode:
         - design:content:read
       tags:
@@ -2990,6 +3012,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:write
       - oauthAuthCode:
         - design:content:write
       tags:
@@ -3121,6 +3145,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:write
       - oauthAuthCode:
         - design:content:write
       tags:
@@ -3181,6 +3207,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:write
       - oauthAuthCode:
         - design:content:write
       tags:
@@ -3258,6 +3286,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:write
       - oauthAuthCode:
         - design:content:write
       tags:
@@ -3321,6 +3351,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:write
       - oauthAuthCode:
         - design:content:write
       tags:
@@ -3392,6 +3424,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:write
       - oauthAuthCode:
         - design:content:write
       tags:
@@ -3494,6 +3528,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:write
       - oauthAuthCode:
         - design:content:write
       tags:
@@ -3586,6 +3622,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:write
       - oauthAuthCode:
         - design:content:write
       tags:
@@ -3704,6 +3742,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:read
       - oauthAuthCode:
         - design:content:read
       tags:
@@ -3901,6 +3941,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:read
       - oauthAuthCode:
         - design:content:read
       tags:
@@ -4308,6 +4350,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:folder:write
       - oauthAuthCode:
         - folder:write
       tags:
@@ -4517,6 +4561,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Forbidden
+        "429":
+          content:
+            application/json:
+              examples:
+                model_capacity_reached:
+                  $ref: '#/components/examples/ModelCapacityReached'
+                too_many_requests:
+                  $ref: '#/components/examples/TooManyRequestsError'
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Too Many Requests
         default:
           content:
             application/json:
@@ -4524,6 +4579,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:asset:write
       - oauthAuthCode:
         - asset:write
       tags:
@@ -4635,6 +4692,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:asset:write
       - oauthAuthCode:
         - asset:write
       tags:
@@ -4981,6 +5040,9 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:write
+        - service:design:meta:read
       - oauthAuthCode:
         - design:content:write
         - design:meta:read
@@ -5049,6 +5111,8 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:meta:read
       - oauthAuthCode:
         - design:meta:read
       tags:
@@ -5057,14 +5121,12 @@ paths:
   /v1/oauth/token:
     post:
       description: |-
-        This endpoint implements the OAuth 2.0 `token` endpoint, as part of the Authorization Code flow with Proof Key for Code Exchange (PKCE). For more information, see [Authentication](https://www.canva.dev/docs/apps/rest-apis/authentication/).
+        This endpoint implements the OAuth 2.0 `token` endpoint. For more information, see [Authentication](https://www.canva.dev/docs/apps/rest-apis/authentication/).
 
-        To generate an access token, you must provide one of the following:
+        The way you generate an access token depends on your app type:
 
-        - An authorization code
-        - A refresh token
-
-        Generating a token using either an authorization code or a refresh token allows your app to act on behalf of a user. You must first [obtain user authorization and get an authorization code](https://www.canva.dev/docs/apps/rest-apis/authentication/#obtain-user-authorization).
+        - **Public or private apps** act on behalf of a user, using the OAuth authorization code flow with Proof Key for Code Exchange (PKCE). To generate an access token, you provide either an authorization code or a refresh token. You must first [obtain user authorization and get an authorization code](https://www.canva.dev/docs/apps/rest-apis/authentication/#obtain-user-authorization).
+        - **Service apps** act on behalf of the app itself, using the OAuth client credentials flow. To generate an access token, you authenticate with your app's client ID and client secret. No user authorization is required.
 
         Access tokens may be up to 4 KB in size, and are only valid for a specified period of time. The expiry time (currently 4 hours) is shown in the endpoint response and is subject to change.
 
@@ -5079,6 +5141,8 @@ paths:
 
         **Generate an access token using an authorization code**
 
+        Only public or private apps can use this grant type.
+
         To generate an access token with an authorization code, you must:
 
         - Set `grant_type` to `authorization_code`.
@@ -5087,12 +5151,26 @@ paths:
 
         **Generate an access token using a refresh token**
 
+        Only public or private apps can use this grant type.
+
         Using the `refresh_token` value from a previous user token request, you can get a new access token with the same or smaller scope as the previous one, but with a refreshed expiry time. You will also receive a new refresh token that you can use to refresh the access token again.
 
         To refresh an existing access token, you must:
 
         - Set `grant_type` to `refresh_token`.
         - Provide the `refresh_token` from a previous token request.
+
+        **Generate an access token using client credentials**
+
+        Only service apps can use this grant type. The access token acts on behalf of the app itself, so it can only use [scopes for service apps](https://www.canva.dev/docs/apps/rest-apis/scopes/#scopes-for-service-apps).
+
+        To generate an access token using client credentials, you must:
+
+        - Set `grant_type` to `client_credentials`.
+        - Authenticate the request with your client ID and client secret, as described in **Endpoint authentication**.
+        - Optionally, set `scope` to the scopes that the token needs. If you omit `scope`, the token is granted all the scopes that are enabled for your app in the Developer Portal.
+
+        The response doesn't include a refresh token. When the access token expires, generate a new one by making the same request again.
       operationId: exchangeAccessToken
       requestBody:
         content:
@@ -5537,6 +5615,9 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:read
+        - service:design:content:write
       - oauthAuthCode:
         - design:content:read
         - design:content:write
@@ -5605,6 +5686,9 @@ paths:
                 $ref: '#/components/schemas/Error'
           description: Error Response
       security:
+      - oauthClientCredentials:
+        - service:design:content:read
+        - service:design:content:write
       - oauthAuthCode:
         - design:content:read
         - design:content:write
@@ -6934,6 +7018,12 @@ components:
       value:
         code: permission_denied
         message: "Not allowed to access folder item '{itemId}'"
+    ModelCapacityReached:
+      summary: The requested image generation model has reached capacity
+      value:
+        code: model_capacity_reached
+        message: The requested model has reached capacity. Try again later or choose
+          a different model.
     ImageGenerationNotEnabledError:
       summary: Image generation is not enabled for this client
       value:
@@ -6973,6 +7063,7 @@ components:
                 width: 595
                 height: 335
                 url: https://document-export.canva.com/Vczz9/zF9vzVtdADc/2/thumbnail/0001.png?<query-string>
+            url: https://media-transformation.canva.com/Vczz9/zF9vzVtdADc/result.png?<query-string>
     FailedImageTransformationJobExample:
       summary: Failed job
       value:
@@ -11856,6 +11947,7 @@ components:
       - app_credit_quota_exceeded
       - unsupported_content_type
       - request_too_large
+      - model_capacity_reached
       - folder_not_found
       - item_in_multiple_folders
       - asset_not_found
@@ -13495,6 +13587,19 @@ components:
           - $ref: '#/components/schemas/Asset'
           description: The new image asset produced by applying all of the requested
             transformations.
+        url:
+          description: |-
+            A URL for retrieving the transformed image at full resolution.
+            This URL is temporary and includes a query string that's required for retrieving the
+            image. To get a new URL, call the
+            [Get image transformation job](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/)
+            API again.
+
+            Only present if the user is allowed to access the transformed image at full
+            resolution. For example, it's omitted if the source asset contains premium content
+            that the user doesn't have a license for.
+          example: https://media-private.canva.com/Vczz9/zF9vzVtdADc/1/p.png?<query-string>
+          type: string
       required:
       - asset
       type: object
@@ -13860,10 +13965,12 @@ components:
         mapping:
           authorization_code: '#/components/schemas/ExchangeAuthCodeRequest'
           refresh_token: '#/components/schemas/ExchangeRefreshTokenRequest'
+          client_credentials: '#/components/schemas/ExchangeClientCredentialsRequest'
         propertyName: grant_type
       oneOf:
       - $ref: '#/components/schemas/ExchangeAuthCodeRequest'
       - $ref: '#/components/schemas/ExchangeRefreshTokenRequest'
+      - $ref: '#/components/schemas/ExchangeClientCredentialsRequest'
       type: object
     ExchangeAuthCodeRequest:
       properties:
@@ -13947,17 +14054,54 @@ components:
       - grant_type
       - refresh_token
       type: object
+    ExchangeClientCredentialsRequest:
+      properties:
+        grant_type:
+          description: For generating an access token using your app's client credentials.
+            Only service apps can use this grant type.
+          enum:
+          - client_credentials
+          example: client_credentials
+          type: string
+        client_id:
+          description: |
+            Your app's unique ID, for authenticating the request.
+
+            NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+          example: OC-FAB12-AbCdEf
+          type: string
+        client_secret:
+          description: |
+            Your app's client secret, for authenticating the request. Begins with `cnvca`.
+
+            NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+          example: cnvcaAbcdefg12345_hijklm6789
+          type: string
+        scope:
+          description: |
+            Optional scope value when generating an access token using client credentials. Separate multiple [scopes for service apps](https://www.canva.dev/docs/apps/rest-apis/scopes/#scopes-for-service-apps) with a single space between each scope.
+
+            The requested scopes must be enabled for your app in the Developer Portal. If omitted, the token is granted all the scopes that are enabled for your app.
+          example: service:design:meta:read
+          type: string
+      required:
+      - grant_type
+      type: object
     ExchangeAccessTokenResponse:
       description: Exchange auth token to access token.
       properties:
         access_token:
           description: "The bearer access token to use to authenticate to Canva REST\
-            \ API endpoints. If requested using a `authorization_code` or `refresh_token`,\
-            \ this allows you to act on behalf of a user."
+            \ API endpoints. If requested using `authorization_code` or `refresh_token`,\
+            \ this allows you to act on behalf of a user. If requested using `client_credentials`,\
+            \ this allows your service app to act on its own behalf."
           example: JagALLazU0i2ld9WW4zTO4kaG0lkvP8Y5sSO206ZwxNF4E1y3xKJKF7TzN17BXTfaNOeY0P88AeRCE6cRF7SJzvf3Sx97rA80sGHtFplFo
           type: string
         refresh_token:
-          description: The token that you can use to refresh the access token.
+          description: |
+            The token that you can use to refresh the access token.
+
+            This is only returned when the access token was requested using `authorization_code` or `refresh_token`. Access tokens requested using `client_credentials` don't have a refresh token, so service apps generate a new access token instead.
           example: JABix5nolsk9k8n2r0f8nq1gw4zjo40ht6sb4i573wgdzmkwdmiy6muh897hp0bxyab276wtgqkvtob2mg9aidt5d6rcltcbcgs101
           type: string
         token_type:
@@ -14795,6 +14939,24 @@ components:
     basicAuth:
       scheme: basic
       type: http
+    oauthClientCredentials:
+      flows:
+        clientCredentials:
+          scopes:
+            service:design:content:write: Create designs on the app's behalf.
+            service:design:content:read: View the contents of the app's designs.
+            service:design:meta:read: View the metadata of the app's designs.
+            service:folder:write: "Move designs, assets, and folders between folders\
+              \ on the app's behalf."
+            service:asset:write: Upload assets on the app's behalf.
+            service:asset:read: "View the metadata for the app's assets, such as uploaded\
+              \ images."
+            service:brandtemplate:meta:read: View the metadata of the brand templates
+              associated with the developer's brand.
+            service:brandtemplate:content:read: Read the content of the brand templates
+              associated with the developer's brand.
+          tokenUrl: https://api.canva.com/auth/v1/oauth/token
+      type: oauth2
     oauthAuthCode:
       flows:
         authorizationCode:

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-11
+
+### 🔧 Changed
+
+- Updated the OpenAPI spec and generated TypeScript client to match the latest REST API, adding support for service apps, which act on behalf of the app itself rather than a Canva user. For more information, see [Authentication](https://www.canva.dev/docs/apps/rest-apis/authentication/).
+
 ## 2026-11-09
 
 ### 🔧 Changed

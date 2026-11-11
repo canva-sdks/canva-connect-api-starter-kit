@@ -493,7 +493,10 @@ export class AssetService {
       ThrowOnError
     >({
       bodySerializer: null,
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/asset-uploads",
       ...options,
       headers: {
@@ -516,7 +519,10 @@ export class AssetService {
       GetAssetUploadJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/asset-uploads/{jobId}",
       ...options,
     });
@@ -541,7 +547,10 @@ export class AssetService {
       CreateUrlAssetUploadJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/url-asset-uploads",
       ...options,
       headers: {
@@ -564,7 +573,10 @@ export class AssetService {
       GetUrlAssetUploadJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/url-asset-uploads/{jobId}",
       ...options,
     });
@@ -603,7 +615,10 @@ export class AutofillService {
       CreateDesignAutofillJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/autofills",
       ...options,
       headers: {
@@ -631,7 +646,10 @@ export class AutofillService {
       GetDesignAutofillJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/autofills/{jobId}",
       ...options,
     });
@@ -652,7 +670,10 @@ export class BrandTemplateService {
       ListBrandTemplatesErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/brand-templates",
       ...options,
     });
@@ -715,7 +736,10 @@ export class BrandTemplateService {
       GetBrandTemplateErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/brand-templates/{brandTemplateId}",
       ...options,
     });
@@ -753,7 +777,10 @@ export class BrandTemplateService {
       GetBrandTemplateDatasetErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/brand-templates/{brandTemplateId}/dataset",
       ...options,
     });
@@ -1104,7 +1131,10 @@ export class DesignService {
       GetDesignExportFormatsErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/designs/{designId}/export-formats",
       ...options,
     });
@@ -1140,7 +1170,10 @@ export class DesignService {
       GetDesignDatasetErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/designs/{designId}/dataset",
       ...options,
     });
@@ -1249,7 +1282,10 @@ export class DesignGenerationService {
       CreateDesignGenerationJobV2Errors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/generations",
       ...options,
       headers: {
@@ -1288,7 +1324,10 @@ export class DesignGenerationService {
       GetDesignGenerationJobV2Errors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/generations/{jobId}",
       ...options,
     });
@@ -1319,7 +1358,10 @@ export class DesignImportService {
       ThrowOnError
     >({
       bodySerializer: null,
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/imports",
       ...options,
       headers: {
@@ -1342,7 +1384,10 @@ export class DesignImportService {
       GetDesignImportJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/imports/{jobId}",
       ...options,
     });
@@ -1367,7 +1412,10 @@ export class DesignImportService {
       CreateUrlImportJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/url-imports",
       ...options,
       headers: {
@@ -1390,7 +1438,10 @@ export class DesignImportService {
       GetUrlImportJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/url-imports/{jobId}",
       ...options,
     });
@@ -1433,7 +1484,10 @@ export class DesignImportService {
       CreateImageToDesignImportJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/image-to-design-imports",
       ...options,
       headers: {
@@ -1466,7 +1520,10 @@ export class DesignImportService {
       GetImageToDesignImportJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/image-to-design-imports/{jobId}",
       ...options,
     });
@@ -1505,7 +1562,10 @@ export class ExportService {
       CreateDesignExportJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/exports",
       ...options,
       headers: {
@@ -1579,7 +1639,10 @@ export class ExportService {
       GetDesignExportJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/exports/{exportId}",
       ...options,
     });
@@ -1691,7 +1754,10 @@ export class FolderService {
       MoveFolderItemErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/folders/move",
       ...options,
       headers: {
@@ -1764,7 +1830,10 @@ export class ImageGenerationService {
       CreateImageGenerationJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/image-generations",
       ...options,
       headers: {
@@ -1799,7 +1868,10 @@ export class ImageGenerationService {
       GetImageGenerationJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/image-generations/{jobId}",
       ...options,
     });
@@ -1918,7 +1990,10 @@ export class MergeService {
       CreateDesignMergeJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/merges",
       ...options,
       headers: {
@@ -1953,7 +2028,10 @@ export class MergeService {
       GetDesignMergeJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/merges/{jobId}",
       ...options,
     });
@@ -1962,14 +2040,12 @@ export class MergeService {
 
 export class OauthService {
   /**
-   * This endpoint implements the OAuth 2.0 `token` endpoint, as part of the Authorization Code flow with Proof Key for Code Exchange (PKCE). For more information, see [Authentication](https://www.canva.dev/docs/apps/rest-apis/authentication/).
+   * This endpoint implements the OAuth 2.0 `token` endpoint. For more information, see [Authentication](https://www.canva.dev/docs/apps/rest-apis/authentication/).
    *
-   * To generate an access token, you must provide one of the following:
+   * The way you generate an access token depends on your app type:
    *
-   * - An authorization code
-   * - A refresh token
-   *
-   * Generating a token using either an authorization code or a refresh token allows your app to act on behalf of a user. You must first [obtain user authorization and get an authorization code](https://www.canva.dev/docs/apps/rest-apis/authentication/#obtain-user-authorization).
+   * - **Public or private apps** act on behalf of a user, using the OAuth authorization code flow with Proof Key for Code Exchange (PKCE). To generate an access token, you provide either an authorization code or a refresh token. You must first [obtain user authorization and get an authorization code](https://www.canva.dev/docs/apps/rest-apis/authentication/#obtain-user-authorization).
+   * - **Service apps** act on behalf of the app itself, using the OAuth client credentials flow. To generate an access token, you authenticate with your app's client ID and client secret. No user authorization is required.
    *
    * Access tokens may be up to 4 KB in size, and are only valid for a specified period of time. The expiry time (currently 4 hours) is shown in the endpoint response and is subject to change.
    *
@@ -1984,6 +2060,8 @@ export class OauthService {
    *
    * **Generate an access token using an authorization code**
    *
+   * Only public or private apps can use this grant type.
+   *
    * To generate an access token with an authorization code, you must:
    *
    * - Set `grant_type` to `authorization_code`.
@@ -1992,12 +2070,26 @@ export class OauthService {
    *
    * **Generate an access token using a refresh token**
    *
+   * Only public or private apps can use this grant type.
+   *
    * Using the `refresh_token` value from a previous user token request, you can get a new access token with the same or smaller scope as the previous one, but with a refreshed expiry time. You will also receive a new refresh token that you can use to refresh the access token again.
    *
    * To refresh an existing access token, you must:
    *
    * - Set `grant_type` to `refresh_token`.
    * - Provide the `refresh_token` from a previous token request.
+   *
+   * **Generate an access token using client credentials**
+   *
+   * Only service apps can use this grant type. The access token acts on behalf of the app itself, so it can only use [scopes for service apps](https://www.canva.dev/docs/apps/rest-apis/scopes/#scopes-for-service-apps).
+   *
+   * To generate an access token using client credentials, you must:
+   *
+   * - Set `grant_type` to `client_credentials`.
+   * - Authenticate the request with your client ID and client secret, as described in **Endpoint authentication**.
+   * - Optionally, set `scope` to the scopes that the token needs. If you omit `scope`, the token is granted all the scopes that are enabled for your app in the Developer Portal.
+   *
+   * The response doesn't include a refresh token. When the access token expires, generate a new one by making the same request again.
    */
   public static exchangeAccessToken<ThrowOnError extends boolean = false>(
     options: Options<ExchangeAccessTokenData, ThrowOnError>,
@@ -2162,7 +2254,10 @@ export class ResizeService {
       CreateDesignResizeJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/resizes",
       ...options,
       headers: {
@@ -2198,7 +2293,10 @@ export class ResizeService {
       GetDesignResizeJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        { scheme: "bearer", type: "http" },
+        { scheme: "bearer", type: "http" },
+      ],
       url: "/v1/resizes/{jobId}",
       ...options,
     });

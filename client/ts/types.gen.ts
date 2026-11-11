@@ -3260,6 +3260,7 @@ export const ErrorCode = {
   APP_CREDIT_QUOTA_EXCEEDED: "app_credit_quota_exceeded",
   UNSUPPORTED_CONTENT_TYPE: "unsupported_content_type",
   REQUEST_TOO_LARGE: "request_too_large",
+  MODEL_CAPACITY_REACHED: "model_capacity_reached",
   FOLDER_NOT_FOUND: "folder_not_found",
   ITEM_IN_MULTIPLE_FOLDERS: "item_in_multiple_folders",
   ASSET_NOT_FOUND: "asset_not_found",
@@ -4642,6 +4643,18 @@ export type ImageTransformationJobResult = {
    * The new image asset produced by applying all of the requested transformations.
    */
   asset: Asset;
+  /**
+   * A URL for retrieving the transformed image at full resolution.
+   * This URL is temporary and includes a query string that's required for retrieving the
+   * image. To get a new URL, call the
+   * [Get image transformation job](https://www.canva.dev/docs/apps/rest-apis/reference/image-transformations/get-image-transformation-job/)
+   * API again.
+   *
+   * Only present if the user is allowed to access the transformed image at full
+   * resolution. For example, it's omitted if the source asset contains premium content
+   * that the user doesn't have a license for.
+   */
+  url?: string;
 };
 
 /**
@@ -4936,7 +4949,10 @@ export type ExchangeAccessTokenRequest =
     } & ExchangeAuthCodeRequest)
   | ({
       grant_type: "refresh_token";
-    } & ExchangeRefreshTokenRequest);
+    } & ExchangeRefreshTokenRequest)
+  | ({
+      grant_type: "client_credentials";
+    } & ExchangeClientCredentialsRequest);
 
 export type ExchangeAuthCodeRequest = {
   /**
@@ -5006,16 +5022,47 @@ export type ExchangeRefreshTokenRequest = {
   scope?: string;
 };
 
+export type ExchangeClientCredentialsRequest = {
+  /**
+   * For generating an access token using your app's client credentials. Only service apps can use this grant type.
+   */
+  grant_type: "client_credentials";
+  /**
+   * Your app's unique ID, for authenticating the request.
+   *
+   * NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+   *
+   */
+  client_id?: string;
+  /**
+   * Your app's client secret, for authenticating the request. Begins with `cnvca`.
+   *
+   * NOTE: We recommend that you use basic access authentication instead of specifying `client_id` and `client_secret` as body parameters.
+   *
+   */
+  client_secret?: string;
+  /**
+   * Optional scope value when generating an access token using client credentials. Separate multiple [scopes for service apps](https://www.canva.dev/docs/apps/rest-apis/scopes/#scopes-for-service-apps) with a single space between each scope.
+   *
+   * The requested scopes must be enabled for your app in the Developer Portal. If omitted, the token is granted all the scopes that are enabled for your app.
+   *
+   */
+  scope?: string;
+};
+
 /**
  * Exchange auth token to access token.
  */
 export type ExchangeAccessTokenResponse = {
   /**
-   * The bearer access token to use to authenticate to Canva REST API endpoints. If requested using a `authorization_code` or `refresh_token`, this allows you to act on behalf of a user.
+   * The bearer access token to use to authenticate to Canva REST API endpoints. If requested using `authorization_code` or `refresh_token`, this allows you to act on behalf of a user. If requested using `client_credentials`, this allows your service app to act on its own behalf.
    */
   access_token: string;
   /**
    * The token that you can use to refresh the access token.
+   *
+   * This is only returned when the access token was requested using `authorization_code` or `refresh_token`. Access tokens requested using `client_credentials` don't have a refresh token, so service apps generate a new access token instead.
+   *
    */
   refresh_token: string;
   /**
@@ -8059,6 +8106,10 @@ export type CreateImageGenerationJobErrors = {
    * Forbidden
    */
   403: Error;
+  /**
+   * Too Many Requests
+   */
+  429: Error;
   /**
    * Error Response
    */

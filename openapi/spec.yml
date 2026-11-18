@@ -922,6 +922,7 @@ paths:
       tags:
       - asset
       x-rate-limit-per-client-user: 30
+      x-rate-limit-per-client-credential: 100
   /v1/asset-uploads/{jobId}:
     get:
       description: |-
@@ -991,6 +992,7 @@ paths:
       tags:
       - asset
       x-rate-limit-per-client-user: 180
+      x-rate-limit-per-client-credential: 100
   /v1/url-asset-uploads:
     post:
       description: |-
@@ -1058,6 +1060,7 @@ paths:
       tags:
       - asset
       x-rate-limit-per-client-user: 30
+      x-rate-limit-per-client-credential: 100
   /v1/url-asset-uploads/{jobId}:
     get:
       description: |-
@@ -1121,6 +1124,7 @@ paths:
       tags:
       - asset
       x-rate-limit-per-client-user: 180
+      x-rate-limit-per-client-credential: 100
   /v1/autofills:
     post:
       description: |-
@@ -1229,6 +1233,7 @@ paths:
       tags:
       - autofill
       x-rate-limit-per-client-user: 60
+      x-rate-limit-per-client-credential: 100
   /v1/autofills/{jobId}:
     get:
       description: |-
@@ -1297,6 +1302,7 @@ paths:
       tags:
       - autofill
       x-rate-limit-per-client-user: 120
+      x-rate-limit-per-client-credential: 100
   /v1/brand-templates:
     get:
       description: |-
@@ -1412,6 +1418,7 @@ paths:
       tags:
       - brand_template
       x-rate-limit-per-client-user: 100
+      x-rate-limit-per-client-credential: 100
     post:
       description: |-
         <Warning>
@@ -1553,6 +1560,7 @@ paths:
       tags:
       - brand_template
       x-rate-limit-per-client-user: 100
+      x-rate-limit-per-client-credential: 100
   /v1/brand-templates/{brandTemplateId}/dataset:
     get:
       description: |-
@@ -1628,6 +1636,7 @@ paths:
       tags:
       - brand_template
       x-rate-limit-per-client-user: 100
+      x-rate-limit-per-client-credential: 100
   /v1/comments:
     post:
       deprecated: true
@@ -2624,6 +2633,7 @@ paths:
       tags:
       - design
       x-rate-limit-per-client-user: 100
+      x-rate-limit-per-client-credential: 100
   /v1/designs/{designId}/dataset:
     get:
       description: |-
@@ -2697,6 +2707,7 @@ paths:
       tags:
       - design
       x-rate-limit-per-client-user: 100
+      x-rate-limit-per-client-credential: 100
   /v1/print-partner/designs:
     post:
       description: |-
@@ -3019,6 +3030,7 @@ paths:
       tags:
       - design_generation
       x-rate-limit-per-client-user: 20
+      x-rate-limit-per-client-credential: 100
       x-required-capabilities:
       - design_generation
   /v1/generations/{jobId}:
@@ -3152,6 +3164,7 @@ paths:
       tags:
       - design_generation
       x-rate-limit-per-client-user: 120
+      x-rate-limit-per-client-credential: 100
       x-required-capabilities:
       - design_generation
   /v1/imports:
@@ -3214,6 +3227,7 @@ paths:
       tags:
       - design_import
       x-rate-limit-per-client-user: 20
+      x-rate-limit-per-client-credential: 100
   /v1/imports/{jobId}:
     get:
       description: |-
@@ -3293,6 +3307,7 @@ paths:
       tags:
       - design_import
       x-rate-limit-per-client-user: 120
+      x-rate-limit-per-client-credential: 100
   /v1/url-imports:
     post:
       description: |-
@@ -3358,6 +3373,7 @@ paths:
       tags:
       - design_import
       x-rate-limit-per-client-user: 20
+      x-rate-limit-per-client-credential: 100
   /v1/url-imports/{jobId}:
     get:
       description: |-
@@ -3431,6 +3447,7 @@ paths:
       tags:
       - design_import
       x-rate-limit-per-client-user: 120
+      x-rate-limit-per-client-credential: 100
   /v1/image-to-design-imports:
     post:
       description: |-
@@ -3537,6 +3554,7 @@ paths:
       x-required-capabilities:
       - image_to_design_imports
       x-rate-limit-per-client-user: 20
+      x-rate-limit-per-client-credential: 100
   /v1/image-to-design-imports/{jobId}:
     get:
       description: |-
@@ -3631,6 +3649,7 @@ paths:
       x-required-capabilities:
       - image_to_design_imports
       x-rate-limit-per-client-user: 120
+      x-rate-limit-per-client-credential: 100
   /v1/exports:
     post:
       description: |-
@@ -3749,6 +3768,7 @@ paths:
       tags:
       - export
       x-rate-limit-per-client-user: 20
+      x-rate-limit-per-client-credential: 100
   /v1/print-partner/exports:
     post:
       description: |-
@@ -3948,6 +3968,7 @@ paths:
       tags:
       - export
       x-rate-limit-per-client-user: 120
+      x-rate-limit-per-client-credential: 100
   /v1/folders/{folderId}:
     delete:
       description: |-
@@ -4357,6 +4378,7 @@ paths:
       tags:
       - folder
       x-rate-limit-per-client-user: 100
+      x-rate-limit-per-client-credential: 100
   /v1/folders:
     post:
       description: |-
@@ -4588,6 +4610,7 @@ paths:
       x-required-capabilities:
       - image_generation
       x-rate-limit-per-client-user: 20
+      x-rate-limit-per-client-credential: 1000
   /v1/image-generations/{jobId}:
     get:
       description: |-
@@ -4701,6 +4724,7 @@ paths:
       x-required-capabilities:
       - image_generation
       x-rate-limit-per-client-user: 120
+      x-rate-limit-per-client-credential: 1000
   /v1/image-transformations:
     post:
       description: |-
@@ -4829,6 +4853,7 @@ paths:
       tags:
       - image_transformation
       x-rate-limit-per-client-user: 20
+      x-rate-limit-per-client-credential: 100
   /v1/image-transformations/{jobId}:
     get:
       description: |-
@@ -4931,6 +4956,7 @@ paths:
       tags:
       - image_transformation
       x-rate-limit-per-client-user: 120
+      x-rate-limit-per-client-credential: 100
   /v1/merges:
     post:
       description: |-
@@ -5049,6 +5075,7 @@ paths:
       tags:
       - merge
       x-rate-limit-per-client-user: 100
+      x-rate-limit-per-client-credential: 100
   /v1/merges/{jobId}:
     get:
       description: |-
@@ -5118,6 +5145,7 @@ paths:
       tags:
       - merge
       x-rate-limit-per-client-user: 100
+      x-rate-limit-per-client-credential: 100
   /v1/oauth/token:
     post:
       description: |-
@@ -5626,6 +5654,7 @@ paths:
       x-required-capabilities:
       - resize
       x-rate-limit-per-client-user: 20
+      x-rate-limit-per-client-credential: 100
   /v1/resizes/{jobId}:
     get:
       description: |-
@@ -5697,6 +5726,7 @@ paths:
       x-required-capabilities:
       - resize
       x-rate-limit-per-client-user: 120
+      x-rate-limit-per-client-credential: 100
   /v1/users/me:
     get:
       description: |-
@@ -13393,12 +13423,12 @@ components:
         Z Image Turbo. Pick this if the image includes text, or for food, drink, and
         general-purpose imagery.
     ImageGenerationAspectRatio:
-      default: square
       description: |-
         The aspect ratio of the generated image. Every aspect ratio is supported by every model
         you can select with `model`, so the choice of model never limits the aspect ratios you
         can use. The pixel dimensions of the output depend on the model. The job result reports
-        the actual `width` and `height`.
+        the actual `width` and `height`. If you omit the aspect ratio, Canva chooses one for the
+        image. Don't rely on a specific default: set the aspect ratio when the shape matters.
       enum:
       - square
       - landscape

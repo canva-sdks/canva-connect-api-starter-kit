@@ -1396,9 +1396,7 @@ export type ReplyComment = {
  *
  * @deprecated
  */
-export type CommentObject = {
-  type: "design";
-} & DesignCommentObject;
+export type CommentObject = DesignCommentObject;
 
 /**
  * If the comment is attached to a Canva Design.
@@ -1417,9 +1415,7 @@ export type DesignCommentObject = {
  * An object containing identifying information for the design or other object you want to
  * attach the comment to.
  */
-export type CommentObjectInput = {
-  type: "design";
-} & DesignCommentObjectInput;
+export type CommentObjectInput = DesignCommentObjectInput;
 
 /**
  * If the comment is attached to a Canva Design.
@@ -4429,7 +4425,8 @@ export type ImageGenerationModel =
  * The aspect ratio of the generated image. Every aspect ratio is supported by every model
  * you can select with `model`, so the choice of model never limits the aspect ratios you
  * can use. The pixel dimensions of the output depend on the model. The job result reports
- * the actual `width` and `height`.
+ * the actual `width` and `height`. If you omit the aspect ratio, Canva chooses one for the
+ * image. Don't rely on a specific default: set the aspect ratio when the shape matters.
  */
 export const ImageGenerationAspectRatio = {
   /**
@@ -4482,7 +4479,8 @@ export const ImageGenerationAspectRatio = {
  * The aspect ratio of the generated image. Every aspect ratio is supported by every model
  * you can select with `model`, so the choice of model never limits the aspect ratios you
  * can use. The pixel dimensions of the output depend on the model. The job result reports
- * the actual `width` and `height`.
+ * the actual `width` and `height`. If you omit the aspect ratio, Canva chooses one for the
+ * image. Don't rely on a specific default: set the aspect ratio when the shape matters.
  */
 export type ImageGenerationAspectRatio =
   (typeof ImageGenerationAspectRatio)[keyof typeof ImageGenerationAspectRatio];
@@ -4567,9 +4565,7 @@ export type CreateImageTransformationJobRequest = {
  * by its `type` value and declares its own parameters; `background_removal` takes no
  * parameters.
  */
-export type ImageTransformationType = {
-  type: "background_removal";
-} & BackgroundRemovalImageTransformation;
+export type ImageTransformationType = BackgroundRemovalImageTransformation;
 
 /**
  * Removes the background from an image, keeping the foreground subject. The resulting
@@ -4857,9 +4853,8 @@ export type DeletePagesDesignMergeOperation = {
   page_numbers: Array<number>;
 };
 
-export type MergeSourceForInsertPagesOperation = {
-  type: "design";
-} & DesignMergeSourceForInsertPagesOperation;
+export type MergeSourceForInsertPagesOperation =
+  DesignMergeSourceForInsertPagesOperation;
 
 /**
  * A design source from which pages are inserted.
@@ -5249,7 +5244,7 @@ export const Interval = {
 /**
  * The interval at which the usage resets. 'never' means lifetime quota that never resets.
  */
-export type Interval = (typeof Interval)[keyof typeof Interval];
+export type Interval2 = (typeof Interval)[keyof typeof Interval];
 
 /**
  * Unique identification string for the feature. Need to be in `{application-id}.{feature-name}` pattern
@@ -5773,7 +5768,7 @@ export type FeatureQuotaLimit2 = FeatureQuotaLimit;
 /**
  * The interval at which the usage resets. 'never' means lifetime quota that never resets.
  */
-export type Interval2 = Interval;
+export type Interval = Interval2;
 
 export type GetDesignAnalyticsData = {
   body?: never;

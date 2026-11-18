@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-18
+
+### 🔧 Changed
+
+- Updated `@hey-api/openapi-ts` to `v0.99.0` and regenerated the TypeScript client.
+- Updated the OpenAPI spec and generated TypeScript client to match the latest REST API.
+
 ## 2026-11-11
 
 ### 🔧 Changed

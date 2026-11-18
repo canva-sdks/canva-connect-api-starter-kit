@@ -2,7 +2,9 @@
 
 import {
   type Client,
+  type ClientMeta,
   type Options as Options2,
+  type RequestResult,
   type TDataShape,
   urlSearchParamsBodySerializer,
 } from "./client";
@@ -226,7 +228,7 @@ export type Options<
    * You can pass arbitrary values through the `meta` object. This can be
    * used to access values that aren't defined as part of the SDK function.
    */
-  meta?: Record<string, unknown>;
+  meta?: keyof ClientMeta extends never ? Record<string, unknown> : ClientMeta;
 };
 
 export class AnalyticsService {
@@ -251,13 +253,23 @@ export class AnalyticsService {
    */
   public static getDesignAnalytics<ThrowOnError extends boolean = false>(
     options: Options<GetDesignAnalyticsData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetDesignAnalyticsResponses,
+    GetDesignAnalyticsErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetDesignAnalyticsResponses,
       GetDesignAnalyticsErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs/{designId}/analytics",
       ...options,
     });
@@ -282,13 +294,23 @@ export class AnalyticsService {
    */
   public static getDesignAnalyticsViewers<ThrowOnError extends boolean = false>(
     options: Options<GetDesignAnalyticsViewersData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetDesignAnalyticsViewersResponses,
+    GetDesignAnalyticsViewersErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetDesignAnalyticsViewersResponses,
       GetDesignAnalyticsViewersErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs/{designId}/analytics/viewers",
       ...options,
     });
@@ -315,13 +337,25 @@ export class AnalyticsService {
    */
   public static getDesignAnalyticsViewsOverTime<
     ThrowOnError extends boolean = false,
-  >(options: Options<GetDesignAnalyticsViewsOverTimeData, ThrowOnError>) {
+  >(
+    options: Options<GetDesignAnalyticsViewsOverTimeData, ThrowOnError>,
+  ): RequestResult<
+    GetDesignAnalyticsViewsOverTimeResponses,
+    GetDesignAnalyticsViewsOverTimeErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetDesignAnalyticsViewsOverTimeResponses,
       GetDesignAnalyticsViewsOverTimeErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs/{designId}/analytics/views-over-time",
       ...options,
     });
@@ -348,13 +382,25 @@ export class AnalyticsService {
    */
   public static getDesignAnalyticsPageViews<
     ThrowOnError extends boolean = false,
-  >(options: Options<GetDesignAnalyticsPageViewsData, ThrowOnError>) {
+  >(
+    options: Options<GetDesignAnalyticsPageViewsData, ThrowOnError>,
+  ): RequestResult<
+    GetDesignAnalyticsPageViewsResponses,
+    GetDesignAnalyticsPageViewsErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).post<
       GetDesignAnalyticsPageViewsResponses,
       GetDesignAnalyticsPageViewsErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs/{designId}/analytics/page-views",
       ...options,
       headers: {
@@ -383,13 +429,23 @@ export class AnalyticsService {
    */
   public static getDesignAnalyticsLinks<ThrowOnError extends boolean = false>(
     options: Options<GetDesignAnalyticsLinksData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetDesignAnalyticsLinksResponses,
+    GetDesignAnalyticsLinksErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetDesignAnalyticsLinksResponses,
       GetDesignAnalyticsLinksErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs/{designId}/analytics/links",
       ...options,
     });
@@ -403,7 +459,7 @@ export class AppService {
    */
   public static getAppJwks<ThrowOnError extends boolean = false>(
     options: Options<GetAppJwksData, ThrowOnError>,
-  ) {
+  ): RequestResult<GetAppJwksResponses, GetAppJwksErrors, ThrowOnError> {
     return (options.client ?? client).get<
       GetAppJwksResponses,
       GetAppJwksErrors,
@@ -420,13 +476,19 @@ export class AssetService {
    */
   public static deleteAsset<ThrowOnError extends boolean = false>(
     options: Options<DeleteAssetData, ThrowOnError>,
-  ) {
+  ): RequestResult<DeleteAssetResponses, DeleteAssetErrors, ThrowOnError> {
     return (options.client ?? client).delete<
       DeleteAssetResponses,
       DeleteAssetErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/assets/{assetId}",
       ...options,
     });
@@ -437,13 +499,19 @@ export class AssetService {
    */
   public static getAsset<ThrowOnError extends boolean = false>(
     options: Options<GetAssetData, ThrowOnError>,
-  ) {
+  ): RequestResult<GetAssetResponses, GetAssetErrors, ThrowOnError> {
     return (options.client ?? client).get<
       GetAssetResponses,
       GetAssetErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/assets/{assetId}",
       ...options,
     });
@@ -455,13 +523,19 @@ export class AssetService {
    */
   public static updateAsset<ThrowOnError extends boolean = false>(
     options: Options<UpdateAssetData, ThrowOnError>,
-  ) {
+  ): RequestResult<UpdateAssetResponses, UpdateAssetErrors, ThrowOnError> {
     return (options.client ?? client).patch<
       UpdateAssetResponses,
       UpdateAssetErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/assets/{assetId}",
       ...options,
       headers: {
@@ -486,7 +560,11 @@ export class AssetService {
    */
   public static createAssetUploadJob<ThrowOnError extends boolean = false>(
     options: Options<CreateAssetUploadJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    CreateAssetUploadJobResponses,
+    CreateAssetUploadJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).post<
       CreateAssetUploadJobResponses,
       CreateAssetUploadJobErrors,
@@ -494,8 +572,16 @@ export class AssetService {
     >({
       bodySerializer: null,
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/asset-uploads",
       ...options,
@@ -513,15 +599,27 @@ export class AssetService {
    */
   public static getAssetUploadJob<ThrowOnError extends boolean = false>(
     options: Options<GetAssetUploadJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetAssetUploadJobResponses,
+    GetAssetUploadJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetAssetUploadJobResponses,
       GetAssetUploadJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/asset-uploads/{jobId}",
       ...options,
@@ -541,15 +639,27 @@ export class AssetService {
    */
   public static createUrlAssetUploadJob<ThrowOnError extends boolean = false>(
     options: Options<CreateUrlAssetUploadJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    CreateUrlAssetUploadJobResponses,
+    CreateUrlAssetUploadJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).post<
       CreateUrlAssetUploadJobResponses,
       CreateUrlAssetUploadJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/url-asset-uploads",
       ...options,
@@ -567,15 +677,27 @@ export class AssetService {
    */
   public static getUrlAssetUploadJob<ThrowOnError extends boolean = false>(
     options: Options<GetUrlAssetUploadJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetUrlAssetUploadJobResponses,
+    GetUrlAssetUploadJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetUrlAssetUploadJobResponses,
       GetUrlAssetUploadJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/url-asset-uploads/{jobId}",
       ...options,
@@ -609,15 +731,27 @@ export class AutofillService {
    */
   public static createDesignAutofillJob<ThrowOnError extends boolean = false>(
     options?: Options<CreateDesignAutofillJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    CreateDesignAutofillJobResponses,
+    CreateDesignAutofillJobErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? client).post<
       CreateDesignAutofillJobResponses,
       CreateDesignAutofillJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/autofills",
       ...options,
@@ -640,15 +774,27 @@ export class AutofillService {
    */
   public static getDesignAutofillJob<ThrowOnError extends boolean = false>(
     options: Options<GetDesignAutofillJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetDesignAutofillJobResponses,
+    GetDesignAutofillJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetDesignAutofillJobResponses,
       GetDesignAutofillJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/autofills/{jobId}",
       ...options,
@@ -664,15 +810,27 @@ export class BrandTemplateService {
    */
   public static listBrandTemplates<ThrowOnError extends boolean = false>(
     options?: Options<ListBrandTemplatesData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    ListBrandTemplatesResponses,
+    ListBrandTemplatesErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? client).get<
       ListBrandTemplatesResponses,
       ListBrandTemplatesErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/brand-templates",
       ...options,
@@ -707,13 +865,23 @@ export class BrandTemplateService {
    */
   public static publishBrandTemplate<ThrowOnError extends boolean = false>(
     options: Options<PublishBrandTemplateData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    PublishBrandTemplateResponses,
+    PublishBrandTemplateErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).post<
       PublishBrandTemplateResponses,
       PublishBrandTemplateErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/brand-templates",
       ...options,
       headers: {
@@ -730,15 +898,27 @@ export class BrandTemplateService {
    */
   public static getBrandTemplate<ThrowOnError extends boolean = false>(
     options: Options<GetBrandTemplateData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetBrandTemplateResponses,
+    GetBrandTemplateErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetBrandTemplateResponses,
       GetBrandTemplateErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/brand-templates/{brandTemplateId}",
       ...options,
@@ -771,15 +951,27 @@ export class BrandTemplateService {
    */
   public static getBrandTemplateDataset<ThrowOnError extends boolean = false>(
     options: Options<GetBrandTemplateDatasetData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetBrandTemplateDatasetResponses,
+    GetBrandTemplateDatasetErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetBrandTemplateDatasetResponses,
       GetBrandTemplateDatasetErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/brand-templates/{brandTemplateId}/dataset",
       ...options,
@@ -804,13 +996,19 @@ export class CommentService {
    */
   public static createComment<ThrowOnError extends boolean = false>(
     options: Options<CreateCommentData, ThrowOnError>,
-  ) {
+  ): RequestResult<CreateCommentResponses, CreateCommentErrors, ThrowOnError> {
     return (options.client ?? client).post<
       CreateCommentResponses,
       CreateCommentErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/comments",
       ...options,
       headers: {
@@ -835,13 +1033,19 @@ export class CommentService {
    */
   public static listReplies<ThrowOnError extends boolean = false>(
     options: Options<ListRepliesData, ThrowOnError>,
-  ) {
+  ): RequestResult<ListRepliesResponses, ListRepliesErrors, ThrowOnError> {
     return (options.client ?? client).get<
       ListRepliesResponses,
       ListRepliesErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs/{designId}/comments/{threadId}/replies",
       ...options,
     });
@@ -869,13 +1073,19 @@ export class CommentService {
    */
   public static createReply<ThrowOnError extends boolean = false>(
     options: Options<CreateReplyData, ThrowOnError>,
-  ) {
+  ): RequestResult<CreateReplyResponses, CreateReplyErrors, ThrowOnError> {
     return (options.client ?? client).post<
       CreateReplyResponses,
       CreateReplyErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs/{designId}/comments/{threadId}/replies",
       ...options,
       headers: {
@@ -903,13 +1113,19 @@ export class CommentService {
    */
   public static getThread<ThrowOnError extends boolean = false>(
     options: Options<GetThreadData, ThrowOnError>,
-  ) {
+  ): RequestResult<GetThreadResponses, GetThreadErrors, ThrowOnError> {
     return (options.client ?? client).get<
       GetThreadResponses,
       GetThreadErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs/{designId}/comments/{threadId}",
       ...options,
     });
@@ -932,13 +1148,19 @@ export class CommentService {
    */
   public static getReply<ThrowOnError extends boolean = false>(
     options: Options<GetReplyData, ThrowOnError>,
-  ) {
+  ): RequestResult<GetReplyResponses, GetReplyErrors, ThrowOnError> {
     return (options.client ?? client).get<
       GetReplyResponses,
       GetReplyErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs/{designId}/comments/{threadId}/replies/{replyId}",
       ...options,
     });
@@ -958,13 +1180,19 @@ export class CommentService {
    */
   public static createThread<ThrowOnError extends boolean = false>(
     options: Options<CreateThreadData, ThrowOnError>,
-  ) {
+  ): RequestResult<CreateThreadResponses, CreateThreadErrors, ThrowOnError> {
     return (options.client ?? client).post<
       CreateThreadResponses,
       CreateThreadErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs/{designId}/comments",
       ...options,
       headers: {
@@ -1001,7 +1229,11 @@ export class ConnectService {
    */
   public static getSigningPublicKeys<ThrowOnError extends boolean = false>(
     options?: Options<GetSigningPublicKeysData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetSigningPublicKeysResponses,
+    GetSigningPublicKeysErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? client).get<
       GetSigningPublicKeysResponses,
       GetSigningPublicKeysErrors,
@@ -1021,13 +1253,19 @@ export class DesignService {
    */
   public static listDesigns<ThrowOnError extends boolean = false>(
     options?: Options<ListDesignsData, ThrowOnError>,
-  ) {
+  ): RequestResult<ListDesignsResponses, ListDesignsErrors, ThrowOnError> {
     return (options?.client ?? client).get<
       ListDesignsResponses,
       ListDesignsErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs",
       ...options,
     });
@@ -1051,13 +1289,19 @@ export class DesignService {
    */
   public static createDesign<ThrowOnError extends boolean = false>(
     options?: Options<CreateDesignData, ThrowOnError>,
-  ) {
+  ): RequestResult<CreateDesignResponses, CreateDesignErrors, ThrowOnError> {
     return (options?.client ?? client).post<
       CreateDesignResponses,
       CreateDesignErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs",
       ...options,
       headers: {
@@ -1072,13 +1316,19 @@ export class DesignService {
    */
   public static getDesign<ThrowOnError extends boolean = false>(
     options: Options<GetDesignData, ThrowOnError>,
-  ) {
+  ): RequestResult<GetDesignResponses, GetDesignErrors, ThrowOnError> {
     return (options.client ?? client).get<
       GetDesignResponses,
       GetDesignErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs/{designId}",
       ...options,
     });
@@ -1103,13 +1353,23 @@ export class DesignService {
    */
   public static getDesignPages<ThrowOnError extends boolean = false>(
     options: Options<GetDesignPagesData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetDesignPagesResponses,
+    GetDesignPagesErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetDesignPagesResponses,
       GetDesignPagesErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/designs/{designId}/pages",
       ...options,
     });
@@ -1125,15 +1385,27 @@ export class DesignService {
    */
   public static getDesignExportFormats<ThrowOnError extends boolean = false>(
     options: Options<GetDesignExportFormatsData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetDesignExportFormatsResponses,
+    GetDesignExportFormatsErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetDesignExportFormatsResponses,
       GetDesignExportFormatsErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/designs/{designId}/export-formats",
       ...options,
@@ -1164,15 +1436,27 @@ export class DesignService {
    */
   public static getDesignDataset<ThrowOnError extends boolean = false>(
     options: Options<GetDesignDatasetData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetDesignDatasetResponses,
+    GetDesignDatasetErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetDesignDatasetResponses,
       GetDesignDatasetErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/designs/{designId}/dataset",
       ...options,
@@ -1200,13 +1484,23 @@ export class DesignService {
    */
   public static createPrintPartnerDesign<ThrowOnError extends boolean = false>(
     options?: Options<CreatePrintPartnerDesignData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    CreatePrintPartnerDesignResponses,
+    CreatePrintPartnerDesignErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? client).post<
       CreatePrintPartnerDesignResponses,
       CreatePrintPartnerDesignErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/print-partner/designs",
       ...options,
       headers: {
@@ -1235,13 +1529,23 @@ export class DesignService {
    */
   public static getPrintPartnerDesign<ThrowOnError extends boolean = false>(
     options: Options<GetPrintPartnerDesignData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetPrintPartnerDesignResponses,
+    GetPrintPartnerDesignErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetPrintPartnerDesignResponses,
       GetPrintPartnerDesignErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/print-partner/designs/{designId}",
       ...options,
     });
@@ -1276,15 +1580,29 @@ export class DesignGenerationService {
    */
   public static createDesignGenerationJobV2<
     ThrowOnError extends boolean = false,
-  >(options: Options<CreateDesignGenerationJobV2Data, ThrowOnError>) {
+  >(
+    options: Options<CreateDesignGenerationJobV2Data, ThrowOnError>,
+  ): RequestResult<
+    CreateDesignGenerationJobV2Responses,
+    CreateDesignGenerationJobV2Errors,
+    ThrowOnError
+  > {
     return (options.client ?? client).post<
       CreateDesignGenerationJobV2Responses,
       CreateDesignGenerationJobV2Errors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/generations",
       ...options,
@@ -1318,15 +1636,27 @@ export class DesignGenerationService {
    */
   public static getDesignGenerationJobV2<ThrowOnError extends boolean = false>(
     options: Options<GetDesignGenerationJobV2Data, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetDesignGenerationJobV2Responses,
+    GetDesignGenerationJobV2Errors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetDesignGenerationJobV2Responses,
       GetDesignGenerationJobV2Errors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/generations/{jobId}",
       ...options,
@@ -1351,7 +1681,11 @@ export class DesignImportService {
    */
   public static createDesignImportJob<ThrowOnError extends boolean = false>(
     options: Options<CreateDesignImportJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    CreateDesignImportJobResponses,
+    CreateDesignImportJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).post<
       CreateDesignImportJobResponses,
       CreateDesignImportJobErrors,
@@ -1359,8 +1693,16 @@ export class DesignImportService {
     >({
       bodySerializer: null,
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/imports",
       ...options,
@@ -1378,15 +1720,27 @@ export class DesignImportService {
    */
   public static getDesignImportJob<ThrowOnError extends boolean = false>(
     options: Options<GetDesignImportJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetDesignImportJobResponses,
+    GetDesignImportJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetDesignImportJobResponses,
       GetDesignImportJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/imports/{jobId}",
       ...options,
@@ -1406,15 +1760,27 @@ export class DesignImportService {
    */
   public static createUrlImportJob<ThrowOnError extends boolean = false>(
     options: Options<CreateUrlImportJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    CreateUrlImportJobResponses,
+    CreateUrlImportJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).post<
       CreateUrlImportJobResponses,
       CreateUrlImportJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/url-imports",
       ...options,
@@ -1432,15 +1798,27 @@ export class DesignImportService {
    */
   public static getUrlImportJob<ThrowOnError extends boolean = false>(
     options: Options<GetUrlImportJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetUrlImportJobResponses,
+    GetUrlImportJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetUrlImportJobResponses,
       GetUrlImportJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/url-imports/{jobId}",
       ...options,
@@ -1478,15 +1856,29 @@ export class DesignImportService {
    */
   public static createImageToDesignImportJob<
     ThrowOnError extends boolean = false,
-  >(options: Options<CreateImageToDesignImportJobData, ThrowOnError>) {
+  >(
+    options: Options<CreateImageToDesignImportJobData, ThrowOnError>,
+  ): RequestResult<
+    CreateImageToDesignImportJobResponses,
+    CreateImageToDesignImportJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).post<
       CreateImageToDesignImportJobResponses,
       CreateImageToDesignImportJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/image-to-design-imports",
       ...options,
@@ -1514,15 +1906,27 @@ export class DesignImportService {
    */
   public static getImageToDesignImportJob<ThrowOnError extends boolean = false>(
     options: Options<GetImageToDesignImportJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetImageToDesignImportJobResponses,
+    GetImageToDesignImportJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetImageToDesignImportJobResponses,
       GetImageToDesignImportJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/image-to-design-imports/{jobId}",
       ...options,
@@ -1556,15 +1960,27 @@ export class ExportService {
    */
   public static createDesignExportJob<ThrowOnError extends boolean = false>(
     options?: Options<CreateDesignExportJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    CreateDesignExportJobResponses,
+    CreateDesignExportJobErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? client).post<
       CreateDesignExportJobResponses,
       CreateDesignExportJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/exports",
       ...options,
@@ -1607,13 +2023,25 @@ export class ExportService {
    */
   public static createPrintPartnerDesignExportJob<
     ThrowOnError extends boolean = false,
-  >(options?: Options<CreatePrintPartnerDesignExportJobData, ThrowOnError>) {
+  >(
+    options?: Options<CreatePrintPartnerDesignExportJobData, ThrowOnError>,
+  ): RequestResult<
+    CreatePrintPartnerDesignExportJobResponses,
+    CreatePrintPartnerDesignExportJobErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? client).post<
       CreatePrintPartnerDesignExportJobResponses,
       CreatePrintPartnerDesignExportJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/print-partner/exports",
       ...options,
       headers: {
@@ -1633,15 +2061,27 @@ export class ExportService {
    */
   public static getDesignExportJob<ThrowOnError extends boolean = false>(
     options: Options<GetDesignExportJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetDesignExportJobResponses,
+    GetDesignExportJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetDesignExportJobResponses,
       GetDesignExportJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/exports/{exportId}",
       ...options,
@@ -1659,13 +2099,19 @@ export class FolderService {
    */
   public static deleteFolder<ThrowOnError extends boolean = false>(
     options: Options<DeleteFolderData, ThrowOnError>,
-  ) {
+  ): RequestResult<DeleteFolderResponses, DeleteFolderErrors, ThrowOnError> {
     return (options.client ?? client).delete<
       DeleteFolderResponses,
       DeleteFolderErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/folders/{folderId}",
       ...options,
     });
@@ -1676,13 +2122,19 @@ export class FolderService {
    */
   public static getFolder<ThrowOnError extends boolean = false>(
     options: Options<GetFolderData, ThrowOnError>,
-  ) {
+  ): RequestResult<GetFolderResponses, GetFolderErrors, ThrowOnError> {
     return (options.client ?? client).get<
       GetFolderResponses,
       GetFolderErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/folders/{folderId}",
       ...options,
     });
@@ -1694,13 +2146,19 @@ export class FolderService {
    */
   public static updateFolder<ThrowOnError extends boolean = false>(
     options: Options<UpdateFolderData, ThrowOnError>,
-  ) {
+  ): RequestResult<UpdateFolderResponses, UpdateFolderErrors, ThrowOnError> {
     return (options.client ?? client).patch<
       UpdateFolderResponses,
       UpdateFolderErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/folders/{folderId}",
       ...options,
       headers: {
@@ -1726,7 +2184,11 @@ export class FolderService {
    */
   public static listFolderItems<ThrowOnError extends boolean = false>(
     options: Options<ListFolderItemsData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    ListFolderItemsResponses,
+    ListFolderItemsErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       ListFolderItemsResponses,
       ListFolderItemsErrors,
@@ -1735,7 +2197,13 @@ export class FolderService {
       querySerializer: {
         parameters: { item_types: { array: { explode: false } } },
       },
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/folders/{folderId}/items",
       ...options,
     });
@@ -1748,15 +2216,27 @@ export class FolderService {
    */
   public static moveFolderItem<ThrowOnError extends boolean = false>(
     options?: Options<MoveFolderItemData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    MoveFolderItemResponses,
+    MoveFolderItemErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? client).post<
       MoveFolderItemResponses,
       MoveFolderItemErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/folders/move",
       ...options,
@@ -1779,13 +2259,19 @@ export class FolderService {
    */
   public static createFolder<ThrowOnError extends boolean = false>(
     options: Options<CreateFolderData, ThrowOnError>,
-  ) {
+  ): RequestResult<CreateFolderResponses, CreateFolderErrors, ThrowOnError> {
     return (options.client ?? client).post<
       CreateFolderResponses,
       CreateFolderErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/folders",
       ...options,
       headers: {
@@ -1824,15 +2310,27 @@ export class ImageGenerationService {
    */
   public static createImageGenerationJob<ThrowOnError extends boolean = false>(
     options?: Options<CreateImageGenerationJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    CreateImageGenerationJobResponses,
+    CreateImageGenerationJobErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? client).post<
       CreateImageGenerationJobResponses,
       CreateImageGenerationJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/image-generations",
       ...options,
@@ -1862,15 +2360,27 @@ export class ImageGenerationService {
    */
   public static getImageGenerationJob<ThrowOnError extends boolean = false>(
     options: Options<GetImageGenerationJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetImageGenerationJobResponses,
+    GetImageGenerationJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetImageGenerationJobResponses,
       GetImageGenerationJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/image-generations/{jobId}",
       ...options,
@@ -1906,13 +2416,25 @@ export class ImageTransformationService {
    */
   public static createImageTransformationJob<
     ThrowOnError extends boolean = false,
-  >(options?: Options<CreateImageTransformationJobData, ThrowOnError>) {
+  >(
+    options?: Options<CreateImageTransformationJobData, ThrowOnError>,
+  ): RequestResult<
+    CreateImageTransformationJobResponses,
+    CreateImageTransformationJobErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? client).post<
       CreateImageTransformationJobResponses,
       CreateImageTransformationJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/image-transformations",
       ...options,
       headers: {
@@ -1941,13 +2463,23 @@ export class ImageTransformationService {
    */
   public static getImageTransformationJob<ThrowOnError extends boolean = false>(
     options: Options<GetImageTransformationJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetImageTransformationJobResponses,
+    GetImageTransformationJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetImageTransformationJobResponses,
       GetImageTransformationJobErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/image-transformations/{jobId}",
       ...options,
     });
@@ -1984,15 +2516,27 @@ export class MergeService {
    */
   public static createDesignMergeJob<ThrowOnError extends boolean = false>(
     options: Options<CreateDesignMergeJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    CreateDesignMergeJobResponses,
+    CreateDesignMergeJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).post<
       CreateDesignMergeJobResponses,
       CreateDesignMergeJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/merges",
       ...options,
@@ -2022,15 +2566,27 @@ export class MergeService {
    */
   public static getDesignMergeJob<ThrowOnError extends boolean = false>(
     options: Options<GetDesignMergeJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetDesignMergeJobResponses,
+    GetDesignMergeJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetDesignMergeJobResponses,
       GetDesignMergeJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/merges/{jobId}",
       ...options,
@@ -2093,7 +2649,11 @@ export class OauthService {
    */
   public static exchangeAccessToken<ThrowOnError extends boolean = false>(
     options: Options<ExchangeAccessTokenData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    ExchangeAccessTokenResponses,
+    ExchangeAccessTokenErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).post<
       ExchangeAccessTokenResponses,
       ExchangeAccessTokenErrors,
@@ -2122,7 +2682,11 @@ export class OauthService {
    */
   public static introspectToken<ThrowOnError extends boolean = false>(
     options: Options<IntrospectTokenData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    IntrospectTokenResponses,
+    IntrospectTokenErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).post<
       IntrospectTokenResponses,
       IntrospectTokenErrors,
@@ -2156,7 +2720,7 @@ export class OauthService {
    */
   public static revokeTokens<ThrowOnError extends boolean = false>(
     options: Options<RevokeTokensData, ThrowOnError>,
-  ) {
+  ): RequestResult<RevokeTokensResponses, RevokeTokensErrors, ThrowOnError> {
     return (options.client ?? client).post<
       RevokeTokensResponses,
       RevokeTokensErrors,
@@ -2180,7 +2744,7 @@ export class OidcService {
    */
   public static getOidcJwks<ThrowOnError extends boolean = false>(
     options?: Options<GetOidcJwksData, ThrowOnError>,
-  ) {
+  ): RequestResult<GetOidcJwksResponses, GetOidcJwksErrors, ThrowOnError> {
     return (options?.client ?? client).get<
       GetOidcJwksResponses,
       GetOidcJwksErrors,
@@ -2199,13 +2763,19 @@ export class OidcService {
    */
   public static userInfo<ThrowOnError extends boolean = false>(
     options?: Options<UserInfoData, ThrowOnError>,
-  ) {
+  ): RequestResult<UserInfoResponses, UserInfoErrors, ThrowOnError> {
     return (options?.client ?? client).get<
       UserInfoResponses,
       UserInfoErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/oidc/userinfo",
       ...options,
     });
@@ -2248,15 +2818,27 @@ export class ResizeService {
    */
   public static createDesignResizeJob<ThrowOnError extends boolean = false>(
     options?: Options<CreateDesignResizeJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    CreateDesignResizeJobResponses,
+    CreateDesignResizeJobErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? client).post<
       CreateDesignResizeJobResponses,
       CreateDesignResizeJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/resizes",
       ...options,
@@ -2287,15 +2869,27 @@ export class ResizeService {
    */
   public static getDesignResizeJob<ThrowOnError extends boolean = false>(
     options: Options<GetDesignResizeJobData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetDesignResizeJobResponses,
+    GetDesignResizeJobErrors,
+    ThrowOnError
+  > {
     return (options.client ?? client).get<
       GetDesignResizeJobResponses,
       GetDesignResizeJobErrors,
       ThrowOnError
     >({
       security: [
-        { scheme: "bearer", type: "http" },
-        { scheme: "bearer", type: "http" },
+        {
+          key: "oauthClientCredentials",
+          scheme: "bearer",
+          type: "http",
+        },
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
       ],
       url: "/v1/resizes/{jobId}",
       ...options,
@@ -2310,13 +2904,19 @@ export class UserService {
    */
   public static usersMe<ThrowOnError extends boolean = false>(
     options?: Options<UsersMeData, ThrowOnError>,
-  ) {
+  ): RequestResult<UsersMeResponses, UsersMeErrors, ThrowOnError> {
     return (options?.client ?? client).get<
       UsersMeResponses,
       UsersMeErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/users/me",
       ...options,
     });
@@ -2327,13 +2927,23 @@ export class UserService {
    */
   public static getUserCapabilities<ThrowOnError extends boolean = false>(
     options?: Options<GetUserCapabilitiesData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetUserCapabilitiesResponses,
+    GetUserCapabilitiesErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? client).get<
       GetUserCapabilitiesResponses,
       GetUserCapabilitiesErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/users/me/capabilities",
       ...options,
     });
@@ -2344,13 +2954,23 @@ export class UserService {
    */
   public static getUserProfile<ThrowOnError extends boolean = false>(
     options?: Options<GetUserProfileData, ThrowOnError>,
-  ) {
+  ): RequestResult<
+    GetUserProfileResponses,
+    GetUserProfileErrors,
+    ThrowOnError
+  > {
     return (options?.client ?? client).get<
       GetUserProfileResponses,
       GetUserProfileErrors,
       ThrowOnError
     >({
-      security: [{ scheme: "bearer", type: "http" }],
+      security: [
+        {
+          key: "oauthAuthCode",
+          scheme: "bearer",
+          type: "http",
+        },
+      ],
       url: "/v1/users/me/profile",
       ...options,
     });

@@ -22,8 +22,8 @@
     "@mui/icons-material": "7.3.11",
     "@mui/material": "7.3.11",
     "canvas-confetti": "1.9.4",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "react-router-dom": "7.18.5"
   },
   "devDependencies": {

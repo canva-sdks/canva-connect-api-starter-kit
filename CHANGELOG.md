@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-11-25
+
+### 🔧 Changed
+
+- Updated the OpenAPI spec and generated TypeScript client to match the latest REST API, adding image transformation idempotency keys and image generation model expiry notices.
+
+### 📦 Dependencies
+
+- Upgraded `nodemon` from `3.0.1` to `3.1.14`.
+- Upgraded `react` from `^19.2.7` to `^19.3.0`.
+- Upgraded `react-dom` from `^19.2.7` to `^19.3.0`.
+
 ## 2026-11-18
 
 ### 🔧 Changed

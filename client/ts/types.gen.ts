@@ -593,68 +593,6 @@ export const AssetType = { IMAGE: "image", VIDEO: "video" } as const;
  */
 export type AssetType = (typeof AssetType)[keyof typeof AssetType];
 
-/**
- * The import status of the asset.
- *
- * @deprecated
- */
-export type ImportStatus = {
-  state: ImportStatusState;
-  error?: ImportError;
-};
-
-/**
- * State of the import job for an uploaded asset.
- *
- * @deprecated
- */
-export const ImportStatusState = {
-  FAILED: "failed",
-  IN_PROGRESS: "in_progress",
-  SUCCESS: "success",
-} as const;
-
-/**
- * State of the import job for an uploaded asset.
- *
- * @deprecated
- */
-export type ImportStatusState =
-  (typeof ImportStatusState)[keyof typeof ImportStatusState];
-
-/**
- * If the import fails, this object provides details about the error.
- *
- * @deprecated
- */
-export type ImportError = {
-  code: ImportErrorCode;
-  /**
-   * A human-readable description of what went wrong.
-   */
-  message: string;
-};
-
-/**
- * A short string indicating why the upload failed. This field can be used to handle errors programmatically.
- *
- *
- * @deprecated
- */
-export const ImportErrorCode = {
-  FILE_TOO_BIG: "file_too_big",
-  IMPORT_FAILED: "import_failed",
-} as const;
-
-/**
- * A short string indicating why the upload failed. This field can be used to handle errors programmatically.
- *
- *
- * @deprecated
- */
-export type ImportErrorCode =
-  (typeof ImportErrorCode)[keyof typeof ImportErrorCode];
-
 export type CreateAssetUploadJobResponse = {
   job: AssetUploadJob;
 };
@@ -735,6 +673,68 @@ export type AssetUploadMetadata = {
    */
   name_base64: string;
 };
+
+/**
+ * The import status of the asset.
+ *
+ * @deprecated
+ */
+export type ImportStatus = {
+  state: ImportStatusState;
+  error?: ImportError;
+};
+
+/**
+ * State of the import job for an uploaded asset.
+ *
+ * @deprecated
+ */
+export const ImportStatusState = {
+  FAILED: "failed",
+  IN_PROGRESS: "in_progress",
+  SUCCESS: "success",
+} as const;
+
+/**
+ * State of the import job for an uploaded asset.
+ *
+ * @deprecated
+ */
+export type ImportStatusState =
+  (typeof ImportStatusState)[keyof typeof ImportStatusState];
+
+/**
+ * If the import fails, this object provides details about the error.
+ *
+ * @deprecated
+ */
+export type ImportError = {
+  code: ImportErrorCode;
+  /**
+   * A human-readable description of what went wrong.
+   */
+  message: string;
+};
+
+/**
+ * A short string indicating why the upload failed. This field can be used to handle errors programmatically.
+ *
+ *
+ * @deprecated
+ */
+export const ImportErrorCode = {
+  FILE_TOO_BIG: "file_too_big",
+  IMPORT_FAILED: "import_failed",
+} as const;
+
+/**
+ * A short string indicating why the upload failed. This field can be used to handle errors programmatically.
+ *
+ *
+ * @deprecated
+ */
+export type ImportErrorCode =
+  (typeof ImportErrorCode)[keyof typeof ImportErrorCode];
 
 /**
  * Body parameters for creating a new autofill job. Use the `type` discriminator to choose
@@ -4308,6 +4308,7 @@ export type UploadImageGenerationAssetUpload = {
 
 export type CreateImageGenerationJobResponse = {
   job: ImageGenerationJob;
+  model_expiry?: ImageGenerationModelExpiry;
 };
 
 export type GetImageGenerationJobResponse = {
@@ -4420,6 +4421,22 @@ export const ImageGenerationModel = {
  */
 export type ImageGenerationModel =
   (typeof ImageGenerationModel)[keyof typeof ImageGenerationModel];
+
+/**
+ * Notice that the `model` requested is scheduled for retirement. Only present when the
+ * request pins a model that has an expiry time. From the expiry time, new jobs that pin the
+ * model fail with the `model_retired` error code and don't include this notice. Canva doesn't
+ * guarantee a minimum notice period, so handle this notice as soon as it appears: switch to a
+ * different model, or omit `model` to let Canva select one.
+ */
+export type ImageGenerationModelExpiry = {
+  model: ImageGenerationModel;
+  /**
+   * When the model stops being available, as a Unix timestamp (in seconds since the Unix
+   * Epoch).
+   */
+  expires_at: number;
+};
 
 /**
  * The aspect ratio of the generated image. Every aspect ratio is supported by every model
@@ -4558,6 +4575,13 @@ export type CreateImageTransformationJobRequest = {
    * results are not returned.
    */
   transformations: Array<ImageTransformationType>;
+  /**
+   * A key that makes the request idempotent. If you retry a request with the same key,
+   * the API returns the original job instead of starting a new transformation, even if
+   * the other request parameters differ. Canva keeps each key for 24 hours after the job
+   * is created. If you don't specify a key, each request starts a new job.
+   */
+  idempotency_key?: string;
 };
 
 /**

@@ -8421,47 +8421,6 @@ components:
       - video
       example: image
       type: string
-    ImportStatus:
-      deprecated: true
-      description: The import status of the asset.
-      properties:
-        state:
-          $ref: '#/components/schemas/ImportStatusState'
-        error:
-          $ref: '#/components/schemas/ImportError'
-      required:
-      - state
-      type: object
-    ImportStatusState:
-      deprecated: true
-      description: State of the import job for an uploaded asset.
-      enum:
-      - failed
-      - in_progress
-      - success
-      example: success
-      type: string
-    ImportError:
-      deprecated: true
-      description: "If the import fails, this object provides details about the error."
-      properties:
-        code:
-          $ref: '#/components/schemas/ImportErrorCode'
-        message:
-          description: A human-readable description of what went wrong.
-          type: string
-      required:
-      - code
-      - message
-      type: object
-    ImportErrorCode:
-      deprecated: true
-      description: |
-        A short string indicating why the upload failed. This field can be used to handle errors programmatically.
-      enum:
-      - file_too_big
-      - import_failed
-      type: string
     CreateAssetUploadJobResponse:
       properties:
         job:
@@ -8563,6 +8522,47 @@ components:
       required:
       - name_base64
       type: object
+    ImportStatus:
+      deprecated: true
+      description: The import status of the asset.
+      properties:
+        state:
+          $ref: '#/components/schemas/ImportStatusState'
+        error:
+          $ref: '#/components/schemas/ImportError'
+      required:
+      - state
+      type: object
+    ImportStatusState:
+      deprecated: true
+      description: State of the import job for an uploaded asset.
+      enum:
+      - failed
+      - in_progress
+      - success
+      example: success
+      type: string
+    ImportError:
+      deprecated: true
+      description: "If the import fails, this object provides details about the error."
+      properties:
+        code:
+          $ref: '#/components/schemas/ImportErrorCode'
+        message:
+          description: A human-readable description of what went wrong.
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    ImportErrorCode:
+      deprecated: true
+      description: |
+        A short string indicating why the upload failed. This field can be used to handle errors programmatically.
+      enum:
+      - file_too_big
+      - import_failed
+      type: string
     CreateDesignAutofillJobRequest:
       description: |-
         Body parameters for creating a new autofill job. Use the `type` discriminator to choose
@@ -13318,6 +13318,8 @@ components:
       properties:
         job:
           $ref: '#/components/schemas/ImageGenerationJob'
+        model_expiry:
+          $ref: '#/components/schemas/ImageGenerationModelExpiry'
       required:
       - job
       type: object
@@ -13422,6 +13424,27 @@ components:
       - |-
         Z Image Turbo. Pick this if the image includes text, or for food, drink, and
         general-purpose imagery.
+    ImageGenerationModelExpiry:
+      description: |-
+        Notice that the `model` requested is scheduled for retirement. Only present when the
+        request pins a model that has an expiry time. From the expiry time, new jobs that pin the
+        model fail with the `model_retired` error code and don't include this notice. Canva doesn't
+        guarantee a minimum notice period, so handle this notice as soon as it appears: switch to a
+        different model, or omit `model` to let Canva select one.
+      properties:
+        model:
+          $ref: '#/components/schemas/ImageGenerationModel'
+        expires_at:
+          description: |-
+            When the model stops being available, as a Unix timestamp (in seconds since the Unix
+            Epoch).
+          example: 1798761600
+          format: int64
+          type: integer
+      required:
+      - expires_at
+      - model
+      type: object
     ImageGenerationAspectRatio:
       description: |-
         The aspect ratio of the generated image. Every aspect ratio is supported by every model
@@ -13524,6 +13547,15 @@ components:
           maxItems: 20
           minItems: 1
           type: array
+        idempotency_key:
+          description: |-
+            A key that makes the request idempotent. If you retry a request with the same key,
+            the API returns the original job instead of starting a new transformation, even if
+            the other request parameters differ. Canva keeps each key for 24 hours after the job
+            is created. If you don't specify a key, each request starts a new job.
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+          type: string
       required:
       - asset_id
       - transformations

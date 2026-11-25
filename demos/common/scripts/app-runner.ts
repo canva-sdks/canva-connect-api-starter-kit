@@ -36,7 +36,7 @@ export class AppRunner {
     table: Table.Table,
     webpackDevServer: WebpackDevServer,
   ) => {
-    await new Promise((resolve) => {
+    await new Promise<void>((resolve) => {
       const nodemonServer = nodemon({
         script: ctx.backendEntry,
         ext: "ts",

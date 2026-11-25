@@ -543,6 +543,7 @@ export {
   type ImageGenerationJobResult,
   ImageGenerationJobStatus,
   ImageGenerationModel,
+  type ImageGenerationModelExpiry,
   type ImageItem,
   type ImageMetadata,
   type ImageSource,
